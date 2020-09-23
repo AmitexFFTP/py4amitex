@@ -15,7 +15,7 @@ import py4amitex.amitexpy.DataP4A as DP4A
 import py4amitex.amitexpy.parserP4A as PP4A
 
 verbose = False # False as production, set True if debug unittest
-verbose1 = True # False as production, set True if debug unittest
+verbose1 = False # False as production, set True if debug unittest
 
 
 class TestCase(unittest.TestCase):

@@ -9,7 +9,7 @@ To get *amitex_fftp code*, see https://gitlab.maisondelasimulation.fr/jderouil/a
 
 To get *py4amitex package*, see https://gitlab.maisondelasimulation.fr/GELEBART_LIONEL/py4amitex
 
-To get *python 3 environment* correct context see ./py4amitex/amitexpy/README.md
+To get *python 3 environment* correct context see file py4amitex/py4amitex/README.md
 
 
 ```

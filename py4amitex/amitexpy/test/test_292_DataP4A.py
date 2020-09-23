@@ -154,21 +154,22 @@ DATA_IN = {
     DBG.write("a.dumpJson()", a.dumpJson(), verbose)
     DBG.write("a.dumpPy()", a.dumpPy(), verbose)
 
-
+  def test_017(self):
     # expected send warning message 'hope you know what you are doing'
     import py4amitex.loggerpy.loggingSimple as LOG
     logger = LOG.getDefaultLogger()
     # help(logger)
     oldlevel = logger.getEffectiveLevel()
     logger.setLevel("ERROR")
+    a = DP4A.DataP4A()
     a.dict = {'v1': 11., 'v2': 22., 'np_array': np.array([10,11,12])}
 
     # expected send error message 'Unexpected leaf data type'
     logger.setLevel("CRITICAL")
     DBG.write("a", str(a), verbose1)
     DBG.write("a.dumpJsonResume()", a.dumpJsonResume(), verbose1)
-    DBG.write("a.dumpJson()", a.dumpJson(), verbose1)
-    DBG.write("a.dumpPy()", a.dumpPy(), verbose1)
+    # DBG.write("a.dumpJson()", a.dumpJson(), verbose1)
+    # DBG.write("a.dumpPy()", a.dumpPy(), verbose1)
     logger.setLevel(oldlevel)
 
 

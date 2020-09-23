@@ -254,22 +254,19 @@ class DataP4ADict(dict, _DataP4ABase):
 
   def __init__(self, *arg, **kw):
 
-    # print('DataP4ADict.__init__', arg)
+    # print('\nDataP4ADict.__init__', arg)
 
-    # if arg == ({},):
-    #   print("args as empty dict")
     if arg == ([],):
       # print("args as empty list")
       raise Exception('DataP4ADict init by EMPTY LIST forbidden')
-    # if arg == ():
-    #   print("no args")
 
     self._parent = None
 
     if len(arg) >= 1:
-      print("len(arg) >= 1", arg is not dict, arg)
-
-      if AP.Namespace == arg[0].__class__:
+      # print("len(arg) >= 1", arg)
+      if dict == arg[0].__class__:
+        super().__init__(arg[0], **kw) # from __dict__ as easy fix
+      elif AP.Namespace == arg[0].__class__:
         # accept init as cast from result parser AP.Namespace.__dict__
         super().__init__(arg[0].__dict__, **kw) # from __dict__ as easy fix
       else:
