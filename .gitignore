@@ -1,0 +1,26 @@
+__pycache__/
+
+*~
+*.bak
+*.pyc
+.nfs*
+
+
+doc/build
+# as copy build only for 'pip install' or create package 'setup.py sdist'
+py4amitex/doc
+py4amitex.egg-info
+dist
+
+.coverage
+
+.eggs
+.tox
+.venv
+*.egg
+*.py[cod]
+*.swp
+
+py4amitex_*.egg-info
+
+.idea/

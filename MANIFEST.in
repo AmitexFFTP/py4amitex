@@ -1,0 +1,10 @@
+recursive-include py4amitex *.png
+recursive-include py4amitex *.md
+recursive-include py4amitex *.pdf
+
+# doc html
+recursive-include py4amitex *.html
+recursive-include py4amitex *.rst.txt
+recursive-include py4amitex *.css
+recursive-include py4amitex *.js
+

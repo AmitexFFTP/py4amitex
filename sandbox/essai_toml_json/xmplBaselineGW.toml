@@ -1,0 +1,29 @@
+# File: xmplBaselineGW.toml
+# 'WR2015ch2' references Wilensky and Rand (2015, ch.2).
+
+[nAgents]
+value=1_000
+description='The number of agents.'
+source='WR2015ch2'
+
+[initialWealth]
+value=100
+description='Initial agent wealth.'
+source='WR2015ch2'
+
+[maxiter]
+value=40_000
+description='Maximum number of iterations.'
+source='pretest'
+
+[seed]
+value=314_159
+description="""Seed for PRNG; \
+  increment this seed for each replicate."""
+source='arbitrary'
+
+[nReplicates]
+value=100
+description='Number of replicates.'
+source='conventional'
+

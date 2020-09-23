@@ -1,0 +1,15 @@
+# Experiments as deviations from xmplBaselineGW00.toml
+
+[simpleContrast]             # scenario contrast for small population
+nAgents=[100]
+
+[uniSweep]                   # vary the initial wealth of agents
+initialWealth=[50, 100, 150]
+
+[contrastSweep]              # vary the initial wealth in a small world
+nAgents=[100]
+initialWealth=[50, 100, 150]
+
+[multiSweep]                 # interact world size and initial wealth
+nAgents=[111, 222, 333]
+initialWealth=[55, 66, 77]
