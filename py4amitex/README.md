@@ -7,7 +7,7 @@ see https://gitlab.maisondelasimulation.fr/jderouil/amitex_fftp
 
 *Designed for python V3.7 as miniconda py3*
 
-User have to get a correct python environment, with good python prerequisites (numpy etc.)
+User have to get a correct python environment, with good python prerequisites (numpy vtk etc.)
 
 
 ### Fristly Install python 3.7 and prerequisites for py4amitex
@@ -39,9 +39,9 @@ which pip
  
 Get folder py4amitex from maisondelasimulation, and use **pip**.
 
-https://gitlab.maisondelasimulation.fr/jderouil/py4amitex
  
 ```
+git clone https://gitlab.maisondelasimulation.fr/GELEBART_LIONEL/py4amitex.git
 # install from local folder 
 conda activate py3
 pip install ./py4amitex

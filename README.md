@@ -9,11 +9,13 @@ To get *amitex_fftp code*, see https://gitlab.maisondelasimulation.fr/jderouil/a
 
 To get *py4amitex package*, see https://gitlab.maisondelasimulation.fr/GELEBART_LIONEL/py4amitex
 
+To get *python 3 environment* correct context see ./py4amitex/amitexpy/README.md
+
 
 ```
 # get py4amitex package and...
 git clone https://gitlab.maisondelasimulation.fr/GELEBART_LIONEL/py4amitex.git
-# ...in your python 3 context (with correct prerequisites numpy vtk json etc.)
+# ...in your python 3 environment correct context (with correct prerequisites numpy vtk json etc.)
 pip install ./py4amitex
 ```
 
