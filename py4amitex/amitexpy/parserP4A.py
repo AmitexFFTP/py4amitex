@@ -12,11 +12,13 @@ import pprint as PP
 import argparse as AP
 
 import py4amitex
+import py4amitex.amitexpy.utilsP4A as UP4A
 import py4amitex.debugpy.debug as DBG  # Easy print stderr (for DEBUG only)
 import py4amitex.loggerpy.loggingSimple as LOG
 
 logger = LOG.getDefaultLogger()
 
+verbose = False
 
 ########################################################################
 # parser arguments py4amitex
@@ -223,20 +225,22 @@ class ArgumentParserNoExit(AP.ArgumentParser):
   def filter_workdir(self, string):
     try:
       wdir = os.path.realpath(os.path.expandvars(string))
-      # DBG.write("arg workdir", wdir, True)
+      DBG.write("arg workdir %s" % string, wdir, verbose)
       ok = os.path.isdir(string)
       value = wdir
-    except:
-      msg = "%r is not a correct existing directory" % string
+    except Exception as e:
+      msg = "%r is not a correct existing directory\n%s" % (string, e)
       raise Exception(msg)
+
     py4amitex_root_dir = os.getenv("PY4AMITEX_ROOT_DIR")
+    DBG.write("py4amitex_root_dir", py4amitex_root_dir, verbose)
     if py4amitex_root_dir in wdir:
-      msg = "working directory: %r\nhave to be outside directory: %r" % (wdir, rootdir)
+      msg = "working directory: %r\nhave to be outside directory: %r" % (wdir, py4amitex_root_dir)
       raise Exception(msg)
     # not existing directory: have to be created by user, or automatic.
-    # if not ok:
-    #  msg = "%r is not an existing directory" % wdir
-    #  raise Exception(msg)
+    if not ok:
+      msg = "%r is not an existing directory" % wdir
+      raise Exception(msg)
     return value
 
   def getNamespaceStr(self, namespace):
@@ -261,14 +265,11 @@ def get_common_parser():
   """
   Define all COMMON commands <options> for py4amitex CLI: 'LaunchP4A <options>'
   """
-  workdirdefault = os.getenv("PY4AMITEX_WORKDIR")
+  workdirdefault = UP4A.getWorkdirDefault()
   # logger.info("parser PY4AMITEX_WORKDIR is %s" % workdirdefault)
   # ... xml ... or json ... or else
   fileinputdefault = os.path.join(workdirdefault, "P4A_in.xml")
   fileoutputdefault = os.path.join(workdirdefault, "P4A_out.xml")
-  if workdirdefault is None:
-    workdirdefault = "${HOME}/PY4AMITEX_WORKDIR"
-  workdirdefault = os.path.realpath(os.path.expandvars(workdirdefault))
 
   parser = ArgumentParserNoExit(
     description='command line interface for py4amitex stuff',

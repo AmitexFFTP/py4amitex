@@ -110,11 +110,11 @@ class TestCase(unittest.TestCase):
   def test_005(self):
     dict_valid = json.loads(_schema_3)
     dict_to_test = DP4A.DataP4A()
-    dict_to_test.loadJson(_dataJson_1)
+    dict_to_test.loadStrJson(_dataJson_1)
     DP4A.json_validate(dict_to_test, dict_valid)
 
     dict_valid = DP4A.DataP4A()
-    dict_valid.loadJson(_schema_4)
+    dict_valid.loadStrJson(_schema_4)
     DP4A.json_validate(dict_to_test, dict_valid)
 
     dict_to_test.nb_heroes = "ooops" # NOT integer

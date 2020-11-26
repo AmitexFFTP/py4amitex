@@ -13,7 +13,7 @@ import py4amitex.debugpy.debug as DBG
 import py4amitex.amitexpy.DataP4A as DP4A
 
 verbose = False # False as production, set True if debug unittest
-verbose1 = False # False as production, set True if debug unittest
+verbosed = True # use True if debug unittest
 
 # dict contains list for test
 _dataPy_1 = '''
@@ -88,7 +88,7 @@ class TestCase(unittest.TestCase):
 
   def test_000(self):
     # one shot setUp() for this TestCase
-    # DBG.write("assert unittest", [a for a in dir(self) if "assert" in a], verbose1)
+    # DBG.write("assert unittest", [a for a in dir(self) if "assert" in a], verbosed)
     pass
 
   def test_005(self):
@@ -104,7 +104,7 @@ class TestCase(unittest.TestCase):
     self.assertTrue(None.__class__ == value.__class__)
 
   def test_010(self):
-    DBG.write("test_010", "", verbose1)
+    DBG.write("test_010", "", verbose)
     aStr = """
 DATA_IN = {
   "pi": 3.141592653589793,
@@ -117,11 +117,11 @@ DATA_IN = {
 }
 """
     a = DP4A.DataP4A()
-    # as a.loadPy(aStr, verbose1)
-    self.assertRaises(Exception, a.loadPy, aStr, verbose1)
+    # as a.loadStrPY(aStr, verbose)
+    self.assertRaises(Exception, a.loadStrPY, aStr, verbose)
 
   def test_012(self):
-    DBG.write("test_012", "", verbose1)
+    DBG.write("test_012", "", verbose)
     # missed ',' after Tintin
     aStr = """
 {
@@ -135,11 +135,11 @@ DATA_IN = {
 }
 """
     a = DP4A.DataP4A()
-    # as a.loadJson(aStr, verbose1)
-    self.assertRaises(Exception, a.loadJson, aStr, verbose1)
+    # as a.loadStrJson(aStr, verbose)
+    self.assertRaises(Exception, a.loadStrJson, aStr, verbose)
 
   def test_015(self):
-    DBG.write("test_015", "", verbose1)
+    DBG.write("test_015", "", verbose)
     a = DP4A.DataP4A()
     a.none = None
     a.true = True
@@ -151,8 +151,8 @@ DATA_IN = {
     a.list = [1, 2]
     a.dict = {'v1': 11., 'v2': 22.}
     DBG.write("a", a, verbose)
-    DBG.write("a.dumpJson()", a.dumpJson(), verbose)
-    DBG.write("a.dumpPy()", a.dumpPy(), verbose)
+    DBG.write("a.dumpStrJson()", a.dumpStrJson(), verbose)
+    DBG.write("a.dumpStrPy()", a.dumpStrPy(), verbose)
 
   def test_017(self):
     # expected send warning message 'hope you know what you are doing'
@@ -166,20 +166,20 @@ DATA_IN = {
 
     # expected send error message 'Unexpected leaf data type'
     logger.setLevel("CRITICAL")
-    DBG.write("a", str(a), verbose1)
-    DBG.write("a.dumpJsonResume()", a.dumpJsonResume(), verbose1)
-    # DBG.write("a.dumpJson()", a.dumpJson(), verbose1)
-    # DBG.write("a.dumpPy()", a.dumpPy(), verbose1)
+    DBG.write("a", str(a), verbose)
+    DBG.write("a.dumpStrJsonResume()", a.dumpStrJsonResume(), verbose)
+    # DBG.write("a.dumpStrJson()", a.dumpStrJson(), verbose)
+    # DBG.write("a.dumpStrPy()", a.dumpStrPy(), verbose)
     logger.setLevel(oldlevel)
 
 
-  ### loadPy use python syntax for data, no limits!
+  ### loadStrPY use python syntax for data, no limits!
   ### avoid if then else please: it is DATA, not program
   def test_022(self):
-    DBG.write("test_022", "", verbose1)
+    DBG.write("test_022", "", verbose)
     DBG.write("_dataPy_1", _dataPy_1, verbose)
     a = DP4A.DataP4A()
-    a.loadPy(_dataPy_1)
+    a.loadStrPY(_dataPy_1)
     aStr = PP.pformat(a)
     DBG.write("a", aStr, verbose)
     self.assertTrue("'nothing'" in aStr)
@@ -188,14 +188,14 @@ DATA_IN = {
     self.assertTrue("'Tintin'" in aStr)
     self.assertTrue("'Haddock'" in aStr)
 
-  ### dumpJson
+  ### dumpStrJson
   def test_024(self):
-    DBG.write("test_024", "", verbose1)
+    DBG.write("test_024", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_1", _dataPy_1, verbose)
-    a.loadPy(_dataPy_1)
-    aStr = a.dumpJson()
-    DBG.write("a.dumpJson()", aStr, verbose)
+    a.loadStrPY(_dataPy_1)
+    aStr = a.dumpStrJson()
+    DBG.write("a.dumpStrJson()", aStr, verbose)
     self.assertTrue('"pi": 3.14159' in aStr)
     self.assertTrue('"nothing": null' in aStr)
     self.assertTrue('"nb_heroes": 2,' in aStr)
@@ -204,26 +204,26 @@ DATA_IN = {
     self.assertTrue('"name": "Haddock",' in aStr)
 
   def test_026(self):
-    DBG.write("test_026", "", verbose1)
+    DBG.write("test_026", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_2", _dataPy_2, verbose)
-    a.loadPy(_dataPy_2)
-    aStr = a.dumpJson()
+    a.loadStrPY(_dataPy_2)
+    aStr = a.dumpStrJson()
     DBG.write("a.__repr__()", a.__repr__(), verbose)
-    DBG.write("a.dumpJson()", aStr, verbose)
+    DBG.write("a.dumpStrJson()", aStr, verbose)
     self.assertEqual('reporter', a.heroes.Tintin.job)
 
 
-  ### loadJson
+  ### loadStrJson
   def test_042(self):
-    DBG.write("test_042", "", verbose1)
+    DBG.write("test_042", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataJson_1", _dataJson_1, verbose)
-    a.loadJson(_dataJson_1)
+    a.loadStrJson(_dataJson_1)
     aStr = a.__repr__()
     DBG.write("a.__repr__()", aStr, verbose)
-    aStr = a.dumpJson()
-    DBG.write("a.dumpJson()", aStr, verbose)
+    aStr = a.dumpStrJson()
+    DBG.write("a.dumpStrJson()", aStr, verbose)
     self.assertTrue('"pi": 3.14159' in aStr)
     self.assertTrue('"nb_heroes": 2,' in aStr)
     self.assertTrue('"heroes": [' in aStr)
@@ -232,10 +232,10 @@ DATA_IN = {
 
   ### class.key coding way: a.heroes[0].name
   def test_222(self):
-    DBG.write("test_222", "", verbose1)
+    DBG.write("test_222", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_1", _dataPy_1, verbose)
-    a.loadPy(_dataPy_1)
+    a.loadStrPY(_dataPy_1)
     DBG.write("a", a, verbose)
     self.assertEqual(math.pi, a.pi)
     self.assertEqual(2, a.nb_heroes)
@@ -246,21 +246,21 @@ DATA_IN = {
 
   # test python path
   def test_510(self):
-    DBG.write("test_510", "", verbose1)
+    DBG.write("test_510", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_1", _dataPy_1, verbose)
-    a.loadPy(_dataPy_1)
+    a.loadStrPY(_dataPy_1)
     DBG.write("a", a, verbose)
     self.assertEqual('root.heroes[0]', a.heroes[0].getPythonPath(root='root'))
     self.assertEqual('root.heroes[1]', a.heroes[1].getPythonPath(root='root'))
 
   def test_520(self):
-    DBG.write("test_520", "", verbose1)
+    DBG.write("test_520", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_3", _dataPy_3, verbose)
-    a.loadPy(_dataPy_3)
+    a.loadStrPY(_dataPy_3)
     DBG.write("a", a, verbose)
-    DBG.write("a.dumpJson()", a.dumpJson(), verbose)
+    DBG.write("a.dumpStrJson()", a.dumpStrJson(), verbose)
     DBG.write("a PP.pformat", PP.pformat(a), verbose)
     self.assertEqual('root.v1', a.v1.getPythonPath(root='root'))
     self.assertEqual('root.v3.v3_1', a.v3.v3_1.getPythonPath(root='root'))
@@ -272,13 +272,13 @@ DATA_IN = {
 
   # manipulate DataP4A in python script
   # what we could do... may be it is 'too much' for python newbies
-  # may be only use loadPy or loadJson and validate
+  # may be only use loadStrPY or loadStrJson and validate
   def test_610(self):
-    DBG.write("test_610", "", verbose1)
+    DBG.write("test_610", "", verbose)
     a = DP4A.DataP4A()
-    a.loadPy(_dataPy_1)
+    a.loadStrPY(_dataPy_1)
 
-    # create from scratch, not loadPy or loadJson
+    # create from scratch, not loadStrPY or loadStrJson
     b = DP4A.DataP4A()
     b["FirstItem"] = DP4A.DataP4A({"Firstvalue": 11})
     b["SecondItem"] = DP4A.DataP4A({"Secondvalue": 22})
@@ -289,7 +289,7 @@ DATA_IN = {
     self.assertEqual('root.FirstItem', b.FirstItem.getPythonPath(root='root'))
     self.assertEqual('root.SecondItem', b.SecondItem.getPythonPath(root='root'))
 
-    # create from scratch, not loadPy or loadJson (id as previous)
+    # create from scratch, not loadStrPY or loadStrJson (id as previous)
     b = DP4A.DataP4A()
     b.FirstItem = {"Firstvalue": 11}
     b.SecondItem = {"Secondvalue": 22}
@@ -304,8 +304,8 @@ DATA_IN = {
       b.FirstItem.Firstvalue = i
       b.SecondItem.Secondvalue = i*2
       DBG.write("b", b, verbose)
-      aStr = b.dumpJson()
-      DBG.write("b.dumpJson()", aStr, verbose)
+      aStr = b.dumpStrJson()
+      DBG.write("b.dumpStrJson()", aStr, verbose)
       self.assertTrue("Firstvalue: %i" % i, aStr)
       self.assertTrue("Secondvalue: %i" % i*2, aStr)
       self.assertEqual(i, b.FirstItem.Firstvalue)
@@ -313,16 +313,16 @@ DATA_IN = {
 
 
   def test_620(self):
-    DBG.write("test_620", "", verbose1)
+    DBG.write("test_620", "", verbose)
 
-    # create from scratch, not loadPy or loadJson
+    # create from scratch, not loadStrPY or loadStrJson
     b = DP4A.DataP4A()
     b["FirstItem"] = 11
     b.SecondItem = 22.
     DBG.write("b", b, verbose)
-    DBG.write("b.dumpJson()", b.dumpJson(), verbose)
+    DBG.write("b.dumpStrJson()", b.dumpStrJson(), verbose)
     b.ThirdItem = 22.
-    DBG.write("b.dumpJson()", b.dumpJson(), verbose)
+    DBG.write("b.dumpStrJson()", b.dumpStrJson(), verbose)
 
     # arithmetic
     self.assertEqual(b.SecondItem, b.ThirdItem)
@@ -336,7 +336,7 @@ DATA_IN = {
     self.assertNotEqual(4, b.FirstItem)
 
     b.ThirdItem = 22 # set integer
-    DBG.write("b.dumpJson()", b.dumpJson(), verbose)
+    DBG.write("b.dumpStrJson()", b.dumpStrJson(), verbose)
     # arithmetic
     self.assertEqual(b.SecondItem, b.ThirdItem)
     self.assertEqual(b.ThirdItem, b.SecondItem)
@@ -349,14 +349,19 @@ DATA_IN = {
     self.assertNotEqual(4, b.FirstItem)
 
   def test_630(self):
-    # verbose = True
-    # verbose1 = True
-    DBG.write("test_630", "", verbose1)
 
-    # create from scratch, not loadPy or loadJson
+    DBG.write("test_630", "", verbose)
+
+    # create from scratch, not loadStrPY or loadStrJson
     b = DP4A.DataP4A()
 
-    self.assertRaises(Exception, b.__getattr__, 'FirstItem') # inexisting, log error
+    import py4amitex.loggerpy.loggingSimple as LOG
+    logger = LOG.getDefaultLogger()
+    oldlevel = logger.getEffectiveLevel()
+    logger.setLevel("CRITICAL")
+    self.assertRaises(Exception, b.__getattr__, 'FirstItem') # inexisting, log error not seen
+    logger.setLevel(oldlevel)
+
     self.assertRaises(Exception, b.__getitem__, 'FirstItem') # inexisting, no log error
 
     b.FirstItem = 11
@@ -373,7 +378,7 @@ DATA_IN = {
     self.assertEqual(b.ThirdItem, 242.)
 
     b.ThirdItem = (b.FirstItem * b.SecondItem == 242.)
-    DBG.write("b.dumpJson()", b.dumpJson(), verbose)
+    DBG.write("b.dumpStrJson()", b.dumpStrJson(), verbose)
     self.assertTrue(b.ThirdItem)
     self.assertEqual(b.ThirdItem, True)
 

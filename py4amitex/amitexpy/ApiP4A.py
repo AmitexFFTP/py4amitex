@@ -32,6 +32,7 @@ ERROR: 'ApiP4A.py' is not main command entry (CLI) for py4amitex.
   sys.exit(_KOSYS)
 
 import py4amitex
+import py4amitex.amitexpy.utilsP4A as UP4A
 import py4amitex.debugpy.debug as DBG  # Easy print stderr (for DEBUG only)
 import py4amitex.loggerpy.loggingSimple as LOG
 import py4amitex.utilspy.utils as UTS
@@ -246,7 +247,7 @@ class RunnerP4A(object):
     # check tests stuff
     #####################
 
-    workdir = os.path.realpath(os.getenv("PY4AMITEX_WORKDIR"))
+    workdir = UP4A.getWorkdirDefault()
     logger.info("current workdir is %s" % workdir)
 
     # TODO other PY4AMITEX checks, presence of import uranie python (for example...)

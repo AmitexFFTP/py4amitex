@@ -24,10 +24,13 @@ in test_xxx_DataP4a.py which are The Only F. Reference For Use
 """
 
 import os
+import platform
 import numpy as np
+import pandas as pd
 import pprint as PP
 import argparse as AP
 import json
+import h5py
 
 
 # json.validate() as DP4A.json_validate()
@@ -53,10 +56,26 @@ verbose = False  # True # in debug
 verbose1 = False # print all insert item in dict
 verbose2 = False # print something in debug
 
+
+
 ########################################################################
 # some utilities methods
 ########################################################################
 
+
+_HDF5_ARRAYS = {} # KISS only global singleton (for now), only init in dumpStrJsonHdf5, which is NOT recursive
+
+# needed leading 'x' to create hdf5 tags compatible
+# tables/path.py:155: it does not match the pattern ``^[a-zA-Z_][a-zA-Z0-9_]*$``
+_HDF5_FMT = 'x%03i_%s_%s'  # needed 'x'
+_HDF5_TAGS = {np.ndarray: "ndarray", pd.core.frame.DataFrame: "dataframe"}
+
+
+def _HDF5_write_tag(typeData, path):
+  nb = len(_HDF5_ARRAYS)
+  typ = _HDF5_TAGS[typeData]
+  res = _HDF5_FMT % (nb, typ, path)
+  return res
 
 def jsonprint(tit, obj):
   print("\n********** jsondumps %s %s **********\n\n%s" %
@@ -81,7 +100,7 @@ def lineIndent(aStr):
 
 class DataP4AEncoder(json.JSONEncoder):
   """
-  JSON Encoder for complete JSON dump
+  JSON Encoder for complete JSON dump, useless for serialisation of ndarray and dataframe
   """
   _className = "DataP4AEncoder"
 
@@ -101,9 +120,9 @@ class DataP4AEncoder(json.JSONEncoder):
       # here we can do something specific for np.array, for example
       # TODO something as write in file or pickle asci dump
       # TODO set name of file as 'file:\\...' for big data, or create zip multiple files
-      if res.__class__ in [np.ndarray]:
-        logger.error("Unexpected leaf data type %s in %s, casted to list." % (type(res), self._className))
-        return list(res)
+      if res.__class__ in _HDF5_TAGS.keys():
+        # logger.debug("Unexpected leaf data type %s in %s, truncated representation." % (type(res), self._className))
+        return _HDF5_TAGS[res.__class__] + str(res.shape)
       #  res = str(res.dumps()) # as bytes to str
       #  print("TODO may be something else for numpy big arrays", res, str(res), res.decode('utf-16')
       #  return res
@@ -119,7 +138,7 @@ class DataP4AEncoder(json.JSONEncoder):
 
 class DataP4AEncoderResume(json.JSONEncoder):
   """
-  JSON Encoder for partial resume (human eyes only) JSON dump
+  JSON Encoder for partial resume (human eyes only) JSON dump, useless for serialisation of ndarray and datafram
   """
   _className = "DataP4AEncoderResume"
 
@@ -131,12 +150,64 @@ class DataP4AEncoderResume(json.JSONEncoder):
       res = obj._value
       # res could be all python types of object (from user or not)
       # assume it as a JSON tree LEAF
-      if res.__class__ not in [bool, int, float, None.__class__, str]:
+      if res.__class__ in [bool, int, float, None.__class__, str]:
+        return res
+      if res.__class__ in _HDF5_TAGS.keys():
+        return "%s(%s)" % (_HDF5_TAGS[res.__class__], str(res))
+
+      # assume here for DataP4A JSON unknown types what to do
+      logger.info("Leaf data type ignored %s in %s" % (type(res), self._className))
+      return str(type(res))
+
+
+    # Let the base class default method raise the TypeError
+    return json.JSONEncoder.default(self, obj)
+
+
+
+class DataP4AEncoderHdf5(json. JSONEncoder):
+  """
+  JSON Encoder extended to numpy.ndarray and pandas.dataframe for
+  - partial result is tree asci resume (human eyes only) JSON dump
+  - and complementary result extended global singleton DP4A._HDF5_ARRAYS dict
+    to a posteriori get included leaves numpy.ndarray, pandas.core.frame.DataFrame,
+    with index_named python tree path for a posteriori dump HDF5 files
+  see class DataP4A method 'def dumpFileHdf5'
+  """
+  _className = "DataP4AEncoderHdf5"
+
+  def default(self, obj):
+    # print("********* DataP4AEncoderResume.default", type(obj))
+    if isinstance(obj, range):
+      return [i for i in obj]
+
+    # res could be all python types of object (from user or not)
+    # assume it as a JSON tree LEAF
+    if obj.__class__ == DataP4ALeaf:
+      res = obj._value
+
+      if res.__class__ in _HDF5_TAGS.keys():
+        aPath = obj.getPythonPath()
+        tag = _HDF5_write_tag(res.__class__, aPath)
+
+        # logger.debug("Leaf data type %s %s in %s" % (type(res), aPath, self._className))
+
+        if aPath in _HDF5_ARRAYS:
+          mess = 'Problem %s is in _HDF5_ARRAYS yet' % aPath
+          logger.error(mess)
+          return mess
+
+        _HDF5_ARRAYS[tag] = res # warning
+        return tag
+
+      elif res.__class__ not in [bool, int, float, None.__class__, str]:
         # assume here for JSON unknown types what to do
         # here we can do something specific for np.array, for example
         logger.error("Unexpected leaf data type %s in %s" % (type(res), self._className))
         return str(type(res))
-      return res
+
+      else:
+        return res
 
     # Let the base class default method raise the TypeError
     return json.JSONEncoder.default(self, obj)
@@ -192,6 +263,10 @@ class _DataP4ABase(object):
         castValue = DataP4AStr(value)
         return castValue
 
+      if value.__class__ in [np.ndarray, pd.core.frame.DataFrame]:
+        castValue = DataP4ALeaf(value)
+        return castValue
+
       # as value.__class__ not in [dict, list, bool, int, float, None.__class__, str] json compatible
       # as user modifying data, possibly he knows what he is doing, 
       # only warning
@@ -232,9 +307,116 @@ in expected json-compatible DataP4A tree''' % type(value)) #, PP.pformat(value))
 <blue>%s
 
 <red>%s
-""" % (self.dumpJson(), e))
+""" % (self.dumpStrJson(), e))
       ok = False
     return ok
+
+  def _hdf5_shape2str(self, aShape, verbose=False):
+    # help(aShape)
+    if verbose: DBG.write("_hdf5_shape2str aShape", aShape, True)
+    if verbose: DBG.write("_hdf5_shape2str dir(aShape)", dir(aShape), True)
+
+    aArray = np.array(aShape)
+    if verbose: DBG.write("_hdf5_shape2str aArray", aArray, True)
+    if verbose: DBG.write("_hdf5_shape2str dir(aArray)", dir(aArray), True)
+
+    aStr = aArray.tobytes().decode('UTF-8')  # ouffff
+    if verbose: print("_hdf5_shape2str type %s\n%s" % (aStr))
+    return aStr
+
+  def _setPyPath(self, aPyPath, aValue, verbose=False):
+
+    if verbose: logger.info("_setPyPath self%s <--- %s" % (aPyPath, aValue))
+    aDict = {"anObject": self, "aValue": aValue}
+    cmd = "anObject%s = aValue" % aPyPath  # simple meta prog, KISS on errors also...
+    try:
+      exec(cmd, aDict)
+    except Exception as e:
+      msg = DBG.format_color_exception(str(e))
+      logger.error("Executing '%s'\n%s" % (cmd, msg))
+      # choose to continue...
+
+
+  def json_validate(self, jsonschema):
+    return json_validate(self, jsonschema)
+
+  '''
+  # is not KISS
+  def _setPyPath_obsolete(self, aPyPath, aValue):
+
+    # always relative path, so no need first "."
+    if aPyPath[0] == '.':
+      paths = aPyPath[1:].split(".")
+    else:
+      paths = aPyPath.split(".")
+
+    # logger.info("_setPyPath %s ---> %s" % (aPyPath, paths))
+    s = self
+    if len(paths) > 1:
+      for attr in paths[0:-1]:
+        if '[' in attr:
+          raise Exception("Problem in getattr '%s'" % attr)
+        s = getattr(s, attr)
+
+    # setattr(s, paths[-1], aValue) creates "another_list[0]": "dataframe(3, 3)"
+    attr = paths[-1]
+    if '[' in attr:
+      raise Exception("Problem in setattr '%s'" % attr)
+    setattr(s, attr, aValue)'''
+
+
+  def _getPyPath(self, aPyPath):
+    paths = aPyPath.split(".")
+    if len(paths) == 0 :
+      return None
+    s = self
+    for attr in paths:
+      s = getattr(s, attr)
+    return s
+
+
+  def _get_HDF5_arrays_paths(self, res):
+    """no recursive arrays_path as 'x123_dataframe_.pypath' only valid in a DataP4AStr"""
+    if self.__class__ is DataP4AStr:
+      # print("\n_get_HDF5_arrays_paths", self, res)
+      tmp = self.split("_dataframe_.")
+      if len(tmp) == 2:
+        res[tmp[0] + "_dataframe_"] = '.' + tmp[1]
+
+      tmp = self.split("_ndarray_.")
+      if len(tmp) == 2:
+        res[tmp[0] + "_ndarray_"] = '.' + tmp[1]
+    return
+
+  def get_HDF5_arrays_paths(self, res, verbose=False):
+    """assume DataP4A tree recursion"""
+
+    # print("\nxxxxxxx get_HDF5_arrays_paths", self.__class__)
+    current = self
+    if current.__class__ is DataP4AStr:
+      current._get_HDF5_arrays_paths(res)
+      return
+
+    if current.__class__ in [DataP4ADict, DataP4A]:
+      # print("DataP4ADict")
+      for nam, value in current.items():
+        # print("get_HDF5_arrays_paths DataP4ADict value", nam)
+        try:
+          value.get_HDF5_arrays_paths(res)
+        except:
+          pass
+      return
+
+    if current.__class__ is DataP4AList:
+      # print("get_HDF5_arrays_paths DataP4AList value")
+      for value in current:
+        try:
+          value.get_HDF5_arrays_paths(res)
+        except:
+          pass
+      return
+
+
 
 
 ########################################################################
@@ -382,13 +564,17 @@ class DataP4ADict(dict, _DataP4ABase):
       res = res._value
     return res
 
+  def getDate(self):
+    from datetime import datetime
+    res = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    return res
 
-  def loadPy(self, data_exec, verbose=False):
+  def loadStrPY(self, data_exec, verbose=False):
     """
     exec code object as compiled python string code
     data input as result as 'DATA_IN' dictionary.
 
-    loadPy use python code syntax for input data, no limits!
+    loadStrPY use python code syntax for input data, no limits!
     avoid if then else etc. please, it is DATA, NOT program.
     """
     aDict = {}
@@ -402,7 +588,7 @@ class DataP4ADict(dict, _DataP4ABase):
       if verbose: logger.critical(msg)
       raise Exception(e) # stoop
     if 'DATA_IN' in aDict:
-      DBG.write("DataP4ADict.loadPy", aDict['DATA_IN'], verbose)
+      DBG.write("DataP4ADict.loadStrPY", aDict['DATA_IN'], verbose)
       self._initFromDict(aDict['DATA_IN'])
     else:
       raise Exception("DataP4ADict unknown 'DATA_IN' variable in result namespace of:\n%s" % data_exec)
@@ -434,11 +620,20 @@ class DataP4ADict(dict, _DataP4ABase):
         # DBG.write("v.__repr_with_parent__()", v.__repr_with_parent__(), verbose1 )
 
 
-  def loadJson(self, data_json, verbose=True):
+  def loadFileJson(self, name_data_json, verbose=True):
+    with open(name_data_json, "r") as f:
+      return self.loadStrJson(f.read())
+
+  def loadFilePY(self, name_data_py, verbose=True):
+    with open(name_data_py, "r") as f:
+      return self.loadStrPY(f.read())
+
+
+  def loadStrJson(self, data_json, verbose=True):
     """
     load data input as Json text, result as dictionary.
 
-    loadJson use json package and normalized syntax for input data, no comments!
+    loadStrJson use json package and normalized syntax for input data, no comments!
     it is mandatory DATA, NO program tricks allowed.
     """
     try:
@@ -452,18 +647,252 @@ class DataP4ADict(dict, _DataP4ABase):
     self._initFromDict(aDict)
     return
 
-  def dumpJson(self):
-    # DBG.write("dumpJson", self, True)
+  def dumpStrJson(self):
+    """simple classical JSON dumps, do not accept numpy array"""
+    # DBG.write("dumpStrJson", self, True)
     res = json.dumps(self, cls=DataP4AEncoder, indent=2)
     return res
 
-  def dumpJsonResume(self):
-    # DBG.write("dumpJson", self, True)
+  def dumpStrJsonResume(self):
+    """classical JSON dumps accept and resume numpy array etc, with warning"""
+    # DBG.write("dumpStrJsonResume", self, True)
     res = json.dumps(self, cls=DataP4AEncoderResume, indent=2)
     return res
 
-  def dumpPy(self):
-    strJson = self.dumpJson()
+  def _dumpStrJsonHdf5(self):
+    """utility to HDF5 with JSON dumps, accept numpy array etc, only internal use"""
+    # DBG.write("_dumpStrJsonHdf5", self, True)
+    global _HDF5_ARRAYS
+    _HDF5_ARRAYS = {} # global singleton to store tree numpy arrays
+    res = json.dumps(self, cls=DataP4AEncoderHdf5, indent=2)
+    return res
+
+  def dumpFileHdf5(self, nameFile, display=False, compression=None):
+    """
+    HDF5 dump in file with JSON dumps for simple tree leaves, accept numpy array pandas dataframe
+    creates file as loadFileHdf5 load file
+
+    dumpFileHdf5/loadFileHdf5 uses
+    - json strings in hdf5 datasets to store DataP4A tree simple data (boolean, int, float, simple string)
+    - np arrays    in hdf5 datasets to store numpy (big) array data and pandas dataframe
+
+    json strings are multi-line strings, leads to store items in HDF5 with dataset np.string_
+    see https://docs.h5py.org/en/2.10.0/strings.html:
+    'This is the most-compatible way to store a string. Everything else can read it'
+
+    optional display result file with vitables
+
+    Lossless compression filters
+      GZIP filter ("gzip"
+        Available with every installation of HDF5,
+        so it’s best where portability is required.
+        Good compression, moderate speed.
+        compression_opts sets the compression level and may be an integer from 0 to 9, default is 4.
+      LZF filter ("lzf")
+        Available with every installation of h5py (C source code also available).
+        Low to moderate compression, very fast. No options.
+
+    WARNING:
+      dataframes compression using complib : {'zlib', 'bzip2', 'lzo', 'blosc', None}, default None
+      !!! what ??? gzip is not a valid compression option (and is ignored, that's a bug).
+      try any of zlib, bzip2, lzo, blosc (bzip2/lzo might need extra libraries installed)
+      => avoid dataframes compression dataframes for now
+    """
+
+    if compression in [None, 0, "no"]:
+      compr = None
+    elif compression in [1, "yes"]:
+      compr = "gzip"
+    elif compression in ["gzip", "lzf"]:
+      compr = compression
+    else:
+      logger.warning("hdf5 compression unknown '%s'" % compression)
+      compr = None
+    # DBG.write("dumpFileHdf5", self, True)
+    global _HDF5_ARRAYS
+    isDataFrames = False
+    with h5py.File(nameFile, 'w') as f:
+
+      # info
+      ginf = f.create_group('meta_informations')
+      aInfo = DataP4A()
+      aInfo.version = "1.0.0"
+      aInfo.file_name_origin = os.path.basename(nameFile)
+      aInfo.hostname_origin = platform.node()
+      aInfo.username_origin = UTS.getUser()
+
+      # useless aInfo.file_directory_name = os.path.dirname(nameFile)
+      aInfo.file_date = self.getDate()
+      aStr = aInfo._dumpStrJsonHdf5() # here prefer not existing arrays
+      ginf.create_dataset(name="info_hdf5_file", data=np.string_(aStr))
+
+      # tree simple data as JSON human readable
+      gdat = f.create_group('data')
+      aStr = self._dumpStrJsonHdf5() # fill _HDF5_ARRAYS
+      gdat.create_dataset(name="data_json", data=np.string_(aStr))
+
+      # tree numpy arrays as dataset compressed or not
+      garr = f.create_group('arrays')
+      for p, val in _HDF5_ARRAYS.items():
+
+        typ = p.split(".")[0]
+        # garr = f.create_group('arrays/' + p)  # p.split(".")[0]
+
+        if "ndarray" in typ:
+          # print("typ %s ---> %s " % (typ, p))
+          if compr is None:
+            garr.create_dataset(name=typ, data=val)
+          else:
+            garr.create_dataset(name=typ, data=val, compression=compr)
+        elif "dataframe" in typ:
+          isDataFrames = True
+          pass # append later with to_hdf
+        else:
+          logger.error("dumpFileHdf5 problem with %s" % p)
+
+    # append dataframe(s) now
+    if isDataFrames:
+      store = pd.HDFStore(nameFile, "a")
+      for p, val in _HDF5_ARRAYS.items():
+        typ = p.split(".")[0]
+        if "dataframe" in typ:
+          # logger.info("dumpFileHdf5 %s ---> %s " % (typ, p))
+          # val.to_hdf(nameFile, key="arrays/" + p, mode='a')
+          store.put("arrays/" + typ, val)
+      store.close()
+
+
+    _HDF5_ARRAYS = {} # raz useless dict
+    if display: os.system("vitables " + nameFile)
+    return None
+
+    if verbose:
+      logger.info("get_HDF5_arrays_paths\n%s" % PP.pformat(res))
+    return
+
+  '''def loadFileHdf5_obsolete(self, nameFile, verbose=False):
+    """
+    load HDF5 file as dumpFileHdf5 creates file
+
+    dumpFileHdf5/loadFileHdf5 uses a mix json string in hdf5 dataset to store DataP4A tree data
+    """
+    try:
+      with h5py.File(nameFile, 'r') as f:  # read hdf5 file
+        if verbose:
+          ng = '/meta_informations/info_hdf5_file'
+          aShape = f[ng]
+          aStr = self._hdf5_shape2str(aShape)
+          logger.info("meta_informations/info_hdf5_file:\n%s" % aStr)
+
+        aShape = f['/data/data_json']
+        aStr = self._hdf5_shape2str(aShape)
+        if verbose: logger.info("data/data_json:\n%s" % aStr)
+
+        self.loadStrJson(aStr) # load without arrays
+
+        HDF5_arrays = {}
+        self.get_HDF5_arrays_paths(HDF5_arrays)
+
+        # load arrays
+        ng = 'arrays'
+        msg = 'groupe %s:\n' % ng
+        group = f['/arrays']
+        j = 0
+        for nsg, aShape in group.items(): # or in f[ng].items():
+          j += 1
+          aPyPath = ".".join(nsg.split(".")[1:]) # from "001.xxxx.yyy" to "xxxx.yyy"
+
+          aArray = np.array(aShape)
+          self._setPyPath(aPyPath, aArray)
+          msg += "array%s '%s' pypath '%s'\n" % (str(aArray.shape), aShape.name, aPyPath)
+
+        if verbose: logger.info(msg)
+
+    except Exception as e:
+      msg = "DataP4ADict problem in load HDF5 file %s: %s" % (nameFile, e)
+      msg = DBG.format_color_exception(msg)
+      if verbose: logger.error(msg)
+      return None
+
+    return None'''
+
+  def loadFileHdf5(self, nameFile, verbose=True):
+    """
+    load HDF5 file as dumpFileHdf5 creates file
+
+    dumpFileHdf5/loadFileHdf5 uses a mix json string in hdf5 dataset to store DataP4A tree data
+    """
+    try:
+      with h5py.File(nameFile, 'r') as f:  # read hdf5 file
+        if verbose:
+          ng = '/meta_informations/info_hdf5_file'
+          aShape = f[ng]
+          aStr = self._hdf5_shape2str(aShape)
+          logger.info("meta_informations/info_hdf5_file:\n%s" % aStr)
+
+        aShape = f['/data/data_json']
+        aStr = self._hdf5_shape2str(aShape)
+        if verbose: logger.info("data/data_json:\n%s" % aStr)
+
+        self.loadStrJson(aStr)  # load without arrays
+
+        HDF5_arrays = {}
+        self.get_HDF5_arrays_paths(HDF5_arrays, verbose=True)
+        if verbose: logger.info("arrays_paths:\n%s" % PP.pformat(HDF5_arrays))
+
+        # load np.ndarrays
+        ng = '/arrays'
+        msg = 'groupe %s:\n' % ng
+        group = f[ng]
+
+        dataFrames = []
+        for nsg, aShape in group.items():
+
+          if "_dataframe_" in nsg:
+            dataFrames.append(nsg)  # read it later with pd.HDFStore
+            continue
+
+          # nsg is "_123_ndarray_" or "_456_dataframe_" etc
+          if nsg not in HDF5_arrays.keys():
+            logger.error("loadFileHdf5 reference '%s' not found" % nsg)
+            continue
+          aPyPath = HDF5_arrays[nsg] # to ".xxxx.yyy"
+
+          aArray = np.array(aShape)
+          if verbose: logger.info("loadFileHdf5 %s ---> %s\n%s" % (nsg, aPyPath, aArray))
+          self._setPyPath(aPyPath, aArray)
+          msg += "array%s '%s'   pypath '%s'\n" % (str(aArray.shape), aShape.name, aPyPath)
+
+
+      # f for read std is with closed
+      # now f is read pd.HDFStore
+      if len(dataFrames) > 0:
+        with pd.HDFStore(nameFile, "r") as f:
+          for nsg in dataFrames:
+            if nsg not in HDF5_arrays.keys():
+              logger.error("loadFileHdf5 reference '%s' not found" % nsg)
+              continue
+            aPyPath = HDF5_arrays[nsg] # to ".xxxx.yyy"
+            name = '/arrays/' + nsg
+            df = f.get(name)
+            if verbose: logger.info("loadFileHdf5 %s ---> %s\n%s" % (nsg, aPyPath, df))
+            self._setPyPath(aPyPath, df)
+            msg += "array%s '%s' pypath '%s'\n" % (str(df.shape), name, aPyPath)
+
+      # f for read pd.HDFStore is with closed
+      if verbose: logger.info(msg)
+
+
+    except Exception as e:
+      msg = "DataP4ADict problem in load HDF5 file %s: %s" % (nameFile, e)
+      msg = DBG.format_color_exception(msg)
+      if verbose: logger.error(msg)
+      return None
+
+    return None
+
+  def dumpStrPy(self):
+    strJson = self.dumpStrJson()
     strPy = json.loads(strJson)
     # return str(strPy) # one line initial ordered
     return PP.pformat(strPy) # indented line but sorted
@@ -746,21 +1175,25 @@ class DataP4ALeaf(_DataP4ABase):
     res = (self._value != val)
     return res
 
-  # TODO other arithmetic __add__ etc ?
-  # dir(float) ??? Oops Ho Noooooo.... NOT KISS
-  # '__abs__', '__add__', '__bool__', '__class__', '__delattr__',
-  # '__dir__', '__divmod__', '__doc__', '__eq__', '__float__',
-  # '__floordiv__', '__format__', '__ge__', '__getattribute__',
-  # '__getformat__', '__getnewargs__', '__gt__', '__hash__',
-  # '__init__', '__init_subclass__', '__int__',
-  # '__le__', '__lt__', '__mod__', '__mul__', '__ne__', '__neg__',
-  # '__new__', '__pos__', '__pow__', '__radd__', '__rdivmod__',
-  # '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__',
-  # '__rmod__', '__rmul__', '__round__', '__rpow__', '__rsub__',
-  # '__rtruediv__', '__set_format__', '__setattr__', '__sizeof__',
-  # '__str__', '__sub__', '__subclasshook__', '__truediv__',
-  # '__trunc__', 'as_integer_ratio', 'conjugate', 'fromhex',
-  # 'hex', 'imag', 'is_integer', 'real'
+  '''
+  TODO other arithmetic __add__ etc ???
+  example from dir(float) ??? Noooooo !!! ... NOT KISS
+   
+     '__abs__', '__add__', '__bool__', '__class__', '__delattr__',
+     '__dir__', '__divmod__', '__doc__', '__eq__', '__float__',
+     '__floordiv__', '__format__', '__ge__', '__getattribute__',
+     '__getformat__', '__getnewargs__', '__gt__', '__hash__',
+     '__init__', '__init_subclass__', '__int__',
+     '__le__', '__lt__', '__mod__', '__mul__', '__ne__', '__neg__',
+     '__new__', '__pos__', '__pow__', '__radd__', '__rdivmod__',
+     '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__',
+     '__rmod__', '__rmul__', '__round__', '__rpow__', '__rsub__',
+     '__rtruediv__', '__set_format__', '__setattr__', '__sizeof__',
+     '__str__', '__sub__', '__subclasshook__', '__truediv__',
+     '__trunc__', 'as_integer_ratio', 'conjugate', 'fromhex',
+     'hex', 'imag', 'is_integer', 'real'
+     
+  '''
 
 
 ########################################################################

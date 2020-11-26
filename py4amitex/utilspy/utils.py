@@ -42,6 +42,16 @@ import py4amitex.debugpy.debug as DBG # Easy print stderr (for DEBUG only)
 
 
 ##############################################################################
+# general utilities
+##############################################################################
+def getUser():
+  """win or linux"""
+  res = os.environ["USERNAME"]
+  if res is None:
+    res = os.environ["USER"]
+  return res
+
+##############################################################################
 # file system utilities
 ##############################################################################
 def ensure_path_exists(path):

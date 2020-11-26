@@ -15,7 +15,7 @@ import py4amitex.amitexpy.DataP4A as DP4A
 import py4amitex.amitexpy.parserP4A as PP4A
 
 verbose = False # False as production, set True if debug unittest
-verbose1 = False # False as production, set True if debug unittest
+verbosed = True # False as production, set True if debug unittest
 
 
 class TestCase(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestCase(unittest.TestCase):
 
   def test_000(self):
     # one shot setUp() for this TestCase
-    # DBG.write("assert unittest", [a for a in dir(self) if "assert" in a], verbose1)
+    # DBG.write("assert unittest", [a for a in dir(self) if "assert" in a], verbosed)
     pass
 
   def test_010(self):
@@ -62,7 +62,7 @@ class TestCase(unittest.TestCase):
 
     # cast from result parser AP.Namespace
     optData = DP4A.DataP4A(options)
-    DBG.write("options", optData.dumpJson(), verbose)
+    DBG.write("options", optData.dumpStrJson(), verbose)
 
     options.verbose = "ooops" # no control any more
     self.assertEqual(options.verbose, "ooops")
@@ -70,7 +70,7 @@ class TestCase(unittest.TestCase):
 
     optData.verbose = "OOOOOPS" # no control any more
     self.assertEqual(optData.verbose, "OOOOOPS")
-    dump = optData.dumpJson()
+    dump = optData.dumpStrJson()
     DBG.write("dump", dump, verbose)
     expected = '''
   {
@@ -96,7 +96,7 @@ class TestCase(unittest.TestCase):
 
     # cast from result parser AP.Namespace
     optData = DP4A.DataP4A(options)
-    dump = optData.dumpJson()
+    dump = optData.dumpStrJson()
     DBG.write("options with oops", dump, verbose)
     expected = '''
     {
@@ -124,7 +124,7 @@ class TestCase(unittest.TestCase):
 
     # cast from result parser AP.Namespace
     optData = DP4A.DataP4A(options)
-    dump = optData.dumpJson()
+    dump = optData.dumpStrJson()
     DBG.write("options with oops", dump, verbose)
     expected = '''
   {
@@ -136,10 +136,10 @@ class TestCase(unittest.TestCase):
     "oops": []
   }
     '''
-    self.assertTrue(' 0.0,' in dump)
+    self.assertTrue("ndarray(30,)" in dump)
     # logger.setLevel(oldlevel)
     logger.setHandlersLevel(oldlevel)
-    DBG.write("logger level", logger.getEffectiveLevel(), verbose1)
+    DBG.write("logger level", logger.getEffectiveLevel(), verbose)
 
   def test_050(self):
     # example of schema test on AP.parser options
@@ -157,7 +157,7 @@ class TestCase(unittest.TestCase):
     aParser = PP4A.get_common_parser()
     options = aParser.parse_args([])
     optData = DP4A.DataP4A(options)
-    dump = optData.dumpJson()
+    dump = optData.dumpStrJson()
     DBG.write("options", dump, verbose)
     expected = '''{
   "cmd": "NONE",
@@ -181,6 +181,11 @@ class TestCase(unittest.TestCase):
       }
     }
     '''
+
+    import py4amitex.loggerpy.loggingSimple as LOG
+    logger = LOG.getDefaultLogger()
+    oldlevel = logger.getEffectiveLevel()
+    logger.setLevel("CRITICAL")
     ok = optData.validate(_schema_1, verbose=True)
     self.assertFalse(ok)
 
@@ -192,6 +197,8 @@ class TestCase(unittest.TestCase):
     ok = optData.validate(_schema_1, verbose=True)
     self.assertFalse(ok)
 
+    logger.setLevel(oldlevel)
+
 
 def test_999(self):
     # one shot tearDown() for this TestCase
@@ -200,7 +207,6 @@ def test_999(self):
 
 if __name__ == '__main__':
   # verbose = True
-  # verbose1 = True
   unittest.main(exit=False)
   pass
 

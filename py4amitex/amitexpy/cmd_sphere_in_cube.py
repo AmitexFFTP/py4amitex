@@ -23,7 +23,7 @@ import os
 import sys
 import pprint as PP
 import numpy as np
-import vtk
+
 
 import py4amitex
 import py4amitex.debugpy.debug as DBG  # Easy print stderr (for DEBUG only)
@@ -36,6 +36,11 @@ logger = LOG.getDefaultLogger()
 
 __cmdname__ = getNameCmdFromFileName(__file__) # 'xxx' <- '.../cmd_xxx.py'
 
+try:
+  import vtk # avoid direct raise error (if not present as big prerequisite)
+except:
+  logger.critical("<critical>import vtk impossible, fix it.")
+  vtk = None
 
 def add_cmd_parser(parser):
   """

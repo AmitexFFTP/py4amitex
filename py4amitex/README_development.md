@@ -1,4 +1,22 @@
 
+### Why HDF5
+
+see https://www.hdfgroup.org/2018/06/hdf5-or-how-i-learned-to-love-data-compression-and-partial-i-o/
+
+book *Python and HDF5*
+
+HDF5 is just about perfect if you make minimal use
+of relational features and have a need for
+- very high performance,
+- partial I/O,
+- hierarchical organization,
+- and arbitrary metadata.
+
+
+### Create .pdf file from .md markdown files
+
+try with: https://www.markdowntopdf.com
+
 
 ### Install package py4amitex for developments
 
@@ -15,24 +33,30 @@ HTTP, HTTPS, and SSH, among others.
 
 
 ```
-# example for developers from USB
+# example for developers
 export DISTUTILS_DEBUG=yes   # only for developers pip log etc.
-export USB1=/run/media/${USER}/CVW32_1
-cd $USB1
+
+# example from USB
+export ROOTDIR=/run/media/${USER}/CVW32_1
+
+# example from ROOTDIR as directory where 'git clone ...maisondelasimulation' was done
+export ROOTDIR=/volatile2/${USER}
+
+cd ${ROOTDIR}
 
 # as precaution uninstall previous items
 rm pip.log                   # as appended logs
-find /volatile/${USER}/miniconda3/envs/py3 -name "py4amitex*" -exec rm -rf {} \;   # cea
-find /volatile/common/miniconda3/envs/py3 -name "py4amitex*" -exec rm -rf {} \;   # home
+# next lines are examples to adapt hardly clean previous pip install
+find /volatile/${USER}/miniconda3/envs/py3 -name "py4amitex*" -exec rm -rf {} \;   # example at cea
+find /volatile/common/miniconda3/envs/py3 -name "py4amitex*" -exec rm -rf {} \;    # example at home
 
 # choose one of these...
-pip install ${USB1}/py4amitex --log pip.log     # classical install copy files
-pip install -e ${USB1}/py4amitex --log pip.log  # development install, direct improvments in USB
+pip install ${ROOTDIR}/py4amitex --log pip.log     # classical install copy files
+pip install -e ${ROOTDIR}/py4amitex --log pip.log  # development install, direct improvments in USB
 
 # verification CLI entry_points installation
 which LaunchP4A
 LaunchP4A --help
-
 
 # verifications
 pluma pip.log
@@ -49,6 +73,60 @@ ls -alt ${PY3DIR}/lib/python3.7/site-packages | head -10
 ls -alt ${PY3DIR}/lib/python3.7/site-packages/py4amitex*
 ```
 
+#### Get PyQt5 version(s)
+
+```
+import inspect
+from PyQt5 import Qt
+
+vers = ['%s = %s' % (k,v) for k,v in vars(Qt).items() if k.lower().find('version') >= 0 and not inspect.isbuiltin(v)]
+print('\n'.join(sorted(vers)))
+  PYQT_VERSION = 329986
+  PYQT_VERSION_STR = 5.9.2
+  QOpenGLVersionProfile = <class 'PyQt5.QtGui.QOpenGLVersionProfile'>
+  QOperatingSystemVersion = <class 'PyQt5.QtCore.QOperatingSystemVersion'>
+  QT_VERSION = 329991
+  QT_VERSION_STR = 5.9.7
+```
+
+
+#### Launch unittest
+
+```
+py4amitex command launch test(s).
+Launch python unittest (short time) and/or integration tests (more long time)
+   
+   usage: LaunchP4A [-c cmdName] [-v logLevel] [-w dirName] [-h] [-d]
+                    [-p filePattern]
+   
+   command line interface for py4amitex --cmd test stuff
+   
+   optional arguments:
+     -c cmdName, --cmd cmdName
+                           set command to proceed: [bug|sphere_in_cube|tea|test]
+                           default=NONE
+     -v logLevel, --verbose logLevel
+                           set log level verbosity:
+                           [CRITICAL|ERROR|WARNING|INFO|DEBUG] default=INFO
+     -w dirName, --workdir dirName
+                           current working directory
+                           default=/volatile/home/christian/PY4AMITEX_WORKDIR
+     -h, --help            show this help message (and do no exit)
+     -d, --doc             show py4amitex documentation
+     -p filePattern, --pattern filePattern
+                           file pattern for unittest files
+                           ['test_*.py'|'*Test.py'...]
+           
+
+LaunchP4A --cmd test
+
+# one test, for example
+LaunchP4A --cmd test --pattern="test_4??_*py"
+
+# or directly with knowing path
+/volatile2/christian/py4amitex/py4amitex/hdf5py/test/test_400_h5py.py
+```
+
 
 ### Install package py4amitex, other pip installation from tar.gz
 
@@ -56,7 +134,7 @@ Firstly create tar.gz, then install.
 
 ```
 # create tar.gz
-cd $USB1/py4amitex
+cd ${ROOTDIR}/py4amitex
 rm -rf dist setup.log py4amitex.egg-info
 python setup.py sdist --dist-dir dist
 
@@ -83,11 +161,11 @@ recursive-include py4amitex *.js
 And verify after make html of course
 
 ```
-cd $USB1/py4amitex/doc
+cd ${ROOTDIR}/py4amitex/doc
 rm -rf ./py4amitex/doc/build
 make html
 
-cd $USB1/py4amitex
+cd ${ROOTDIR}/py4amitex
 rm -rf ./py4amitex/py4amitex/doc
 cp -r ./py4amitex/doc/build ./py4amitex/py4amitex/doc
 

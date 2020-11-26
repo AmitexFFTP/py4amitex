@@ -25,7 +25,7 @@ import unittest
 # import test.initializeTest # set PATH etc for test
 
 class TestCase(unittest.TestCase):
-  "Test the debug.py"""
+  "Test the debug.py"
   
   def test_000(self):
     # one shot setUp() for this TestCase

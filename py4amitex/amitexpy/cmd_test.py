@@ -79,8 +79,8 @@ def compute(iP4A):
   test_options = test_parser.parse_args(test_args)
 
   # directory = os.path.realpath(args.rootPath)
-  logger.debug("test_args:\n  %s" % PP.pformat(test_args))
-  logger.debug("test_options:\n  %s" % PP.pformat(test_options))
+  # logger.debug("test_args:\n%s" % PP.pformat(test_args))
+  logger.debug("test_options:\n%s" % PP.pformat(test_options))
 
   # sys.path.insert(0, directory) #supposed to be root of a package
   ALLTEST.runOnArgs(test_options)
