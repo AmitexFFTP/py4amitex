@@ -2,16 +2,16 @@
 
 ### Package py4amitex
 
-Python utilities for *amitex_fftp code*, is a `pip` package,  
-*Designed for python V3.7 as miniconda py3*
+Python utilities for *amitex_fftp code* is a `pip` package,  
+*Designed for python V3.7* as a miniconda python environment named **py3** above.
 
 
 ### Fristly Install python 3.7 and prerequisites for py4amitex
 
-For example, use *miniconda3*.
+You *should* use *miniconda3*, it is my standart choice.
 
-Create a user local python 3.7 valid for py4amitex,
-see https://conda.io/en/latest/miniconda.html
+Create a *user local python* 3.7 valid for py4amitex, as **NO root password required**
+- see https://conda.io/en/latest/miniconda.html
 
 
 ```
@@ -20,13 +20,11 @@ see https://conda.io/en/latest/miniconda.html
 bash .../Miniconda3-latest-Linux-x86_64.sh
 ...etc...
 
-y
-# create py3 local, with some usual prerequisites
-conda create --name py3 \
-      python=3.7 pip sphinx matplotlib numpy pandas pandas-datareader pyqt=5 jsonschema pyyaml libxml2 h5py vtk
-
-conda create  -c conda-forge --name py3b \
+# create python environment named 'py3', with some usual prerequisites
+# you could add ipython, jupyter... if useful !
+conda create  -c conda-forge --name py3 \
       python=3.7 pip sphinx matplotlib numpy pandas pandas-datareader pyqt=5 jsonschema pyyaml libxml2 h5py vtk vitables=3.0.2
+
 
 # verify it is ok
 conda activate py3
@@ -34,7 +32,7 @@ which python
 which pip
 ```
 
-may be
+May be (if it is an old miniconda install) you could have warning 
 
 ```
 WARNING: A newer version of conda exists. <==
@@ -46,20 +44,24 @@ Please update conda by running
     $ conda update -n base -c defaults conda
 ```
 
+### Secondly install other prerequisites for py4amitex
 
-If you really need paraview, install *optionally* paraview.
-See https://anaconda.org/conda-forge/paraview. 
-Or use sytem-installed (as root) paraview.
+If you *really need paraview*, install *optionally* paraview in conda create.
+
+- See https://anaconda.org/conda-forge/paraview. 
+
+- Or use sytem-installed (as root) paraview.
 
 ```
 which paraview
   /usr/bin/paraview
 ```
 
-If you really need vitables, install *optionally* vitables.
-See https://pypi.org/project/ViTables for comprehension.
+If you *really need vitables*, install *optionally* vitables.
 
-WARNING: sometimes install one package with pip, the other with conda, is risky.
+- See https://pypi.org/project/ViTables for comprehension.
+
+WARNING: sometimes install one package with pip, the other with conda, is **risky**, see above.
 
 ```
 conda install -c conda-forge vitables  # version 3.0.0
@@ -98,9 +100,11 @@ pip3 install pandas -U
 ```
 
 
-### Install package py4amitex simple usage
+### Finally install package py4amitex simple usage
  
 Get folder py4amitex from maisondelasimulation, and use **pip**.
+
+- *Development* **OR** *production* `pip` installation see file README_development.md
 
  
 ```
@@ -108,6 +112,11 @@ cd YourChoiceDirectory
 git clone https://gitlab.maisondelasimulation.fr/GELEBART_LIONEL/py4amitex.git
 # install from local folder 
 conda activate py3
+
+# production installation (copy ./py4amitex directory)
 pip install ./py4amitex
+
+# development installation (link ./py4amitex directory)
+pip install -e ./py4amitex
 ```
 

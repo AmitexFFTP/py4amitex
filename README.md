@@ -2,14 +2,17 @@
 
 ### Package py4amitex
 
-Python utilities for *amitex_fftp code*, is a `pip` package,
+- Python utilities for *amitex_fftp code*, is a `pip` package,
 Designed for python V3.
 
-To get *amitex_fftp code*, see https://gitlab.maisondelasimulation.fr/jderouil/amitex_fftp
+- To get *amitex_fftp code*, 
+see https://gitlab.maisondelasimulation.fr/jderouil/amitex_fftp
 
-To get *py4amitex package*, see https://gitlab.maisondelasimulation.fr/GELEBART_LIONEL/py4amitex
+- To get *py4amitex package*, 
+see https://gitlab.maisondelasimulation.fr/GELEBART_LIONEL/py4amitex
 
-To get *python 3 environment* correct context see file py4amitex/py4amitex/README.md
+- To get *python 3 environment* correct context and prerequisite packages 
+see file py4amitex/py4amitex/README.md
 
 
 ```

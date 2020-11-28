@@ -60,7 +60,7 @@ def compute(iP4A):
 
   # this command real stuff
 
-  # use AllTestLauncher parser API entry
+  # use AllTestLauncher another parser API entry
   import unittestpy.AllTestLauncher as ALLTEST
 
   test_args = []

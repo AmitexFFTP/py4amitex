@@ -117,8 +117,8 @@ DATA_IN = {
 }
 """
     a = DP4A.DataP4A()
-    # as a.loadStrPY(aStr, verbose)
-    self.assertRaises(Exception, a.loadStrPY, aStr, verbose)
+    # as a.loadStrPy(aStr, verbose)
+    self.assertRaises(Exception, a.loadStrPy, aStr, verbose)
 
   def test_012(self):
     DBG.write("test_012", "", verbose)
@@ -173,13 +173,13 @@ DATA_IN = {
     logger.setLevel(oldlevel)
 
 
-  ### loadStrPY use python syntax for data, no limits!
+  ### loadStrPy use python syntax for data, no limits!
   ### avoid if then else please: it is DATA, not program
   def test_022(self):
     DBG.write("test_022", "", verbose)
     DBG.write("_dataPy_1", _dataPy_1, verbose)
     a = DP4A.DataP4A()
-    a.loadStrPY(_dataPy_1)
+    a.loadStrPy(_dataPy_1)
     aStr = PP.pformat(a)
     DBG.write("a", aStr, verbose)
     self.assertTrue("'nothing'" in aStr)
@@ -193,7 +193,7 @@ DATA_IN = {
     DBG.write("test_024", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_1", _dataPy_1, verbose)
-    a.loadStrPY(_dataPy_1)
+    a.loadStrPy(_dataPy_1)
     aStr = a.dumpStrJson()
     DBG.write("a.dumpStrJson()", aStr, verbose)
     self.assertTrue('"pi": 3.14159' in aStr)
@@ -207,7 +207,7 @@ DATA_IN = {
     DBG.write("test_026", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_2", _dataPy_2, verbose)
-    a.loadStrPY(_dataPy_2)
+    a.loadStrPy(_dataPy_2)
     aStr = a.dumpStrJson()
     DBG.write("a.__repr__()", a.__repr__(), verbose)
     DBG.write("a.dumpStrJson()", aStr, verbose)
@@ -235,7 +235,7 @@ DATA_IN = {
     DBG.write("test_222", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_1", _dataPy_1, verbose)
-    a.loadStrPY(_dataPy_1)
+    a.loadStrPy(_dataPy_1)
     DBG.write("a", a, verbose)
     self.assertEqual(math.pi, a.pi)
     self.assertEqual(2, a.nb_heroes)
@@ -249,7 +249,7 @@ DATA_IN = {
     DBG.write("test_510", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_1", _dataPy_1, verbose)
-    a.loadStrPY(_dataPy_1)
+    a.loadStrPy(_dataPy_1)
     DBG.write("a", a, verbose)
     self.assertEqual('root.heroes[0]', a.heroes[0].getPythonPath(root='root'))
     self.assertEqual('root.heroes[1]', a.heroes[1].getPythonPath(root='root'))
@@ -258,7 +258,7 @@ DATA_IN = {
     DBG.write("test_520", "", verbose)
     a = DP4A.DataP4A()
     DBG.write("_dataPy_3", _dataPy_3, verbose)
-    a.loadStrPY(_dataPy_3)
+    a.loadStrPy(_dataPy_3)
     DBG.write("a", a, verbose)
     DBG.write("a.dumpStrJson()", a.dumpStrJson(), verbose)
     DBG.write("a PP.pformat", PP.pformat(a), verbose)
@@ -272,13 +272,13 @@ DATA_IN = {
 
   # manipulate DataP4A in python script
   # what we could do... may be it is 'too much' for python newbies
-  # may be only use loadStrPY or loadStrJson and validate
+  # may be only use loadStrPy or loadStrJson and validate
   def test_610(self):
     DBG.write("test_610", "", verbose)
     a = DP4A.DataP4A()
-    a.loadStrPY(_dataPy_1)
+    a.loadStrPy(_dataPy_1)
 
-    # create from scratch, not loadStrPY or loadStrJson
+    # create from scratch, not loadStrPy or loadStrJson
     b = DP4A.DataP4A()
     b["FirstItem"] = DP4A.DataP4A({"Firstvalue": 11})
     b["SecondItem"] = DP4A.DataP4A({"Secondvalue": 22})
@@ -289,7 +289,7 @@ DATA_IN = {
     self.assertEqual('root.FirstItem', b.FirstItem.getPythonPath(root='root'))
     self.assertEqual('root.SecondItem', b.SecondItem.getPythonPath(root='root'))
 
-    # create from scratch, not loadStrPY or loadStrJson (id as previous)
+    # create from scratch, not loadStrPy or loadStrJson (id as previous)
     b = DP4A.DataP4A()
     b.FirstItem = {"Firstvalue": 11}
     b.SecondItem = {"Secondvalue": 22}
@@ -315,7 +315,7 @@ DATA_IN = {
   def test_620(self):
     DBG.write("test_620", "", verbose)
 
-    # create from scratch, not loadStrPY or loadStrJson
+    # create from scratch, not loadStrPy or loadStrJson
     b = DP4A.DataP4A()
     b["FirstItem"] = 11
     b.SecondItem = 22.
@@ -352,7 +352,7 @@ DATA_IN = {
 
     DBG.write("test_630", "", verbose)
 
-    # create from scratch, not loadStrPY or loadStrJson
+    # create from scratch, not loadStrPy or loadStrJson
     b = DP4A.DataP4A()
 
     import py4amitex.loggerpy.loggingSimple as LOG

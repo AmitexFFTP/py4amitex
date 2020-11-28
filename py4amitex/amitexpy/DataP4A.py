@@ -569,12 +569,12 @@ class DataP4ADict(dict, _DataP4ABase):
     res = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     return res
 
-  def loadStrPY(self, data_exec, verbose=False):
+  def loadStrPy(self, data_exec, verbose=False):
     """
     exec code object as compiled python string code
     data input as result as 'DATA_IN' dictionary.
 
-    loadStrPY use python code syntax for input data, no limits!
+    loadStrPy use python code syntax for input data, no limits!
     avoid if then else etc. please, it is DATA, NOT program.
     """
     aDict = {}
@@ -588,7 +588,7 @@ class DataP4ADict(dict, _DataP4ABase):
       if verbose: logger.critical(msg)
       raise Exception(e) # stoop
     if 'DATA_IN' in aDict:
-      DBG.write("DataP4ADict.loadStrPY", aDict['DATA_IN'], verbose)
+      DBG.write("DataP4ADict.loadStrPy", aDict['DATA_IN'], verbose)
       self._initFromDict(aDict['DATA_IN'])
     else:
       raise Exception("DataP4ADict unknown 'DATA_IN' variable in result namespace of:\n%s" % data_exec)
@@ -624,9 +624,9 @@ class DataP4ADict(dict, _DataP4ABase):
     with open(name_data_json, "r") as f:
       return self.loadStrJson(f.read())
 
-  def loadFilePY(self, name_data_py, verbose=True):
+  def loadFilePy(self, name_data_py, verbose=True):
     with open(name_data_py, "r") as f:
-      return self.loadStrPY(f.read())
+      return self.loadStrPy(f.read())
 
 
   def loadStrJson(self, data_json, verbose=True):

@@ -12,15 +12,15 @@ DataP4A permet:
   indépendamment de l'OS et du matériel (du big/little-endian),
   fichiers compressées ou non.
 - de gérer/modifier des données utilisateur.
-- de utiliser/modifier des données internes au programme.
+- de utiliser/modifier des données internes (...au programme python).
 - de **vérifier** ces données (utilisation de JSON-SCHEMA).
 - d'afficher/imprimer directement **lisiblement** ces données (pour debug et production).
 
 
 Quels types de données:
 
-- simples 
-- plus complexes, avec une structure d'arbre,
+- simples (*booléen, entier, flottant, string, None*).
+- plus complexes, avec une structure d'arbre, (*list, dict*),
 - avec des tableaux, même de gros tableaux homogènes (numpy)
 - avec des tableaux, même de gros tableaux hétérogènes (pandas), 
   cela commence a ressembler à une base de données? oui, un debut.
@@ -28,9 +28,9 @@ Quels types de données:
 
 Quels formats de fichiers:
 
-- Tant qu'il n'y a pas de tableaux/array ,
+- Tant qu'il n'y a pas de (gros) tableaux/array,
   on *peut se contenter* du (simple) format fichier JSON (ascii)
-- Dès qu'il y a un tableaux/array, 
+- Dès qu'il y a un (gros) tableaux/array, 
   on utilise le format fichier HDF5 (binaire, compressé ou pas)
 
   
@@ -67,13 +67,13 @@ En effet la classe *hérite de* `dict`.
 ### Quelques choses en plus.
 
 
-Parce que dict est *insuffisant*.
+Parce que `dict` est *insuffisant*.
 
 
 #### DataP4A sait lire un fichier JSON. 
 
 
-Methode `loadFileJson()`
+Méthode `loadFileJson()`
 
 DataP4A accepte **tout** ce que le format JSON connait, *évidemment*:
 
@@ -98,7 +98,7 @@ print('-> mes_data =', mes_data)
 - La liste des clés du pseudo dictionnaire **est aussi** 
   la liste des noms des attributs de la classe. 
   
-  **Quelle écriture préférez-vous ?**
+  **Quelle écriture préférez-vous ?**. Vous *pouvez les deux*.
 
 ```python
 
@@ -177,7 +177,7 @@ mes_data.heroes.append(une_femme)
 
 haddock = mes_data.heroes[1]
 haddock.name = "Karpock"  # modification
-hddock.age -= 5           # opérations arithmétiques
+haddock.age -= 5          # opérations arithmétiques
 
 my_print('mes_data =\n%s' % mes_data.dumpStrJson())
 
@@ -227,7 +227,7 @@ aDataFrame = pd.DataFrame({'AA': [11, 22, 33], 'BB': [44, 55., 66]})
 mes_data.some_arrays.array_two = aDataFrame
 
 # dumpStrJson() n'affiche pas le contenu des arrays.
-# Json n'est vraiment pas prevu pour cela
+# Json n'est vraiment pas prévu pour cela
 my_print('mes_data =\n%s' % mes_data.dumpStrJson())
 
 -> mes_data =
@@ -250,21 +250,21 @@ my_print('mes_data =\n%s' % mes_data.dumpStrJson())
   }
 }
 
-# dumpFileHdf5() cree un fichier hdf5, n'oublie pas les arrays, c'est LE PLUS.
+# ecriture/sauvegarde données dans fichier
+# dumpFileHdf5() cree un fichier hdf5, ET n'oublie pas les arrays, c'est LE PLUS.
 mes_data.dumpFileHdf5("data_2_modified.hdf5")
 
-# loadFileHdf5() relit un fichier hdf5, n'oublie pas les arrays, oeuf corse.
-mes_data_modified = DP4A.DataP4A()
-
+# relecture/restauration données dans fichier
+# loadFileHdf5() relit un fichier hdf5, ET n'oublie pas les arrays, oeuf corse.
 # verbose=True sort (optionnellement) un log-resumé du contenu du fichier.
+mes_data_modified = DP4A.DataP4A()
 mes_data.loadFileHdf5("data_2_modified.hdf5", verbose=True)
 ```
 
+Le log-resumé loadFileHdf5 verbose, *il y a des méta-informations*:
 
 ```text
-
-Le log-resumé:
-->
+-> 
 
 [INFO    ] meta_informations/info_hdf5_file:
            {
@@ -342,14 +342,16 @@ ls -alt data_2_modified*hdf5
 #### DataP4A sait vérifier/valider l'arbre.
 
 
-Utilisation de JSON-SCHEMA.
+Utilisation de JSON-SCHEMA, *quand vous le désirez*.
 
 Methode `json_validate()`
 
-Notez que le schéma dans l'exemple *pourrait* décrire *beaucoup* plus de contraintes, 
-sur la structure de l'arbre, 
-et/ou sur le type de ses feuilles, 
-et/ou les intervalles de validité de ses feuilles (scalaires).
+Notez que le schéma dans l'exemple *pourrait* exprimer *beaucoup* plus 
+de contraintes
+
+- sur la structure de l'arbre, 
+- et/ou sur le type de ses feuilles, 
+- et/ou les intervalles de validité de ses feuilles (scalaires).
 
 Voir https://json-schema.org/learn/getting-started-step-by-step.html
 
@@ -376,7 +378,8 @@ data_to_test.loadFileJson("data_2.json")
 data_to_test.json_validate(schema_validation)
 
 schema_validation = json.loads(schema_2)
-# vous pouvez attraper l'exception levée ici par 'try...except', évidemment.
+# ici une Exception est levée
+# vous pouriez attraper cette exception par 'try...except', évidemment.
 data_to_test.json_validate(schema_validation)
 
 ```
@@ -451,9 +454,9 @@ mes_data.loadFileJson("data_2.json")
 
 a_hero = mes_data.heroes[1]
 a_pythonpath = a.hero.getpythonpath()
-print("a_pythonpath = %s" % a_pythonpath)
+print("a_pythonpath = '%s'" % a_pythonpath)
 
--> a_pythonpath = .heroes[1]
+-> a_pythonpath = '.heroes[1]'
 ```
 
 
@@ -482,8 +485,8 @@ Methode `loadFilePY()` `dumpStrPy()`
 ```python
 fichier data_1.py:
 
-# almost everything python code allowed here, but 
-# you have to KISS, 
+# almost everything python code allowed here, 
+# BUT you have to KISS, 
 # target is DATA in python dict syntax, not really a program
 # these comments are allowed in python syntax, obviously!
 
@@ -507,7 +510,7 @@ DATA_IN = {
 
 ```python
 # file name could accept absolute file path...
-mes_data.loadFilePY("data_1.py")
+mes_data.loadFilePy("data_1.py")
 my_print("mes_data output json\n%s" % mes_data.dumpStrJson())
 ```
 
@@ -524,7 +527,7 @@ my_print("mes_data output json\n%s" % mes_data.dumpStrJson())
 ```
 
 ```python
-mes_data.loadFilePY(data_1.py)
+mes_data.loadFilePy(data_1.py)
 my_print("mes_data output python\n%s" % mes_data.dumpStrPy())
 ```
 

@@ -167,7 +167,7 @@ DATA_IN = {
 }
 '''
     mes_data = DP4A.DataP4A()
-    mes_data.loadStrPY(dataPy_1)
+    mes_data.loadStrPy(dataPy_1)
     my_print("mes_data output json\n%s" % mes_data.dumpStrJson())
     my_print("mes_data output python\n%s" % mes_data.dumpStrPy())
 

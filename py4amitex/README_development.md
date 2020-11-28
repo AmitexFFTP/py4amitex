@@ -15,24 +15,38 @@ of relational features and have a need for
 
 ### Create .pdf file from .md markdown files
 
-try with: https://www.markdowntopdf.com
+try with: https://www.markdowntopdf.com, not so bad.
 
 
 ### Install package py4amitex for developments
 
-For developers, as example **to adapt**.
+For developers, as example **to adapt**. Use *pip -e*
 
-The problem with using the -e flag for pip install 
+**It's great if you're a developer working on the source**.
+
+The problem with using the *-e* flag for pip install 
 is that this requires that the original source directory stay in place 
 for as long as you want to use the module. 
-It's great if you're a developer working on the source, 
-but if you're just trying to install a package, it's the wrong choice.
+
+But if you're just trying to install a package, it's the wrong choice.
 Alternatively, you don't even need to download the repo from Github at all. 
 pip supports installing directly from git repos using a variety of protocols including 
 HTTP, HTTPS, and SSH, among others. 
 
+- `pip install ./py4amitex`
+
+  production installation (**copy** ./py4amitex directory at ...lib/python3.7/site-packages)
+
+- `pip install -e ./py4amitex`
+
+  development installation (**link** ./py4amitex directory at ...lib/python3.7/site-packages)
+
+
 
 ```
+# activate the ad'hoc user python3 environment
+conda activate py3
+
 # example for developers
 export DISTUTILS_DEBUG=yes   # only for developers pip log etc.
 
@@ -52,8 +66,12 @@ find /volatile/common/miniconda3/envs/py3 -name "py4amitex*" -exec rm -rf {} \; 
 
 # choose one of these...
 pip install ${ROOTDIR}/py4amitex --log pip.log     # classical install copy files
-pip install -e ${ROOTDIR}/py4amitex --log pip.log  # development install, direct improvments in USB
+pip install -e ${ROOTDIR}/py4amitex --log pip.log  # development install, direct improvments
+```
 
+Installation verifications
+
+```
 # verification CLI entry_points installation
 which LaunchP4A
 LaunchP4A --help
@@ -92,30 +110,36 @@ print('\n'.join(sorted(vers)))
 
 #### Launch unittest
 
+`LaunchP4A --cmd test`
+
+
 ```
-py4amitex command launch test(s).
-Launch python unittest (short time) and/or integration tests (more long time)
-   
-   usage: LaunchP4A [-c cmdName] [-v logLevel] [-w dirName] [-h] [-d]
-                    [-p filePattern]
-   
-   command line interface for py4amitex --cmd test stuff
-   
-   optional arguments:
-     -c cmdName, --cmd cmdName
-                           set command to proceed: [bug|sphere_in_cube|tea|test]
-                           default=NONE
-     -v logLevel, --verbose logLevel
-                           set log level verbosity:
-                           [CRITICAL|ERROR|WARNING|INFO|DEBUG] default=INFO
-     -w dirName, --workdir dirName
-                           current working directory
-                           default=/volatile/home/christian/PY4AMITEX_WORKDIR
-     -h, --help            show this help message (and do no exit)
-     -d, --doc             show py4amitex documentation
-     -p filePattern, --pattern filePattern
-                           file pattern for unittest files
-                           ['test_*.py'|'*Test.py'...]
+LaunchP4A --cmd test --help
+
+
+  py4amitex command launch test(s).
+  Launch python unittest (short time) and/or integration tests (more long time)
+     
+     usage: LaunchP4A [-c cmdName] [-v logLevel] [-w dirName] [-h] [-d]
+                      [-p filePattern]
+     
+     command line interface for py4amitex --cmd test stuff
+     
+     optional arguments:
+       -c cmdName, --cmd cmdName
+                             set command to proceed: [bug|sphere_in_cube|tea|test]
+                             default=NONE
+       -v logLevel, --verbose logLevel
+                             set log level verbosity:
+                             [CRITICAL|ERROR|WARNING|INFO|DEBUG] default=INFO
+       -w dirName, --workdir dirName
+                             current working directory
+                             default=/volatile/home/christian/PY4AMITEX_WORKDIR
+       -h, --help            show this help message (and do no exit)
+       -d, --doc             show py4amitex documentation
+       -p filePattern, --pattern filePattern
+                             file pattern for unittest files
+                             ['test_*.py'|'*Test.py'...]
            
 
 LaunchP4A --cmd test

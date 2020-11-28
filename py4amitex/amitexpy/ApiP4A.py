@@ -233,10 +233,10 @@ class RunnerP4A(object):
     logger.debug("common arguments options:\n\n<data>%s<reset>\n" % getNamespaceStr(options))
 
     # if the help option has been called, print command help
-    if options.help :
-      self.print_help()
-      # and not continue if no --cmd
+    if options.help:
       if options.cmd == "NONE":
+        self.print_help()
+        # and not continue if no --cmd
         return ReturnCode("OK", "exit as arguments contains only '--help'")
 
     if self.args is None:
