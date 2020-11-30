@@ -20,7 +20,7 @@ in test_xxx_DataP4a.py which are The Only F. Reference For Use
 
 
 | Usage:
-| import py4amitex.amitexpy.DataP4A as DP4A
+| import py4amitex.dataP4Apy.DataP4A as DP4A
 """
 
 import os

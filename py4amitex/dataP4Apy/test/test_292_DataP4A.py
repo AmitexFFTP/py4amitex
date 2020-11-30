@@ -10,7 +10,7 @@ import math
 import numpy as np
 
 import py4amitex.debugpy.debug as DBG
-import py4amitex.amitexpy.DataP4A as DP4A
+import py4amitex.dataP4Apy.DataP4A as DP4A
 
 verbose = False # False as production, set True if debug unittest
 verbosed = True # use True if debug unittest

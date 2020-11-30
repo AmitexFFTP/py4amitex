@@ -11,7 +11,7 @@ import numpy as np
 import argparse as AP
 
 import py4amitex.debugpy.debug as DBG
-import py4amitex.amitexpy.DataP4A as DP4A
+import py4amitex.dataP4Apy.DataP4A as DP4A
 import py4amitex.amitexpy.parserP4A as PP4A
 
 verbose = False # False as production, set True if debug unittest

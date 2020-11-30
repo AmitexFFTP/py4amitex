@@ -30,7 +30,7 @@ import py4amitex.debugpy.debug as DBG  # Easy print stderr (for DEBUG only)
 import py4amitex.loggerpy.loggingSimple as LOG
 from py4amitex.returncodepy.returnCode import ReturnCode
 from py4amitex.amitexpy.parserP4A import getNameCmdFromFileName
-import py4amitex.amitexpy.DataP4A as DP4A
+import py4amitex.dataP4Apy.DataP4A as DP4A
 
 logger = LOG.getDefaultLogger()
 

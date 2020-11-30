@@ -43,7 +43,7 @@ import h5py
 import numpy as np
 import pandas as pd
 
-import py4amitex.amitexpy.DataP4A as DP4A
+import py4amitex.dataP4Apy.DataP4A as DP4A
 import py4amitex.debugpy.debug as DBG  # Easy print stderr (for DEBUG only)
 
 import py4amitex.loggerpy.loggingSimple as LOG

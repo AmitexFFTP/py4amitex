@@ -15,7 +15,7 @@ import json
 import numpy as np
 import pandas as pd
 
-import py4amitex.amitexpy.DataP4A as DP4A
+import py4amitex.dataP4Apy.DataP4A as DP4A
 
 verbose = False # False as production, set True if debug unittest
 verbosed = True # always True for unconditionals prints
