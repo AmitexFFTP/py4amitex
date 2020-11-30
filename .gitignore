@@ -12,6 +12,8 @@ py4amitex/doc
 py4amitex.egg-info
 dist
 
+data_2_modified*
+
 .coverage
 
 .eggs

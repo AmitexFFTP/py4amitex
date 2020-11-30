@@ -35,7 +35,8 @@ class TestCase(unittest.TestCase):
     self.assertEqual(options.doc, False)
     self.assertEqual(options.help, False)
     self.assertEqual(options.verbose, 'INFO')
-    self.assertTrue('PY4AMITEX_WORKDIR' in options.workdir)
+    self.assertEqual(type(options.workdir), str)
+    self.assertTrue(options.workdir is not "")
     self.assertEqual(AP.Namespace, options.__class__)
 
     options = aParser.parse_args(["-h", "-v=debug"])

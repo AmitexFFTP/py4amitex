@@ -162,8 +162,8 @@ print('-> mes_data =\n%s' % mes_data.dumpStrJson())
 #### DataP4A accepte les modifications.
 
 
-Les remplacement, ainsi que les opérations arithmétiques sur les scalaires.
-Dans un script python.
+Les remplacements, ainsi que les opérations arithmétiques sur les scalaires.
+Evidemment *aussi* dans *vos* codes python applicatifs.
 
   
 ```python
@@ -479,7 +479,7 @@ Il est montré dans cet exemple que *définir un arbre* se
 réduit à *définir un dictionnaire python*, nommé `DATA_IN`, 
 *dont les items sont du type acceptés par DataP4A*.
   
-Methode `loadFilePY()` `dumpStrPy()`
+Méthodes `loadFilePy()` `dumpStrPy()`
 
 
 ```python
@@ -551,13 +551,20 @@ my_print("mes_data output python\n%s" % mes_data.dumpStrPy())
 - Il existe *au moins* un viewer HDF5 (GUI Qt) `vitables`.
 - Il existe *au moins* un utilitaire HDF5 (asci) `h5dump`.
 
+- Vos données restent *lisiblement* visualisables a tout moment.
+  - Dans les fichiers JSON, python ou hdf5, *avant* et *après* vos traitements.
+  - En mémoire de l'interpréteur python, *pendant* vos traitements.
+  
+- Avec l'API fichier-hdf5, d'autres structurations de données (dans le fichier hdf5) 
+  sont possibles. L'implémentation proposée ici n'est pas une obligation.
+  
 
 #### Inconvénients
 
 
 - Les clés-dictionnaire/attributs-JSON/python utilisées sont **limitées** à 
   la syntaxe de nommage des attributs Python: 
-  pas d'espace, pas d'accentuation française, ou autre caractères spéciaux.
+  pas d'espace, pas d'accentuation française, ou autres caractères spéciaux.
    
 - DataP4A possède une API, il faut apprendre à l'utiliser proprement, 
   il y a *toujours* des pièges dans une API.
