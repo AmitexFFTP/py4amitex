@@ -24,39 +24,77 @@ class OutReader:
         """Ouput reader class constructor."""
         # get pathes for standard output files
         self.finite_strain = False
-        self.set_output_file(output_file)
+        self.set_output(output_file)
         
-    def set_output_file(self, output_file=None):
-        """Set name of output files to read and update finite strain flag.
+    def print_available_data(self):
+        """Print available data in output directory."""
+        print(f'AMITEX_FFTP outputs available in {self.std_file.parent}')
+        print('\n',end='')
+        # check and print std data
+        print("-- Standard output file : ")
+        if not(self.std_file is None):
+            print(f"\t\t{self.std_file.name}")
+        else:
+            print('\t\tNot found')
+        # check and print mstd data
+        print("\n-- Per material output file : ")
+        if not(self.mstd_file is None):
+            print(f"\t\t{self.mstd_file.name}  -- {self.mstd_nmat} materials")
+        else:
+            print('\t\tNot found')
+        # check and print zstd data
+        print("\n-- Per zone output files : ")
+        if len(self.zstd_files) > 0:
+            for matId in self.zstd_files:
+                print("\t\t", end='')
+                print(f"material {matId} : ", end='')
+                print(f"{self.zstd_files[matId]['path'].name} ", end='')
+                print(f" -- {self.zstd_files[matId]['nZones']} zones") 
+        else:
+            print('\t\tNot found')     
+        # check and print vtk data
+        print("\n-- Fields output -> vtk files : ", end='')
+        if not(self.vtk_files is None):
+            for incr in self.vtk_files:
+                print("\n\t *", end='')
+                print(f"Increment {incr} : ", end='')
+                for k,v in self.vtk_files[incr].items():
+                    if k in ['stress', 'strain', 'piola']:
+                        print(f"\n\t\t - {k} : ", end='')
+                        for c in v.keys():
+                            print(f" {c}", end='')
+                    if k == 'varInt':
+                        for matId in v.keys():
+                            print(f"\n\t\t - {k} material {matId} : ", end='')
+                            for c in v[matId].keys():
+                                print(f" {c}", end='')
+        else:
+            print('\t\tNot found')    
+        
+    def set_output(self, output_basename):
+        """Set names of output files from basename, update finite strain flag.
 
         Parameters
         ----------
-        output_file : str or PosixPath, optional
-            basename of the .std file of the output to read (with or without 
-            extension). The default is None.
+        output_basename : str, optional
+            basename of the output files to read (with or without extension).
 
         """
-        # update output flag 
-        if output_file == None:
-            self.std_file = None
-            self.mstd_file = None
-        else:
-            p = Path(output_file).absolute()
-            self.std_file = p.with_suffix('.std')
-            self.mstd_file = p.with_suffix('.mstd')
-            self._find_zstd_files()
+        self._reset_output_files()
+        # set standard output file
+        self._set_std(output_basename)
+        # set per material output file
+        self._set_mstd(output_basename)
+        # set per material output file
+        self._set_zstd(output_basename)
+        # set vtk output files fot fields
+        self.vtk_files = {}
+        self._set_vtk(self.std_file, 'stress')
+        self._set_vtk(self.std_file, 'piola')
+        self._set_vtk(self.std_file, 'strain')
+        self._set_vtk(self.std_file, 'varInt')
         # update finite strain flag
         self.update_finite_strain()
-        
-    def set_finite_strain(self, finite_strain):
-        """Set value of finite strain flag for the reader.
-        
-        Parameters
-        ----------
-        finite_strain : bool
-            True for finite strain reader, False for small strain reader.
-        """
-        self.finite_strain = finite_strain
             
     def update_finite_strain(self):
         """Set finite strain flag in accordance with set output file."""
@@ -224,6 +262,8 @@ class OutReader:
     @staticmethod    
     def read_std_data(file, varInt={}):
         """Read full content of a .m/z/std file for small strain outputs."""
+        # TODO : read first to count lines, read twice to load data 
+        # TODO : in case of empty file --> dedicated error message 
         # Get strain hypothesis : usefull is called as static method
         finite_strain = OutReader._get_finite_strain_hyp(file)
         # get proper structured array type including internal variables for 
@@ -265,33 +305,160 @@ class OutReader:
 #===========================================================================        
 # Private methods
 #=========================================================================== 
-    def _find_zstd_files(self):
+    @staticmethod
+    def _find_zstd_files(basename):
         import glob
-        p = self.std_file.parent / '*.zstd'
-        files = glob.glob(str(p))
-        self.zstd = []
-        print(files)
+        p1 = Path(basename).absolute()
+        pattern = p1.parent / f'{p1.stem}*.zstd'
+        files = glob.glob(str(pattern))
+        zstd_list = []
         for F in files:
-            self.zstd.append(Path(F).absolute())
-            
-    def _find_vtk_strain_files(self):
-        # Get all names of vtk files in the directory and associeted increments
-        pattern = re.compile(self.std_file.stem+'_def\d?_\d+.vtk')
-        incr_pattern = re.compile('\d+.vtk')
-        eps_files = []
-        eps_incr = []
-        for filepath in os.listdir(self.std_file.parent):
+            zstd_list.append(Path(F).absolute())
+        return zstd_list
+
+    @staticmethod            
+    def _find_vtk(std_file, field_type='stress'):
+        """Find all vtk files in output dir for given type of field.
+        
+        'type' can be 'stress', 'strain' or 'varInt'
+        """
+        # Create pattern to find requested vtk output files
+        if field_type == 'stress':
+            field = 'sig'
+            pat = std_file.stem + '_sig\d?_\d+.vtk'
+            comp_pattern = re.compile('sig\d')
+        elif field_type == 'piola':
+            field = 'pi'
+            pat = std_file.stem + '_pi\d?_\d+.vtk'
+            comp_pattern = re.compile('pi\d')
+        elif field_type == 'strain':
+            field = 'def'
+            pat = std_file.stem + '_def\d?_\d+.vtk'
+            comp_pattern = re.compile('def\d')
+        elif field_type == 'varInt':
+            field = 'varInt'
+            pat = std_file.stem + '_M\d_varInt\d+_\d+.vtk'
+            comp_pattern = re.compile('varInt\d')
+        pattern = re.compile(pat)
+        increment_pattern = re.compile('\d+.vtk')
+        material_pattern = re.compile('_M\d+')
+        files = {}
+        increments = []
+        components = []
+        for filepath in os.listdir(std_file.parent):
             if pattern.match(filepath):
-                fileP = self.std_file.parent / filepath
-                eps_files.append(str(fileP))
-                incr = int(incr_pattern.findall(filepath)[0].strip('.vtk'))
+                # create file dict
+                files[filepath] = {}
+                # add file 
+                fileP = std_file.parent / filepath
+                files[filepath]['path'] = fileP
+                # find time increment associated to vtk file 
+                tmp = increment_pattern.findall(filepath)
+                incr = int(tmp[0].strip('.vtk'))
                 if incr is None:
                     raise ValueError('At least one Amitex_fftp .vtk file in '
                                      'the directory has no increment number in'
                                      ' its name.')
-                eps_incr.append(incr)
-        eps_incr = np.unique(np.array(eps_incr))
-        return eps_files, eps_incr
+                # add increment to list of vtk output increments and to fict
+                increments.append(incr)
+                files[filepath]['increment'] = incr
+                # find compomenent associated to vtk file
+                tmp = comp_pattern.findall(filepath)
+                if len(tmp) == 0:
+                    # all components are within the same vtk file
+                    comp = 'all'
+                elif len(tmp) == 1:
+                    # Component is in a specific vtk file
+                    comp = int(tmp[0].strip(f'{field}')) 
+                files[filepath]['component'] = comp
+                components.append(comp)
+                # find associated material for varInt vtk outputs
+                tmp = material_pattern.findall(filepath)
+                if not len(tmp) == 0:
+                    mat = int(tmp[0].strip('_M'))
+                    files[filepath]['matId'] = mat
+                # add type of field
+                files[filepath]['type'] = field
+        increments = np.unique(np.array(increments))
+        components = np.unique(np.array(components))
+        return files, increments, components
+    
+    def _reset_output_files(self):
+        """Reset to None all class attributes containing output file pathes."""
+        # Standard output
+        self.std_file = None
+        # Per Material standard output
+        self.mstd_file = None
+        # Per zone standard output
+        self.zstd_files = None
+        
+    def _set_std(self, basename):
+        """Set standard output file for Reader."""
+        # check existence and sets path of standard output file
+        p = Path(basename).absolute().with_suffix('.std')
+        if not(p.exists()):
+            raise FileExistsError(f"File {p} not found")
+        self.std_file = p
+        
+    def _set_mstd(self, basename):
+        """Set per material output file for Reader.
+        
+        Also return number of materials in .mstd file output
+        """
+        # check existence and sets path of per material output file
+        p = Path(basename).absolute().with_suffix('.mstd')
+        if not(p.exists()):
+            print(f"-- WARNING : File {p} not found")
+            self.mstd_file = None
+            return
+        self.mstd_file = p
+        # count number of materials
+        self.mstd_nmat = self._get_std_n_regions(str(self.mstd_file))
+        
+    def _set_zstd(self, basename):
+        """Set per zone output file for Reader.
+        
+        Also return number of zones in .zstd file output
+        """
+        # get zstd files in output directory 
+        zstd_list = OutReader._find_zstd_files(basename)
+        # create a tree of zstd file info
+        self.zstd_files = {}
+        for file in zstd_list:
+            matID = int(file.stem.split('_')[-1])
+            nZones = self._get_std_n_regions(str(file))
+            self.zstd_files[matID] = {'path':file, 'nZones':nZones}
+            
+    def _set_vtk(self, basename, field_type):
+        """Set all vtk output files for Reader."""
+        # Search vtk files, time increments and components
+        files, incr, comp = OutReader._find_vtk(basename, field_type)
+        if len(files) > 0:
+            for f in files:
+                i = files[f]['increment']
+                # create dic for increment if needed
+                if i not in self.vtk_files:
+                    self.vtk_files[i] = {}
+                if field_type not in self.vtk_files[i]:
+                    self.vtk_files[i][field_type]= {}
+                # if stress or strain -> get tensor like component key
+                if field_type in ['stress','strain','piola']:
+                    if len(comp) == 6:
+                        for k, v in StdIndexing._sym_tensor_indexes.items():
+                            if v == (files[f]['component']-1):
+                                c = k
+                    elif len(comp) == 9:
+                        for k, v in StdIndexing._tensor_indexes.items():
+                            if v == (files[f]['component']-1):
+                                c = k
+                    self.vtk_files[i][field_type][c] = files[f]['path']
+                elif field_type == 'varInt':
+                    mat = f"M{files[f]['matId']}"
+                    if mat not in self.vtk_files[i]:
+                        self.vtk_files[i][field_type][mat] = {}
+                    c = files[f]['component']
+                    p = files[f]['path'] 
+                    self.vtk_files[i][field_type][mat][c] = p             
 
     @staticmethod
     def _get_finite_strain_hyp(std_file):
