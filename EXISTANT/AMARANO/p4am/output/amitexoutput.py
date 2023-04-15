@@ -28,7 +28,7 @@ class AmitexOutput:
     def __repr__(self):
         """Return string representation of output Data."""
         s = '\n'
-        s += "AMITEX Output data\n"
+        s += "\n AMITEX Output data\n"
         s += f"-- data files : {self.reader.std_file.with_suffix('')}\n"
         # print loaded mean values data
         s += self._std_data_info()
@@ -137,7 +137,9 @@ class AmitexOutput:
     def load_all_fields(self, variables='all'):
         """Load all available fields in output directory vtk files."""
         print('\n-- Loading all fields from vtk files...')
-        pass
+        self.load_stress_fields()
+        self.load_strain_fields()
+        self.load_varInt_fields()
 
     def load_stress_fields(self, components_list='all', increments_list=None,
                            output_slice=None):
@@ -312,6 +314,44 @@ class AmitexOutput:
         if len(d) == 0:
             s += '\t None'
             return s
-        # print unit cell mean values content
+        # print loaded stress fields info
+        if 'stress' in self.data['fields']:
+            incrlist = list(self.data['fields']['stress'])
+            s += "\n\t * stress fields loaded :"
+            for i in incrlist:
+                comp_list = list(self.data['fields']['stress'][i])
+                s += f"\n\t\t - increment {i} : components {comp_list}"
+        else:
+            s += '\n\t * no stress fields loaded'
+        # print loaded piola stress fields info
+        if 'piola' in self.data['fields']:
+            incrlist = list(self.data['fields']['piola'])
+            s += "\n\t * piola stress fields loaded :"
+            for i in incrlist:
+                comp_list = list(self.data['fields']['piola'][i])
+                s += f"\n\t\t - increment {i} : components {comp_list}"
+        else:
+            s += '\n\t * no piola stress fields loaded'
+        # print loaded strain fields info
+        if 'strain' in self.data['fields']:
+            incrlist = list(self.data['fields']['strain'])
+            s += "\n\t * strain fields loaded :"
+            for i in incrlist:
+                comp_list = list(self.data['fields']['strain'][i])
+                s += f"\n\t\t - increment {i} : components {comp_list}"
+        else:
+            s += '\n\t * no stress fields loaded'
+        # print loaded internal variable fields info
+        if 'varInt' in self.data['fields']:
+            matlist = list(self.data['fields']['varInt'])
+            for mId in matlist:
+                s += f"\n\t * varInt fields loaded for material {mId}:"
+                incrlist = list(self.data['fields']['varInt'][mId])
+                for i in incrlist:
+                    comp_list = list(self.data['fields']['varInt'][mId][i])
+                    s += (f"\n\t\t - increment {i} : internal variables"
+                          f" {comp_list}")
+        else:
+            s += '\n\t * no internal variable fields loaded'
         return s
 
