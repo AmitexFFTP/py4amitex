@@ -3,13 +3,15 @@
 """
 P4A Module to read AMITEX simulation results.
 
-@author: amarano
+    @author: amarano
 """
 
 ## External Imports
 import numpy as np
 import vtk
 from pathlib import Path
+
+
 import re
 import os
 
@@ -23,53 +25,15 @@ class OutReader:
     def __init__(self, output_file=None):
         """Ouput reader class constructor."""
         # get pathes for standard output files
-        self.finite_strain = False
         self.set_output(output_file)
 
     def print_available_data(self):
         """Print available AMITEX results in output directory."""
-        print(f'AMITEX_FFTP outputs available in {self.std_file.parent}'
-              f' with name {self.std_file.stem}')
-        # check and print std data
-        print("\n-- Standard output file : ")
-        if not(self.std_file is None):
-            print(f"\t\t{self.std_file.name}")
-        else:
-            print('\t\tNot found')
-        # check and print mstd data
-        print("\n-- Per material output file : ")
-        if not(self.mstd_file is None):
-            print(f"\t\t{self.mstd_file.name}  -- {self.mstd_nmat} materials")
-        else:
-            print('\t\tNot found')
-        # check and print zstd data
-        print("\n-- Per zone output files : ")
-        if len(self.zstd_files) > 0:
-            for matId in self.zstd_files:
-                print("\t\t", end='')
-                print(f"material {matId} : ", end='')
-                print(f"{self.zstd_files[matId]['path'].name} ", end='')
-                print(f" -- {self.zstd_files[matId]['nZones']} zones")
-        else:
-            print('\t\tNot found')
-        # check and print vtk data
-        print("\n-- Fields output -> vtk files : ", end='')
-        if not(self.vtk_files is None):
-            for incr in self.vtk_files:
-                print("\n\t *", end='')
-                print(f"Increment {incr} : ", end='')
-                for k,v in self.vtk_files[incr].items():
-                    if k in ['stress', 'strain', 'piola']:
-                        print(f"\n\t\t - {k} : ", end='')
-                        for c in v.keys():
-                            print(f" {c}", end='')
-                    if k == 'varInt':
-                        for matId in v.keys():
-                            print(f"\n\t\t - {k} material {matId} : ", end='')
-                            for c in v[matId].keys():
-                                print(f" {c}", end='')
-        else:
-            print('\t\tNot found')
+        print('\nAvailable AMITEX output data to load :')
+        self._print_av_std()
+        self._print_av_mstd()
+        self._print_av_zstd()
+        self._print_av_vtk()
 
     def set_output(self, output_basename):
         """Set names of output files from basename, update finite strain flag.
@@ -78,7 +42,6 @@ class OutReader:
         ----------
         output_basename : str, optional
             basename of the output files to read (with or without extension).
-
         """
         self._reset_output_files()
         # set standard output file
@@ -88,7 +51,6 @@ class OutReader:
         # set per material output file
         self._set_zstd(output_basename)
         # set vtk output files fot fields
-        self.vtk_files = {}
         self._set_vtk(self.std_file, 'stress')
         self._set_vtk(self.std_file, 'piola')
         self._set_vtk(self.std_file, 'strain')
@@ -118,11 +80,22 @@ class OutReader:
             numeric data for the requested variables (=columns) loaded from
             the .std file
         """
+        # check std file existence
+        if self.std_file is None:
+            msg = ("-- WARNING : no Std file passed to Amitex output reader."
+                   " Std data not loaded.")
+            print(msg)
+            return np.empty((0,))
+        if not self.std_file.exists():
+            msg = (f"-- WARNING : Std file '{self.std_file}' set in reader not"
+                   " found. Std data not loaded.")
+            print(msg)
+            return np.empty((0,))
         # read data
-        data = self.read_std_data(str(self.std_file))
+        data = self.read_std_data(str(self.std_file), variables=variables)
         # return only requested output
-        if not(variables == 'all'):
-            data = data[variables]
+        # if not(variables == 'all'):
+            # data = data[variables]
         return data
 
     def read_mstd(self, variables='all'):
@@ -142,23 +115,38 @@ class OutReader:
             numeric data for the requested variables (=columns) for each
             material, loaded from the .mstd file
         """
+        # check mstd file existence
+        if (self.mstd_file is None):
+            msg = (f"\t-- WARNING : Mstd file '{self.mstd_file}' do not exists."
+                   " Per material std data not loaded.")
+            print(msg)
+            return {}
+        if (not self.mstd_file.exists()):
+            msg = ("\t-- WARNING : no Std file passed to Amitex output reader."
+                   " found. Per material std data not loaded.")
+            print(msg)
+            return {}
         # read data
-        data = self.read_std_data(str(self.mstd_file))
+        data = self.read_std_data(str(self.mstd_file), variables=variables,
+                                  std_flag=False)
         # return only requested output
-        if not(variables == 'all'):
-            data = data[variables]
+        # if not(variables == 'all'):
+        #     data = data[variables]
         # create a dict to provide results stored per material
         nmat = self._get_std_n_regions(str(self.mstd_file))
         mat_data = dict.fromkeys([matId+1 for matId in range(nmat)])
         for i in range(nmat):
-            mat_data[i] = data[(0+i):len(data):nmat]
+            mat_data[i+1] = data[(0+i):len(data):nmat]
         return mat_data
 
-    def read_zstd(self, zstd_file, variables='all'):
+    def read_zstd(self, zstd_matId, variables='all'):
         """Read one zstd file content and returns it as numpy structured array.
 
         Parameters
         ----------
+        zstd_matId : int
+            Material Id of the zstd file to read.
+
         variables : lst(str), optional
             List of variables to load from .std file.
             Example : ['time','sigma','epsilon', 'varInt_1']
@@ -167,26 +155,36 @@ class OutReader:
         Returns
         -------
         zone_data : dict(numpy structured array)
-            dictionary with one key per materialId. The values are the
+            dictionary with one key per zoneID. The values are the
             numeric data for the requested variables (=columns) for each
             zone, loaded from the .zstd file
         """
-        if isinstance(zstd_file, Path):
-            zstd = str(zstd_file)
-        else:
-            zstd = zstd_file
+        # check if matId is correct
+        if zstd_matId not in self.zstd_files:
+            msg = (f"-- WARNING : No .zstd file for material {zstd_matId} in"
+                   " the reader zstd file list.")
+            print(msg)
+            return {}
+        # check zstd file existence
+        if not self.zstd_files[zstd_matId]['path'].exists():
+            msg = (f"-- WARNING : Std file '{self.zstd_files[zstd_matId]}' set"
+                   " in reader notfound. Per zonestd data not loaded.")
+            print(msg)
+            return {}
+        # get zstd file path
+        zstd = str(self.zstd_files[zstd_matId]['path'])
         # get dict of varInt column indices in output
         varInt = self._get_std_varInt_indices(zstd)
         # read data
-        data = self.read_std_data(zstd, varInt)
+        data = self.read_std_data(zstd, varInt, variables, std_flag=False)
         # return only requested output
-        if not(variables == 'all'):
-            data = data[variables]
+        # if not(variables == 'all'):
+        #     data = data[variables]
         # create a dict to provide results stored per material
-        nzones = self._get_std_n_regions(zstd_file)
+        nzones = self._get_std_n_regions(zstd)
         zone_data = dict.fromkeys([i+1 for i in range(nzones)])
         for i in range(nzones):
-            zone_data[i] = data[(0+i):len(data):nzones]
+            zone_data[i+1] = data[(0+i):len(data):nzones]
         return zone_data
 
     def read_vtk_fields(self, field_type=None, components_list='all',
@@ -220,118 +218,33 @@ class OutReader:
             or strain field contain a (Nx, Ny, Nz, 6 or 9) array. Items with
             internal variable fields or a subset of stress/strain components
             contain a dict of (Nx,Ny,Nz) arrays, with component names as keys.
-
         """
         # get list of time increments to load
-        vtk_incr = list(self.vtk_files.keys()) # available time increments
-        if increments_list is not None:
-            # find requested time increments in available data
-            if not all([v in vtk_incr for v in increments_list]):
-                wrong_I = [v for v in increments_list if v not in vtk_incr]
-                # warning for incorrect requested increments
-                # TODO : logger ?
-                msg = (f"The requested time increments {wrong_I} are not"
-                        " available in vtk files for the currently set output")
-                print(f"-- WARNING : {msg}")
-            I = [v for v in increments_list if v in vtk_incr]
-        else:
-            I = list(self.vtk_files.keys())
+        I = self._get_vtk_incr_to_read(increments_list)
+        # check if field_type is available
+        if field_type not in self.vtk_files[I[0]]:
+            msg = (f"'{field_type}' not in available data. Available vtk fields"
+                   f" are {list(self.vtk_files[I[0]].keys())}")
+            raise ValueError(msg)
         # get material Id if loading varint
+        mId = None
         if field_type == 'varInt':
-            if matId is not None:
-                mId = f"M{matId}"
-            else:
-                # no required material, attempting to get varInt from first
-                # material in self.vtk_files[i]['varInt']
-                mId = list(self.vtk_files[I[0]]['varInt'].keys())[0]
-                msg = ("-- WARNING : Undefined Material Id. "
-                       f"Attempting to load varInt from material {mId}")
-                print(msg)
-            # Tests required material --> check if available.
-            if mId not in self.vtk_files[I[0]]['varInt']:
-                av_id = [s.strip('M') for s in
-                         list(self.vtk_files[I[0]]['varInt'].keys())]
-                msg = ("Impossible to load internal variable field from"
-                       " vtk file : Incorrect Material Id ({mId})).\t"
-                       f"Available matId are {av_id}")
-                raise ValueError(msg)
+            mId = self._get_vtk_matId(matId, I)
         # check for component list to read
-        if field_type in ['stress', 'strain', 'piola']:
-            if components_list != 'all':
-                ok_comp = StdIndexing._tensor_indexes
-                comp_list = [k for k,v in ok_comp.items()
-                             if (k in components_list or
-                                 v in components_list)]
-                comp_ignored = [k for k in components_list
-                                if not (k in ok_comp.keys() or
-                                        k in ok_comp.values())]
-            else:
-               comp_list = list(self.vtk_files[I[0]][field_type])
-        else:
-            d = self.vtk_files[I[0]]['varInt'][mId]
-            if components_list != 'all':
-                comp_list = [int(c) for c in components_list if c in d.keys()]
-                comp_ignored = [int(c) for c in components_list if
-                                c not in d.keys()]
-            else:
-                comp_list = list(d.keys())
-        # check for request of non available components
-        if len(comp_ignored) > 0:
-            if len(comp_list) == 0:
-                c_read = 'nothing'
-            else:
-                c_read = str(comp_list)
-            msg = (f"-- WARNING : components {comp_ignored}"
-                   f" not available --> reading {c_read}")
-            print(msg)
+        comp_list = self._get_vtk_comp(field_type, components_list, I, mId)
         # init output_fields dict
         Output_fields = dict.fromkeys(I)
         # fill output time increment per time increment
         for i in Output_fields:
-            file_dict = self.vtk_files[i][field_type] # dict of file names
-            # stress/strain and varInt fields handled seperately
+            Output_fields[i] = {}
             if field_type in ['stress', 'strain', 'piola']:
-                # stress/strain fields case
-                # get dimensions of data from vtk file or requested slice
-                if output_slice is not None:
-                    dim = np.array([output_slice[0,1] - output_slice[0,0],
-                                    output_slice[1,1] - output_slice[1,0],
-                                    output_slice[2,1] - output_slice[2,0]])
-                else:
-                    comp0 = list(file_dict.keys())[0]
-                    dim, _ = list(OutReader.read_vtk_dim(file_dict[comp0]))
-                # Get number of components to read
-                # TODO : handle case of all components in same file
-                if components_list != 'all':
-                    Output_fields[i] = {}
-                    for k in comp_list:
-                        v = file_dict[k]
-                        Output_fields[i][k] = OutReader.read_vtk_legacy(v,
-                                                                output_slice)
-                else:
-                    # init array to load results
-                    Output_fields[i] = np.zeros(shape=(*dim, len(comp_list)))
-                    for k, v in file_dict.items():
-                        id = StdIndexing._tensor_indexes[k]
-                        Output_fields[i][...,id] = OutReader.read_vtk_legacy(v,
-                                                                 output_slice)
+                file_dict = self.vtk_files[i][field_type]
             else:
-                # case of internal variables
-                # get dimensions of data from vtk file or requested slice
-                # TODO : factor in private method
-                if output_slice is not None:
-                    dim = np.array([output_slice[0,1] - output_slice[0,0],
-                                    output_slice[1,1] - output_slice[1,0],
-                                    output_slice[2,1] - output_slice[2,0]])
-                else:
-                    comp0 = list(file_dict[mId].keys())[0]
-                    dim,_ = list(OutReader.read_vtk_dim(file_dict[mId][comp0]))
-                # get varInt one by one
-                Output_fields[i] = {}
-                for k in comp_list:
-                    v = file_dict[mId][k]
-                    Output_fields[i][k] = OutReader.read_vtk_legacy(v,
-                                                            output_slice)
+                file_dict = self.vtk_files[i][field_type][mId]
+            for k in comp_list:
+                v = file_dict[k]
+                Output_fields[i][k] = OutReader.read_vtk_legacy(v,
+                                                        output_slice)
         return Output_fields
 
     @staticmethod
@@ -350,7 +263,6 @@ class OutReader:
         data : dict( 'field_name':np.double array)
             Return a dict. of the amitex_fftp output fields stored in the vtk.
             file, whose keys are the field names..
-
         """
         # local imports
         from vtk.util import numpy_support
@@ -402,46 +314,62 @@ class OutReader:
         return dimensions, spacing
 
     @staticmethod
-    def read_std_data(file, varInt={}):
-        """Read full content of a .m/z/std file for small strain outputs."""
-        # TODO : read first to count lines, read twice to load data
-        # TODO : in case of empty file --> dedicated error message
+    def read_std_data(file, varInt={}, variables='all', std_flag=True):
+        """Read requested content of a .m/z/std file.
+
+        Parameters
+        ----------
+        file : string
+            path of the std/mstd/zstd file to read
+
+        varInt : dict('varInt_X':varInt_index), optional
+            Dictionary providing name of internal variables to read (for .zstd)
+            and the associated columns index of the variable in the .zstd data.
+
+        variables : lst(str), optional
+            List of variables to load from .std file.
+            Example : ['time','sigma','epsilon', 'varInt_1']
+            The default is 'all' : all .std data is loaded.
+
+        std_flag : bool
+            Set to False if reading a zstd and mstd file --> flag used to
+            remove 'niter' from the list of data to read.
+
+        Returns
+        -------
+        data : numpy.array (structured array)
+            structured array with one field per output variable, and one row
+            per time increment in the .z/m/std file.
+        """
         # Get strain hypothesis : usefull is called as static method
         finite_strain = OutReader._get_finite_strain_hyp(file)
-        # get proper structured array type including internal variables for
-        # small strain
-        if finite_strain:
-            dtype_description = StdDataTypes.std_fs_dtype.descr
-        else:
-            dtype_description = StdDataTypes.std_hpp_dtype.descr
-        std_dtype = np.dtype(dtype_description)
-        for key in varInt:
-            dtype_description.append((key, np.double, (1,)))
-
-        # read txt content of .std or .mstd or .zstd file and fill data
-        std_lines = []
+        # get proper structured array type including internal variables
+        dt, std_dtype = OutReader._get_output_dtype(finite_strain, varInt,
+                                                    variables, std_flag)
+        # count number of data lines in output file a,
+        n_rows = OutReader._get_std_nlines(file)
+        if n_rows == 0:
+            msg = f"-- WARNING : no data in file {file}"
+            print(msg)
+            return
+        data = np.empty(shape=(n_rows,), dtype=dt)
         with open(file,'r') as f:
             l = f.readline()
+            idx = 0
             while l:
                 if not l.startswith('#'):
                     ldata = np.array(l.split()).astype(np.double)
-                    std_lines.append(ldata)
+                    # load std variables
+                    for name in std_dtype.names:
+                        indices = StdIndexing.get_std_indices(variable=name,
+                                                   finite_strain=finite_strain)
+                        data[idx][name] = ldata[indices]
+                    # load internal variables
+                    for var in varInt:
+                        index = [varInt[var]]
+                        data[idx][var] = ldata[index]
+                    idx += 1
                 l = f.readline()
-
-        std_lines = np.array(std_lines)
-        # fill standard data in structured array
-        dt = np.dtype(dtype_description)
-        n_rows = len(std_lines)
-        data = np.empty(shape=(n_rows,), dtype=dt)
-        # load std variables
-        for name in std_dtype.names:
-            indices = StdIndexing.get_std_indices(variable=name,
-                                                  finite_strain=finite_strain)
-            data[:][name] = std_lines[:,indices]
-        # load internal variables
-        for var in varInt:
-            index = [varInt[var]]
-            data[:][var] = std_lines[:,index]
         return data
 
 #===========================================================================
@@ -532,14 +460,21 @@ class OutReader:
         # Per Material standard output
         self.mstd_file = None
         # Per zone standard output
-        self.zstd_files = None
+        self.zstd_files = {}
+        # Vtk output
+        self.vtk_files = {}
+        # Finite strain hypothesis
+        self.finite_strain = False
 
     def _set_std(self, basename):
         """Set standard output file for Reader."""
         # check existence and sets path of standard output file
+        if basename is None:
+            return
         p = Path(basename).absolute().with_suffix('.std')
         if not(p.exists()):
-            raise FileExistsError(f"File {p} not found")
+            print(f"-- WARNING : File {p} not found")
+            self.std_file = None
         self.std_file = p
 
     def _set_mstd(self, basename):
@@ -547,6 +482,8 @@ class OutReader:
 
         Also return number of materials in .mstd file output
         """
+        if basename is None:
+            return
         # check existence and sets path of per material output file
         p = Path(basename).absolute().with_suffix('.mstd')
         if not(p.exists()):
@@ -562,10 +499,11 @@ class OutReader:
 
         Also return number of zones in .zstd file output
         """
+        if basename is None:
+            return
         # get zstd files in output directory
         zstd_list = OutReader._find_zstd_files(basename)
         # create a tree of zstd file info
-        self.zstd_files = {}
         for file in zstd_list:
             matID = int(file.stem.split('_')[-1])
             nZones = self._get_std_n_regions(str(file))
@@ -573,6 +511,8 @@ class OutReader:
 
     def _set_vtk(self, basename, field_type):
         """Set all vtk output files for Reader."""
+        if basename is None:
+            return
         # Search vtk files, time increments and components
         files, incr, comp = OutReader._find_vtk(basename, field_type)
         if len(files) > 0:
@@ -637,7 +577,7 @@ class OutReader:
 
     @staticmethod
     def _get_std_n_regions(std_file):
-        """Found out number of materials or zones in m/z/std files."""
+        """Find out number of materials or zones in m/z/std files."""
         with open(std_file,'r') as f:
             # skip header
             l = f.readline()
@@ -652,3 +592,180 @@ class OutReader:
                 l = f.readline()
                 time = np.array(l.split()).astype(np.double)[0]
         return Nregions
+
+    @staticmethod
+    def _get_std_nlines(std_file):
+        """Find out number of data lines in m/z/std files."""
+        with open(std_file,'r') as f:
+            l = f.readline()
+            Nlines = 0
+            while l:
+                if not l.startswith('#'):
+                    Nlines += 1
+                l = f.readline()
+        return Nlines
+
+    @staticmethod
+    def _get_output_dtype(finite_strain, varInt={}, variables='all',
+                          std_flag=True):
+        # get proper structured array type including internal variables
+        # check strain hypothesis and get appropriate dtype description
+        if finite_strain:
+            descr_tmp = StdDataTypes.std_fs_dtype.descr
+        else:
+            descr_tmp = StdDataTypes.std_hpp_dtype.descr
+        # if only some variables are required, keep only those in dtype descr
+        if variables != 'all':
+            # dtype description is a list of tuple --> create appropriate
+            # sublist of tuples
+            dtype_description = []
+            for tpl in descr_tmp:
+                if tpl[0] in variables:
+                    dtype_description.append(tpl)
+        else:
+            # all variables requested --> get complete description
+            dtype_description = descr_tmp
+        # remove 'niter' output for mstd and zstd file dtypes
+        if not(std_flag):
+            for i in range(len(dtype_description)):
+                if dtype_description[i][0] == 'niter':
+                    dtype_description.pop(i)
+        # create numpy dtype for standard output without internal variables
+        std_dtype = np.dtype(dtype_description)
+        # increment dtype description with internal variables to read
+        for key in varInt:
+            if (variables != 'all') and (key not in variables):
+                continue
+            else:
+                dtype_description.append((key, np.double, (1,)))
+        dt = np.dtype(dtype_description)
+
+        return dt, std_dtype
+
+    def _get_vtk_incr_to_read(self, increments_list):
+        """Get list of time increments to load."""
+        vtk_incr = list(self.vtk_files.keys()) # available time increments
+        if increments_list is not None:
+            # find requested time increments in available data
+            if not all([v in vtk_incr for v in increments_list]):
+                wrong_I = [v for v in increments_list
+                           if v not in vtk_incr]
+                # warning for incorrect requested increments
+                msg = (f"The requested time increments {wrong_I} are not"
+                        " available in vtk files for the currently set"
+                        " output")
+                print(f"-- WARNING : {msg}")
+            I = [v for v in increments_list if v in vtk_incr]
+        else:
+            I = list(self.vtk_files.keys())
+        return I
+
+    def _get_vtk_matId(self, matId, I):
+        """Return the Id of the material of the varInt field to load."""
+        if matId is not None:
+            mId = f"M{matId}"
+        else:
+            # no required material, attempting to get varInt from first
+            # material in self.vtk_files[i]['varInt']
+            mId = list(self.vtk_files[I[0]]['varInt'].keys())[0]
+            msg = ("-- WARNING : Undefined Material Id. "
+                   f"Attempting to load varInt from material {mId}")
+            print(msg)
+        # Tests required material --> check if available.
+        if mId not in self.vtk_files[I[0]]['varInt']:
+            av_id = [s.strip('M') for s in
+                     list(self.vtk_files[I[0]]['varInt'].keys())]
+            msg = ("Impossible to load internal variable field from"
+                   " vtk file : Incorrect Material Id ({mId})).\t"
+                   f"Available matId are {av_id}")
+            raise ValueError(msg)
+        return mId
+
+    def _get_vtk_comp(self, field_type, components_list, I, mId):
+        """Return list of components to read in vtk files."""
+        comp_ignored = []
+        if field_type in ['stress', 'strain', 'piola']:
+            if components_list != 'all':
+                # Check if
+                ok_comp = StdIndexing._tensor_indexes
+                comp_list = [k for k,v in ok_comp.items()
+                             if (k in components_list or
+                                 v in components_list)]
+                comp_ignored = [k for k in components_list
+                                if not (k in ok_comp.keys() or
+                                        k in ok_comp.values())]
+            else:
+                # ??? in case of all components in one file ?
+                comp_list = list(self.vtk_files[I[0]][field_type])
+        else:
+            if mId is None:
+                msg = ('The material Id must be specified when '
+                       'reading vtk internal variable fields')
+                raise ValueError(msg)
+            d = self.vtk_files[I[0]]['varInt'][mId]
+            if components_list != 'all':
+                comp_list = [int(c) for c in components_list
+                             if c in d.keys()]
+                comp_ignored = [int(c) for c in components_list if
+                                c not in d.keys()]
+            else:
+                comp_list = list(d.keys())
+        # check for request of non available components
+        if len(comp_ignored) > 0:
+            if len(comp_list) == 0:
+                c_read = 'nothing'
+            else:
+                c_read = str(comp_list)
+            msg = (f"-- WARNING : components {comp_ignored}"
+                   f" not available --> reading {c_read}")
+            print(msg)
+        return comp_list
+
+    def _print_av_std(self):
+        # check and print std data
+        print("\n-- Standard output file : ")
+        if not(self.std_file is None):
+            print(f"\t\t{self.std_file.name}")
+        else:
+            print('\t\tNot found --> use "set_output method" to set a valid'
+                  ' output basename')
+
+    def _print_av_mstd(self):
+        # check and print mstd data
+        print("\n-- Per material output file : ")
+        if not(self.mstd_file is None):
+            print(f"\t\t{self.mstd_file.name}  -- {self.mstd_nmat} materials")
+        else:
+            print('\t\tNot found ')
+
+    def _print_av_zstd(self):
+        # check and print zstd data
+        print("\n-- Per zone output files : ")
+        if len(self.zstd_files) > 0:
+            for matId in self.zstd_files:
+                print("\t\t", end='')
+                print(f"material {matId} : ", end='')
+                print(f"{self.zstd_files[matId]['path'].name} ", end='')
+                print(f" -- {self.zstd_files[matId]['nZones']} zones")
+        else:
+            print('\t\tNot found ')
+
+    def _print_av_vtk(self):
+        # check and print vtk data
+        print("\n-- Fields output -> vtk files : ", end='')
+        if not(len(self.vtk_files) == 0):
+            for incr in self.vtk_files:
+                print("\n\t *", end='')
+                print(f"Increment {incr} : ", end='')
+                for k,v in self.vtk_files[incr].items():
+                    if k in ['stress', 'strain', 'piola']:
+                        print(f"\n\t\t - {k} : ", end='')
+                        for c in v.keys():
+                            print(f" {c}", end='')
+                    if k == 'varInt':
+                        for matId in v.keys():
+                            print(f"\n\t\t - {k} material {matId} : ", end='')
+                            for c in v[matId].keys():
+                                print(f" {c}", end='')
+        else:
+            print('\n\t\tNot found')
