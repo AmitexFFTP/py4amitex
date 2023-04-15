@@ -46,6 +46,72 @@ class AmitexOutput:
         """
         self.reader.set_output(output_basename)
 
+
+
+    def get_field(self, field, component, increment, matId=None):
+        """Return a numpy array for the requested field/increment/component.
+
+        Parameters
+        ----------
+        field : string
+            Type of field to read among ['stress', 'strain', 'piola',
+            'varInt'].
+        component : Components can be indices or letters (like '0' or 'xx').
+        increment : int
+            time increment value of the requested field
+        matId : string
+            In case of requesting an internal variable field, iD of the
+            material associated to this varInt. The matId is written 'MX',
+            where 'X' is the material Id number. Example: 'M1' for material 1.
+
+        Returns
+        -------
+        a : Numpy array
+            (Nx, Ny, Nz) array of the requested field component.
+
+        """
+        # check if requested field in loaded data
+        if field not in self.data['fields']:
+            msg = (f"-- Field {field} not in loaded data.")
+            print(msg)
+            return
+        # Handle case of internal variables
+        if field == 'varInt':
+            # check if matId varint are loaded
+            if matId not in self.data['fields']['varInt']:
+                msg = (f"-- No loaded varInt fields for material {matId}.")
+                print(msg)
+                return
+            # check if requested increment is loaded
+            if increment not in self.data['fields']['varInt'][matId]:
+                msg = (f"-- No field loaded for increment {increment}, for the"
+                       f" requested internal variable of matertial {matId}.")
+                print(msg)
+                return
+            # Check if component is available
+            if component not in self.data['fields']['varInt'][matId][increment]:
+                msg = (f"-- Component {component} data not loaded for the"
+                       f" requested int variable at increment {increment}.")
+                print(msg)
+                return
+            a = self.data['fields']['varInt'][matId][increment][component]
+            return a
+        # case of stress or strain fields
+        # check if requested increment is loaded
+        if increment not in self.data['fields'][field]:
+            msg = (f"-- No data loaded for increment {increment}, for the"
+                   f" requested {field} field.")
+            print(msg)
+            return
+        # Check if component is available
+        if component not in self.data['fields'][field][increment]:
+            msg = (f"-- Component {component} data not loaded for the"
+                   f" requested {field} field at increment {increment}.")
+            print(msg)
+            return
+        a = self.data['fields'][field][increment][component]
+        return a
+
     def print_available_data(self):
         """Print available AMITEX results in output directory."""
         self.reader.print_available_data()
