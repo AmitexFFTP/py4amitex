@@ -8,7 +8,6 @@ Amitex output data.
 
 @author: amarano
 """
-
 from p4am.output.outreader import OutReader
 
 class AmitexOutput:
@@ -46,70 +45,96 @@ class AmitexOutput:
         """
         self.reader.set_output(output_basename)
 
-
-
-    def get_field(self, field, component, increment, matId=None):
-        """Return a numpy array for the requested field/increment/component.
+    def get_stress_field(self, component, increment):
+        """Return the requested stress field component.
 
         Parameters
         ----------
-        field : string
-            Type of field to read among ['stress', 'strain', 'piola',
-            'varInt'].
-        component : Components can be indices or letters (like '0' or 'xx').
-        increment : int
-            time increment value of the requested field
-        matId : string
-            In case of requesting an internal variable field, iD of the
-            material associated to this varInt. The matId is written 'MX',
-            where 'X' is the material Id number. Example: 'M1' for material 1.
+        component : str, requested stress component. ex: 'xx', 'yz'
+        increment : int, time increment associated to the requested field
 
         Returns
         -------
-        a : Numpy array
-            (Nx, Ny, Nz) array of the requested field component.
-
+        a : (Nx, Ny, Nz) numpy array --> stress field component
         """
-        # check if requested field in loaded data
-        if field not in self.data['fields']:
-            msg = (f"-- Field {field} not in loaded data.")
-            print(msg)
-            return
-        # Handle case of internal variables
-        if field == 'varInt':
-            # check if matId varint are loaded
-            if matId not in self.data['fields']['varInt']:
-                msg = (f"-- No loaded varInt fields for material {matId}.")
-                print(msg)
-                return
-            # check if requested increment is loaded
-            if increment not in self.data['fields']['varInt'][matId]:
-                msg = (f"-- No field loaded for increment {increment}, for the"
-                       f" requested internal variable of matertial {matId}.")
-                print(msg)
-                return
-            # Check if component is available
-            if component not in self.data['fields']['varInt'][matId][increment]:
-                msg = (f"-- Component {component} data not loaded for the"
-                       f" requested int variable at increment {increment}.")
-                print(msg)
-                return
-            a = self.data['fields']['varInt'][matId][increment][component]
-            return a
-        # case of stress or strain fields
-        # check if requested increment is loaded
-        if increment not in self.data['fields'][field]:
-            msg = (f"-- No data loaded for increment {increment}, for the"
-                   f" requested {field} field.")
-            print(msg)
-            return
-        # Check if component is available
-        if component not in self.data['fields'][field][increment]:
-            msg = (f"-- Component {component} data not loaded for the"
-                   f" requested {field} field at increment {increment}.")
-            print(msg)
-            return
-        a = self.data['fields'][field][increment][component]
+        return self._get_field('stress', component, increment)
+
+    def get_piola_stress_field(self, component, increment):
+        """Return the requested piola stress field component.
+
+        Parameters
+        ----------
+        component : str, requested piola stress component. ex: 'xx', 'yz'
+        increment : int, time increment associated to the requested field
+
+        Returns
+        -------
+        a : (Nx, Ny, Nz) numpy array --> piola stress field component
+        """
+        return self._get_field('piola', component, increment)
+
+    def get_strain_field(self, component, increment):
+        """Return the requested strain field component.
+
+        Parameters
+        ----------
+        component : str, requested strain component. ex: 'xx', 'yz'
+        increment : int, time increment associated to the requested field
+
+        Returns
+        -------
+        a : (Nx, Ny, Nz) numpy array --> strain field component
+        """
+        return self._get_field('strain', component, increment)
+
+    def get_varInt_field(self, varInt_idx, increment, matId):
+        """Return the requested internal variable field.
+
+        Parameters
+        ----------
+        varInt_idx : int, index of requested internal variable.
+        increment  : int, time increment associated to the requested field
+
+        Returns
+        -------
+        a : (Nx, Ny, Nz) numpy array --> internal variable field
+        """
+        return self._get_field('varInt', varInt_idx, increment, matId)
+
+    def get_mean_values(self, variable, matId=None, zoneId=None):
+        """Return time serie of the requested variable mean values.
+
+        Parameters
+        ----------
+        variable : string
+            Name of the variable to retrieve.
+            Accepted names are 'strain', 'epsilon', 'grad_u', 'greenlagrange',
+            'stress', 'boussinesq', 'time', 'niter'.
+            For internal variables, use "varInt"
+            For root mean square time series, use 'X_rms', with X one of the
+            aformentionned accepted names.
+        matId : int, optional
+            Id (numM) of the material. Use to request the mean over the
+            material (.mstd) or a zone(.ztsd) of a variable.
+            The default value is 'None', which return the mean over the unit
+            cell.
+            To load the mean over a material, specify 'matId' value, and set
+            'zoneId' value tu 'None'.
+        zoneId : int, optional
+            Id (numM) of the material. Use to request the mean over the
+            material (.mstd) or a zone(.ztsd) of a variable.
+            The default value is 'None'.
+
+        Returns
+        -------
+        a : (Nincr, Ncomp) numpy array
+            Time serie of requested variable values, with all components for
+            tensorial variables.
+        """
+        # get relevant structured array : cell, material or zone
+        data = self._get_relevant_std_data(matId, zoneId)
+        var = self._get_relevant_std_variable_name(variable)
+        a = data[var].squeeze()
         return a
 
     def print_available_data(self):
@@ -131,8 +156,8 @@ class AmitexOutput:
             print("\t-- No zstd files to read")
         for iD in self.reader.zstd_files:
             print(f'-- Loading per zone values for material {iD}...')
-            d = self.reader.read_zstd( zstd_matId=iD, variables=variables)
-            self.data['mean']['zones'][iD] = d
+            d = self.reader.read_zstd(zstd_matId=iD, variables=variables)
+            self.data['mean']['zones'][f"M{iD}"] = d
 
     def load_all_fields(self, variables='all'):
         """Load all available fields in output directory vtk files."""
@@ -355,3 +380,91 @@ class AmitexOutput:
             s += '\n\t * no internal variable fields loaded'
         return s
 
+    def _get_field(self, field, component, increment, matId=None):
+        """Return a numpy array for the requested field/increment/component.
+
+        Parameters
+        ----------
+        field : string
+            Type of field to read among ['stress', 'strain', 'piola',
+            'varInt'].
+        component : Components can be indices or letters (like '0' or 'xx').
+        increment : int
+            time increment value of the requested field
+        matId : string
+            In case of requesting an internal variable field, iD of the
+            material associated to this varInt. The matId is written 'MX',
+            where 'X' is the material Id number. Example: 'M1' for material 1.
+
+        Returns
+        -------
+        a : Numpy array
+            (Nx, Ny, Nz) array of the requested field component.
+
+        """
+        # check if requested field in loaded data
+        if field not in self.data['fields']:
+            msg = (f"-- Field {field} not in loaded data.")
+            print(msg)
+            return
+        # Handle case of internal variables
+        if field == 'varInt':
+            # check if matId varint are loaded
+            if f"M{matId}" not in self.data['fields']['varInt']:
+                msg = (f"-- No loaded varInt fields for material {matId}.")
+                print(msg)
+                return
+            # check if requested increment is loaded
+            if increment not in self.data['fields']['varInt'][f"M{matId}"]:
+                msg = (f"-- No field loaded for increment {increment}, for the"
+                       f" requested internal variable of matertial {matId}.")
+                print(msg)
+                return
+            # Check if component is available
+            if component not in self.data['fields']['varInt'][f"M{matId}"][increment]:
+                msg = (f"-- Component {component} data not loaded for the"
+                       f" requested int variable at increment {increment}.")
+                print(msg)
+                return
+            a = self.data['fields']['varInt'][f"M{matId}"][increment][component]
+            return a
+        # case of stress or strain fields
+        # check if requested increment is loaded
+        if increment not in self.data['fields'][field]:
+            msg = (f"-- No data loaded for increment {increment}, for the"
+                   f" requested {field} field.")
+            print(msg)
+            return
+        # Check if component is available
+        if component not in self.data['fields'][field][increment]:
+            msg = (f"-- Component {component} data not loaded for the"
+                   f" requested {field} field at increment {increment}.")
+            print(msg)
+            return
+        a = self.data['fields'][field][increment][component]
+        return a
+
+    def _get_relevant_std_data(self, matId, zoneId):
+        if (matId is None) and (zoneId is not None):
+            msg = f"Cannot return value for Zone {zoneId}: no matId specified."
+            raise ValueError(msg)
+        if matId:
+            if zoneId:
+                data = self.data['mean']['zones'][f"M{matId}"][f"Z{zoneId}"]
+            else:
+                data = self.data['mean']['mat'][f"M{matId}"]
+        else:
+            data = self.data['mean']['cell']
+        return data
+
+    def _get_relevant_std_variable_name(self, variable):
+        fs = self.reader.finite_strain
+        var = variable
+        # handle cauchy stress, named 'sigma' in .std files
+        var = var.replace('stress','sigma')
+        # handle strain case : 'epsilon' in small strain, 'grad_u' in finite s.
+        if fs:
+            var = var.replace('strain','grad_u')
+        else:
+            var = var.replace('strain','epsilon')
+        return var

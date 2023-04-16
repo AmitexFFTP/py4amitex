@@ -50,7 +50,7 @@ class OutReader:
         self._set_mstd(output_basename)
         # set per material output file
         self._set_zstd(output_basename)
-        # set vtk output files fot fields
+        # set vtk output files for fields
         self._set_vtk(self.std_file, 'stress')
         self._set_vtk(self.std_file, 'piola')
         self._set_vtk(self.std_file, 'strain')
@@ -134,9 +134,10 @@ class OutReader:
         #     data = data[variables]
         # create a dict to provide results stored per material
         nmat = self._get_std_n_regions(str(self.mstd_file))
-        mat_data = dict.fromkeys([matId+1 for matId in range(nmat)])
+        mat_data = dict.fromkeys([f"M{matId+1}" for matId in range(nmat)])
         for i in range(nmat):
-            mat_data[i+1] = data[(0+i):len(data):nmat]
+            mKey = f"M{i+1}"
+            mat_data[mKey] = data[(0+i):len(data):nmat]
         return mat_data
 
     def read_zstd(self, zstd_matId, variables='all'):
@@ -182,9 +183,10 @@ class OutReader:
         #     data = data[variables]
         # create a dict to provide results stored per material
         nzones = self._get_std_n_regions(zstd)
-        zone_data = dict.fromkeys([i+1 for i in range(nzones)])
+        zone_data = dict.fromkeys([f"Z{i+1}" for i in range(nzones)])
         for i in range(nzones):
-            zone_data[i+1] = data[(0+i):len(data):nzones]
+            zkey = f"Z{i+1}"
+            zone_data[zkey] = data[(0+i):len(data):nzones]
         return zone_data
 
     def read_vtk_fields(self, field_type=None, components_list='all',
@@ -408,7 +410,7 @@ class OutReader:
         elif field_type == 'varInt':
             field = 'varInt'
             pat = std_file.stem + '_M\d_varInt\d+_\d+.vtk'
-            comp_pattern = re.compile('varInt\d')
+            comp_pattern = re.compile('varInt\d+')
         pattern = re.compile(pat)
         increment_pattern = re.compile('\d+.vtk')
         material_pattern = re.compile('_M\d+')
@@ -536,7 +538,7 @@ class OutReader:
                     self.vtk_files[i][field_type][c] = files[f]['path']
                 elif field_type == 'varInt':
                     mat = f"M{files[f]['matId']}"
-                    if mat not in self.vtk_files[i]:
+                    if mat not in self.vtk_files[i][field_type]:
                         self.vtk_files[i][field_type][mat] = {}
                     c = files[f]['component']
                     p = files[f]['path']
@@ -555,9 +557,7 @@ class OutReader:
 
     @staticmethod
     def _get_std_varInt_indices(std_file):
-        """Find out small strain or finite strain format of std file."""
-        # get pattern to find out which internal variables values are present
-        # (for .zstd only)
+        """Find out which internal variables values are present in zstd."""
         pattern = re.compile('variable interne \d+')
         idx_pattern = re.compile('\d+e')
         varInt = dict()
@@ -567,10 +567,10 @@ class OutReader:
                 if 'variable interne' in l:
                     suffix = ''
                     if 'ecart type' in l:
-                        suffix = '_std'
+                        suffix = '_rms'
                     varInt_number = int(pattern.findall(l)[0].split()[2])
                     varInt_index = int(idx_pattern.findall(l)[0][:-1])
-                    name = f'varInt_{varInt_number}'+suffix
+                    name = f'varInt{varInt_number}'+suffix
                     varInt[name] = varInt_index - 1
                 l = f.readline()
         return varInt
