@@ -183,17 +183,21 @@ class AmitexOutput:
         """
         if 'stress' not in self.data['fields']:
             self.data['fields']['stress'] = {}
-        stress = self.reader.read_vtk_fields('stress', components_list,
+        try:
+            stress = self.reader.read_vtk_fields('stress', components_list,
                                            increments_list, None, output_slice)
-        # for each increment, and then each component loaded, add field to data
-        for incr in stress.keys():
-            if incr not in self.data['fields']['stress']:
-                self.data['fields']['stress'][incr] = {}
-            for comp in stress[incr].keys():
-                if comp not in self.data['fields']['stress'][incr]:
-                    self.data['fields']['stress'][incr][comp] = {}
-                self.data['fields']['stress'][incr][comp] = stress[incr][comp]
-        print('--> Cauchy stress field has been loaded')
+            # for each increment, and then each component loaded, add field to data
+            for incr in stress.keys():
+                if incr not in self.data['fields']['stress']:
+                    self.data['fields']['stress'][incr] = {}
+                for comp in stress[incr].keys():
+                    if comp not in self.data['fields']['stress'][incr]:
+                        self.data['fields']['stress'][incr][comp] = {}
+                    self.data['fields']['stress'][incr][comp] = stress[incr][comp]
+            print('--> Cauchy stress field has been loaded')
+        except ValueError:
+            print(' --> Cauchy stress field not loaded (not available '
+                  'or wrong format)')
         try:
             piola = self.reader.read_vtk_fields('piola', components_list,
                                            increments_list, None, output_slice)
@@ -227,17 +231,21 @@ class AmitexOutput:
         """
         if 'strain' not in self.data['fields']:
             self.data['fields']['strain'] = {}
-        strain = self.reader.read_vtk_fields('strain', components_list,
+        try:
+            strain = self.reader.read_vtk_fields('strain', components_list,
                                            increments_list, None, output_slice)
-        # for each increment, and then each component loaded, add field to data
-        for incr in strain.keys():
-            if incr not in self.data['fields']['strain']:
-                self.data['fields']['strain'][incr] = {}
-            for comp in strain[incr].keys():
-                if comp not in self.data['fields']['strain'][incr]:
-                    self.data['fields']['strain'][incr][comp] = {}
-                self.data['fields']['strain'][incr][comp] = strain[incr][comp]
-        print('--> Strain field has been loaded')
+            # for each increment, and then each component loaded, add field to data
+            for incr in strain.keys():
+                if incr not in self.data['fields']['strain']:
+                    self.data['fields']['strain'][incr] = {}
+                for comp in strain[incr].keys():
+                    if comp not in self.data['fields']['strain'][incr]:
+                        self.data['fields']['strain'][incr][comp] = {}
+                    self.data['fields']['strain'][incr][comp] = strain[incr][comp]
+            print('--> Strain field has been loaded')
+        except ValueError:
+            print(' -->  Strain field not loaded (not available '
+                  'or wrong format)')
         return
 
     def load_varInt_fields(self, components_list='all', increments_list=None,
@@ -283,7 +291,6 @@ class AmitexOutput:
                         complist.append(comp)
             print(f"--> Internal variables {complist} have been loaded for "
                   f"material {matId}")
-        print('--> Strain field has been loaded')
         return
 
 #================================================================

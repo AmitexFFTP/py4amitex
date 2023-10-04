@@ -360,7 +360,12 @@ class OutReader:
             idx = 0
             while l:
                 if not l.startswith('#'):
-                    ldata = np.array(l.split()).astype(np.double)
+                    ll = l.split()
+                    for k in range(len(ll)):
+                        dat = ll[k]
+                        if ('E' not in dat):
+                            ll[k] = '0'
+                    ldata = np.array(ll).astype(np.double)
                     # load std variables
                     for name in std_dtype.names:
                         indices = StdIndexing.get_std_indices(variable=name,
