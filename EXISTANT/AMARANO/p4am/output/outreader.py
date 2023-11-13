@@ -3,6 +3,9 @@
 """
 P4A Module to read AMITEX simulation results.
 
+TODO :
+    * change 'stress' key for vtk fields to 'sigma'
+
     @author: amarano
 """
 
@@ -363,7 +366,7 @@ class OutReader:
                     ll = l.split()
                     for k in range(len(ll)):
                         dat = ll[k]
-                        if ('E' not in dat):
+                        if ('E' not in dat) and k != len(ll)-1:
                             ll[k] = '0'
                     ldata = np.array(ll).astype(np.double)
                     # load std variables
