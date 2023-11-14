@@ -263,6 +263,16 @@ class AmitexOutput:
         output_slice : numpy array (3,2), optional
            Specific slice of field data to return. The default is None.
         """
+        # check that varInt fields to load are present
+        has_varInt = False
+        for incr in self.reader.vtk_files:
+            if 'varInt' in self.reader.vtk_files[incr]:
+                has_varInt = True
+                break
+        if not has_varInt:
+            print("--> No Internal variable fields to load in vtk files.")
+            return
+        # initialize varInt fields in output data
         if 'varInt' not in self.data['fields']:
             self.data['fields']['varInt'] = {}
         # get all matId with vtk outputs
