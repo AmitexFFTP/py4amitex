@@ -9,7 +9,10 @@ Contact information : Aldo Marano aldo.marano@onera.fr
 
 ## Current content
 
-TODO
+TO COMPLETE
+
+See `examples` directory for scripts that illustrates the use of P4AM to
+postprocess the results of the validation test cases of AMITEX_FFTP.
 
 ## Lauching tests
 
