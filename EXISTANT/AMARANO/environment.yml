@@ -1,0 +1,9 @@
+name: amitex
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Needed to run p4am and examples
+  - python=3.8
+  - numpy 
+  - vtk

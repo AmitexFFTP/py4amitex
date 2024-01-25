@@ -7,6 +7,12 @@ to launch a simulation from a script without writing a .vtk or .xml file.
 
 Contact information : Aldo Marano aldo.marano@onera.fr
 
+## Python Environment 
+
+To create a suitable environment to use *p4am* with Anaconda : 
+
+`conda env create -f environment.yml` 
+
 ## Current content
 
 TO COMPLETE
