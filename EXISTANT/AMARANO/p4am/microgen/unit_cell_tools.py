@@ -4,8 +4,7 @@
 P4A Module to implement operations on unit cell geometries.
 
 TODO:
-    -- docstrings
-    -- repr method
+    -- complete docstrings
 
 @author: amarano
 """

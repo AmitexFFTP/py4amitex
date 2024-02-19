@@ -4,7 +4,7 @@
 P4A Module to handle Amitex zoneId and matId fields, and the vtk format.
 
 TODO:
-    -- docstrings
+    -- complete docstrings
     -- repr method
 
 @author: amarano
@@ -16,9 +16,11 @@ import numpy as np
 import vtk
 
 class AGeom:
+    """Amitex geometry class."""
+
     def __init__(self, matId=None, zoneId=None, mat_file=None, zone_file=None,
                        filename='amitex_geometry'):
-        """Amitex geometry class.
+        """Amitex geometry class constructor.
 
         Parameters
         ----------
