@@ -26,33 +26,44 @@ class ShapeGenerator:
         pass
 
     @staticmethod
-    def circle(radius=0.1, center=(0.5,0.5)):
-        pass
+    def circle(radius=1., center=(0.,0.), resolution=100, grid=None):
+        """Creates a binary 3D image of a circle.
+        
+        Parameters
+        ----------
+        radius : float, optional
+            Radius of the circle. Default is 1.
 
-    def _init_grid(dimension=2, resolution=100, size=1.):
-        """Create a grid object with specified dimension, sizes, resolution."""
-        # In the following unit cell described by three vectors :
-        #     L -> unit cell size, D --> unit cell voxel size,
-        #     R -> unit cell resolution
-        # Check grid size
-        if np.isscalar(size):
-            S = size*np.ones((dimension,), dtype=np.float32)
-        elif len(size) == dimension:
-            S = size
-        else:
-            raise ValueError("Grid size must be provided as a scalar value, "
-                             "or an array with a length equal to the grid "
-                             "dimension.")
-        # Check grid resolution
-        if np.isscalar(resolution):
-            R = resolution*np.ones((dimension,), dtype=np.float32)
-        elif len(size) == dimension:
-            R = resolution
-        else:
-            raise ValueError("Grid resolution must be provided as a scalar "
-                             "value, or an array with a length equal to the "
-                             "grid dimension.")
-        #
+        center : tuple(Cx, Cy) floats, optional
+            Coordinates of the center of the circle. Default is (0.,0.).
+
+        resolution : int, optional
+            Number of pixels to use for the resolution of the 2D image. 
+            Default is 100. If a grid argument is passed, this 
+            argument is ignored.
+
+        grid : Grid object, optional
+            grid object to use to create the circle. If None is provided,
+            a grid is created with default parameters, for the region
+            (-1.0:1.0, -1.0:1.0)
+
+        Returns
+        -------
+        center : np.array()
+            Two dimensional binary image of the circle.
+        """
+        # if no grid, create one 
+        if grid is None:
+            grid = Grid(origin=(-radius,-radius), size=(2*radius,2*radius),
+                        resolution=resolution)
+        # check bidimensional grid
+        if grid.dimension != 2:
+            raise ValueError("Circle creation is possible only with 2D grids.")
+        # Compute distance to circle center
+        distance = np.sqrt((grid.CX-center[0])**2 + (grid.CY-center[1])**2)
+        # create binary image
+        circle = (distance <= radius)
+        return circle
 
 class Grid:
     """Class to handle 2D or 3D grids."""
