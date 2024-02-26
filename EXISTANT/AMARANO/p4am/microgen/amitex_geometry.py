@@ -39,7 +39,7 @@ class AGeom:
             The default is 'amitex_geometry'.
         """
         # Cell dimensions
-        self.reset_Ids()
+        self.reset_geom()
         if (mat_file is not None) or (matId is not None):
             self.set_matId(matId, from_file=mat_file)
         if (zone_file is not None) or (zoneId is not None):
@@ -119,6 +119,31 @@ class AGeom:
         zoneId_path = Id_path.parent / zoneId_name
         self.matId_path = matId_path.with_suffix('.vtk')
         self.zoneId_path = zoneId_path.with_suffix('.vtk')
+
+    def get_material_zone_number(self, matId):
+        """Get the maximum zone Id for a specific matId."""
+        # check for correct mat Id 
+        if not self._check_mat_in_geom(matId):
+            raise ValueError("Geometry object has only one material."
+                                f" No material with id {matId} found.")
+        if self.zoneId is None:
+            return 1
+        return np.max(self.zoneId[self.matId == matId])
+
+    def get_max_zone_number(self):
+        """Get the maximum zone Id in the geometry."""
+        # check for correct mat Id 
+        if self.zoneId is None:
+            return 1
+        else:
+            return np.max(self.matId)
+
+    def get_mat_number(self):
+        """Get number of materials in the geometry"""
+        if self.matId is None:
+            return 1
+        else:
+            return np.max(self.matId)
 
     def write_files(self):
         """Write vtk matId and zoneId vtk files."""
@@ -318,4 +343,13 @@ class AGeom:
             if (array.shape[2] != self.nx[2]):
                 return False
         return True
-
+    
+    def _check_mat_in_geom(self, matId):
+        """Return True if the provided matId is in the geometry."""
+        if (self.matId is None):
+            if (matId) == 1:
+                return True
+        else:
+            if matId in np.unique(self.matId):
+                return True
+        return False
