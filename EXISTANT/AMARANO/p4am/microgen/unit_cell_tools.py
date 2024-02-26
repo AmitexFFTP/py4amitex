@@ -17,6 +17,60 @@ class UnitCellTools:
         pass
 
     @staticmethod
+    def add_boundary_layer_to_mat(Ageom, matId, layer_zoneId=None,
+                                  thickness=1):
+        """Add an internal boundary layer to material matId.
+
+        Compute the boundary layer only if the geometry has two or
+        more materials. 
+
+        Parameters
+        ----------
+        Ageom : AGeom
+            Amitex Geometry object to enhance with boundary layer.
+        matId : int
+            Id of the material for which a layer is to be added.
+        layer_matId : int, optional
+            Value of matId to set in the boundary layer. The default is
+            max(zoneId[where(matId == matId)]) + 1
+        thickness : int, optional
+            Thickness (in voxels) of the boundary layer. Default is 1
+        """
+        # from skimage.segmentation import find_boundaries
+        from skimage.morphology import erosion
+        # check if material is in the geometry 
+        if Ageom._check_mat_in_geom(matId):
+            # compute boundary layer of material
+            img0 = (Ageom.matId == matId)
+            img = img0
+            for k in range(thickness):
+                img = erosion(image=img)
+            region = np.logical_xor(img, img0)
+            # for k in range(thickness):
+            #     print(f"iteration {k}, pix with id 1 : {np.sum(img)}")
+            #     print(f"iteration {k}, pix in layer  : {np.sum(region)}")
+            #     tmp = find_boundaries(label_img=img, mode='thick')
+            #     img = np.logical_and(np.logical_not(tmp), img)
+            #     region = np.logical_or(region, tmp)
+        else:
+            raise ValueError("Geometry has only one material."
+                            f" No material with id {matId} found.")
+        # if needed, compute new zone number 
+        if layer_zoneId is None:
+            zId = Ageom.get_material_zone_number(matId) + 1
+        else:
+            zId = layer_zoneId
+        # creates zoneId if necessary
+        if Ageom.zoneId is None:
+            zones = np.ones(shape=Ageom.nx)
+        else:
+            zones = Ageom.zoneId
+        # modify zones with boundary layer
+        zones[region] = zId
+        # set new zone field
+        Ageom.set_zoneId(zones)
+
+    @staticmethod
     def add_boundary_layers(AGeom, axis, width, side='both', external=True,
                             layer_matId=None, layer_zoneId=None):
         """Add boundary layers to amitex geometry matId and zoneId fields.

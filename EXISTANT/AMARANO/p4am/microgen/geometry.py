@@ -21,14 +21,14 @@ CONVENTIONS:
 import numpy as np
 
 class ShapeGenerator:
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """Class to generate geometrical objects in 2D or 3D images."""
         pass
 
     @staticmethod
     def circle(radius=1., center=(0.,0.), resolution=100, grid=None):
         """Creates a binary 3D image of a circle.
-        
+
         Parameters
         ----------
         radius : float, optional
@@ -38,8 +38,8 @@ class ShapeGenerator:
             Coordinates of the center of the circle. Default is (0.,0.).
 
         resolution : int, optional
-            Number of pixels to use for the resolution of the 2D image. 
-            Default is 100. If a grid argument is passed, this 
+            Number of pixels to use for the resolution of the 2D image.
+            Default is 100. If a grid argument is passed, this
             argument is ignored.
 
         grid : Grid object, optional
@@ -52,7 +52,7 @@ class ShapeGenerator:
         center : np.array()
             Two dimensional binary image of the circle.
         """
-        # if no grid, create one 
+        # if no grid, create one
         if grid is None:
             grid = Grid(origin=(-radius,-radius), size=(2*radius,2*radius),
                         resolution=resolution)
