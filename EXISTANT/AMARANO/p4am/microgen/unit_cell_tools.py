@@ -62,7 +62,7 @@ class UnitCellTools:
             zId = layer_zoneId
         # creates zoneId if necessary
         if Ageom.zoneId is None:
-            zones = np.ones(shape=Ageom.nx)
+            zones = np.ones(shape=Ageom.nx, dtype=np.int32)
         else:
             zones = Ageom.zoneId
         # modify zones with boundary layer
