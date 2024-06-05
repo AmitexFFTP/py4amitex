@@ -24,8 +24,6 @@ from pathlib import Path
 
 import numpy as np
 
-from pymicro.core.utils.SDAmitexUtils import SDAmitexIO as SDA
-
 # Class for Neper tesselation construction
 class PolyXTessBuilder:
     def __init__(self, data_dir=None, tess_file='', seed=1, dim=3, ngrains=0,
