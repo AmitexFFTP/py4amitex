@@ -6,6 +6,8 @@ P4A Module to handle Amitex zoneId and matId fields, and the vtk format.
 TODO:
     -- complete docstrings
     -- repr method
+    -- test or enforce int when writing matId and zoneId files
+
 
 @author: amarano
 """
@@ -122,7 +124,7 @@ class AGeom:
 
     def get_material_zone_number(self, matId):
         """Get the maximum zone Id for a specific matId."""
-        # check for correct mat Id 
+        # check for correct mat Id
         if not self._check_mat_in_geom(matId):
             raise ValueError("Geometry object has only one material."
                                 f" No material with id {matId} found.")
@@ -132,7 +134,7 @@ class AGeom:
 
     def get_max_zone_number(self):
         """Get the maximum zone Id in the geometry."""
-        # check for correct mat Id 
+        # check for correct mat Id
         if self.zoneId is None:
             return 1
         else:
@@ -206,13 +208,13 @@ class AGeom:
             data = self.zoneId
             dx = self.dx
         # write zone Id field
-        self.write_vtk_legacy(self.zoneId_path, array=data,
-                              array_name='zoneId', spacing=dx)
+        self.write_vtk_legacy(  self.zoneId_path, array=data,
+                                array_name='zoneId', spacing=dx)
         print(f" File {self.zoneId_path} written.")
 
     def check_Ids(self):
         """Check if matId and zoneId are correctly defined."""
-        # TODO: implement tests 
+        # TODO: implement tests
         self.check_matIds()
         self.check_zoneIds()
         # TODO: implement check of zone count per material
@@ -226,40 +228,40 @@ class AGeom:
             mat_requested = np.arange(1, nMat+1)
             mat_missing = np.setdiff1d(mat_requested, mat_list)
             if len(mat_missing) > 0:
-                msg = (f"MatId malformed: missing matIds are {mat_missing}."
-                       f"All ids between 1 and {nMat} should be present.")
+                msg =  (f"MatId malformed: missing matIds are {mat_missing}."
+                        f"All ids between 1 and {nMat} should be present.")
                 raise ValueError(msg)
-        # check that matId is an integer valued array
-        if not(np.issubdtype(self.matId.dtype, np.integer)):
-            msg = " MatId malformed: not an integer array."
-            raise ValueError(msg)
+            # check that matId is an integer valued array
+            if not(np.issubdtype(self.matId.dtype, np.integer)):
+                msg = " MatId malformed: not an integer array."
+                raise ValueError(msg)
 
     def check_zoneIds(self):
-        """Check if zoneId iscorrectly defined."""
+        """Check if zoneId is correctly defined."""
         if self.zoneId is None:
-            return 
+            return
         # check if more than one material
         if self.get_mat_number() > 1:
             matId = self.matId
         else:
             matId = np.ones(self.zoneId.shape, dtype=np.int8)
         # check zoneId
-        mat_list = np.unique(matId)
+        mat_list = np.unique(matId) 
         for mat in mat_list:
-            zones = self.zoneId[self.matId == mat]
+            zones = self.zoneId[matId == mat]
             nZones = zones.max()
             zone_list = np.unique(zones)
             zone_requested = np.arange(1, nZones+1)
             zone_missing = np.setdiff1d(zone_requested, zone_list)
             if len(zone_missing) > 0:
-                msg = (f" ZoneId malformed for material {mat}:"
-                      f" Missing zoneIds are {zone_missing}."
-                      f"All ids between 1 and {nZones} should be present.")
+                msg =  (f" ZoneId malformed for material {mat}:"
+                        f" Missing zoneIds are {zone_missing}."
+                        f"All ids between 1 and {nZones} should be present.")
                 raise ValueError(msg)
-        # check that zoneId is an integer valued array
-        if not(np.issubdtype(self.zoneId.dtype, np.integer)):
-            msg = " ZoneId malformed: not an integer array."
-            raise ValueError(msg)
+            # check that zoneId is an integer valued array
+            if not(np.issubdtype(self.zoneId.dtype, np.integer)):
+                msg = " ZoneId malformed: not an integer array."
+                raise ValueError(msg)
 
     def reset_Ids(self):
         """Reset cell dimensions and matId and zoneId fields."""
@@ -366,7 +368,7 @@ class AGeom:
             if (array.shape[2] != self.nx[2]):
                 return False
         return True
-    
+
     def _check_mat_in_geom(self, matId):
         """Return True if the provided matId is in the geometry."""
         if (self.matId is None):

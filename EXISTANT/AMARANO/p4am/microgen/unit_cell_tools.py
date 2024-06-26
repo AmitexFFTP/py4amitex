@@ -178,10 +178,11 @@ class UnitCellTools:
         None.
 
         """
-        from skimage import filters
+        from skimage.filters import sobel
         # Use roberts image filter to find boundaries of a set of labeled
         # regions (zones) --> do it for each slice of the image
-        zone_boundaries = filters.sobel(AGeom.zoneId) > 0.000001
+        gradient = sobel(AGeom.zoneId) 
+        zone_boundaries = gradient > 0.000001
         # increase thickness of zone boundary layers with binary dilation
         if thickness > 1:
             from skimage import morphology as mo
