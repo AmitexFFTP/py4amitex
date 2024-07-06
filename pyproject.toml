@@ -4,6 +4,7 @@ version = "0.0.1"
 description="Parametrize and run AMITEX simulations"
 readme = "README.md"
 authors = [
+  { name = "Aldo Marano", email = "aldo.marano@onera.fr" },
   { name = "G. Bareigts", email = "guillame.bareigts@cea.com" },
 ]
 
