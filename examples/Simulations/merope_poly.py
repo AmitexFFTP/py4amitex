@@ -20,13 +20,14 @@ from py4amitex.input import (
 )
 from py4amitex.input.materialbuilder import buildMaterials, VoxelSpec, IndexOrdering
 from py4amitex.simulation import runSimulationExternal
+from py4amitex.output.amitexoutput import AmitexOutput
+
 
 """
 Generation of a polycrystal with Mérope, then preparation and lauch of an AMITEX-FFTP
 simulation of an iso-elastic material with
 coefficients for each microcrystal. This showcase the the API `buildMaterials` witch take
 as input a 'field' of per-voxel data (material, volume fraction, + in option zone index)
-A small intergation example pyth p4amitex is show at the end (optional).
 
 Two approches for N crystals:
     - N materials, 1 zone per material (makeMaterials)
@@ -180,12 +181,8 @@ if __name__ == "__main__":
 
     runSimulationExternal(input, numberProcs=1)
 
-    try:
-        from p4am.output.amitexoutput import AmitexOutput
-
-        output = AmitexOutput(input.outputPrefix())
-        output.load_mean_values()
-        sig = output.get_mean_values("stress")
-        print(sig[-1])
-    except ModuleNotFoundError:
-        print("Warning: module 'p4am' not found. Update PYTHONPATH ?")
+    output = AmitexOutput(input.outputPrefix())
+    output.load_mean_values()
+    sig = output.get_mean_values("stress")
+    for x in sig[-1]:
+        print(f"{x:.7e}")
