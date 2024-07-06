@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+
+    <!-- REFERENCE MATERIAL -->
+    <Reference_Material Lambda0="2.0952e+10" Mu0="1.5014e+10" />
+
+    <!-- MATERIAL 1 -->
+    <!--<Material
+    numM="1" Lib="/home/lgelebart/amitex_fftp/libAmitex/src/materiaux/libUmatAmitex.so"
+    Law="viscoelas_maxwell">-->
+    <Material numM="1" Lib="" Law="viscoelas_maxwell">
+        <Coeff Index="1" Type="Constant" Value="70e9" />
+        <Coeff Index="2" Type="Constant" Value="0.3" />
+        <Coeff Index="3" Type="Constant" Value="4." />
+        <Coeff Index="4" Type="Constant" Value="3.58873e9" />
+        <Coeff Index="5" Type="Constant" Value="3.10474e9" />
+        <Coeff Index="6" Type="Constant" Value="6.4781e9" />
+        <Coeff Index="7" Type="Constant" Value="3.0942e9" />
+        <Coeff Index="8" Type="Constant" Value="172800" />
+        <Coeff Index="9" Type="Constant" Value="7.51552e9" />
+        <Coeff Index="10" Type="Constant" Value="3.15347e9" />
+        <Coeff Index="11" Type="Constant" Value="1728000" Name="NameCoeffbidon11" />   <!-- name is
+        optional -->
+        <Coeff Index="12" Type="Constant" Value="5.10283e9" />
+        <Coeff Index="13" Type="Constant" Value="3.15347e9" />
+        <Coeff Index="14" Type="Constant" Value="17280000" />
+
+
+        <IntVar Index="1" Type="Constant" Value="0." />
+        <IntVar Index="2" Type="Constant" Value="0." />
+        <IntVar Index="3" Type="Constant" Value="0." Name="NameVIbidon3" />  <!-- name is optional -->
+        <IntVar Index="4" Type="Constant" Value="0." />
+        <IntVar Index="5" Type="Constant" Value="0." />
+        <IntVar Index="6" Type="Constant" Value="0." />
+        <IntVar Index="7" Type="Constant" Value="0." />
+        <IntVar Index="8" Type="Constant" Value="0." />
+        <IntVar Index="9" Type="Constant" Value="0." />
+        <IntVar Index="10" Type="Constant" Value="0." />
+        <IntVar Index="11" Type="Constant" Value="0." />
+        <IntVar Index="12" Type="Constant" Value="0." />
+        <IntVar Index="13" Type="Constant" Value="0." />
+        <IntVar Index="14" Type="Constant" Value="0." />
+        <IntVar Index="15" Type="Constant" Value="0." />
+        <IntVar Index="16" Type="Constant" Value="0." />
+        <IntVar Index="17" Type="Constant" Value="0." />
+        <IntVar Index="18" Type="Constant" Value="0." />
+        <IntVar Index="19" Type="Constant" Value="0." />
+        <IntVar Index="20" Type="Constant" Value="0." />
+        <IntVar Index="21" Type="Constant" Value="0." />
+        <IntVar Index="22" Type="Constant" Value="0." />
+        <IntVar Index="23" Type="Constant" Value="0." />
+        <IntVar Index="24" Type="Constant" Value="0." />
+        <IntVar Index="25" Type="Constant" Value="0." />
+        <IntVar Index="26" Type="Constant" Value="0." />
+        <IntVar Index="27" Type="Constant" Value="0." />
+        <IntVar Index="28" Type="Constant" Value="0." />
+        <IntVar Index="29" Type="Constant" Value="0." />
+        <IntVar Index="30" Type="Constant" Value="0." />
+        <IntVar Index="31" Type="Constant" Value="0." />
+        <IntVar Index="32" Type="Constant" Value="0." />
+        <IntVar Index="33" Type="Constant" Value="0." />
+        <IntVar Index="34" Type="Constant" Value="0." />
+        <IntVar Index="35" Type="Constant" Value="0." />
+        <IntVar Index="36" Type="Constant" Value="0." />
+    </Material>
+
+    <!-- MATERIAL 2 -->
+    <!--<Material
+    numM="2" Lib="/home/lgelebart/amitex_fftp/libAmitex/src/materiaux/libUmatAmitex.so"
+    Law="elasiso" >-->
+    <Material numM="2" Lib="" Law="elasiso">
+        <Coeff Index="1" Type="Constant" Value="4.0385e+10" />
+        <Coeff Index="2" Type="Constant" Value="2.6923e+10" />
+    </Material>
+
+</Materials>

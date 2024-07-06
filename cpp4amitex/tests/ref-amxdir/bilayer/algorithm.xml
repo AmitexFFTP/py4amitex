@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Algorithm_Parameters><Algorithm Type="Basic_Scheme"><Convergence_Criterion Value="Default"/><Convergence_Acceleration Value="True"/></Algorithm><Mechanics><Filter Type="Default"/><Small_Perturbations Value="True"/></Mechanics></Algorithm_Parameters>

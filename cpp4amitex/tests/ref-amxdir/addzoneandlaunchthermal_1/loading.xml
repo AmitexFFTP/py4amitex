@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Loading_Output><Output><vtk_FluxDGradD FluxD="0" GradD="0"/></Output><InitLoadExt><T Value="300"/><Param Index="1" Value="0"/></InitLoadExt><Loading Tag="1"><Time_Discretization Discretization="Linear" Nincr="1" Tfinal="1"/><x0 Driving="GradD" Evolution="Linear" Value="0"/><y0 Driving="GradD" Evolution="Linear" Value="0"/><z0 Driving="GradD" Evolution="Linear" Value="0"/><T Evolution="Constant"/><Param Index="1" Evolution="Linear" Value="1"/></Loading></Loading_Output>

@@ -1,0 +1,10 @@
+&CMD
+fic_numM="amitex_results_0/materialID.vtk"
+fic_numZ="amitex_results_0/zoneID.vtk"
+fic_mat="amitex_results_0/material.xml"
+fic_char="loading_diff0.xml"
+fic_algo="algorithm_diff0.xml" 
+fic_vtk="amitex_results_0/output" ! basename for output files
+/
+!nx,ny,nz,dx,dy,dz, coeff2print, varint2print
+

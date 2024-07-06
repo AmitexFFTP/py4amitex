@@ -1,0 +1,16 @@
+
+*.so
+*.dll
+*.dylib
+*.pyd
+*.exe
+*.o
+*.obj
+
+*.log
+*.out
+
+testresults
+
+docs/html
+docs/latex

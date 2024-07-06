@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Loading_Output>
+
+<!-- OUPUT QUANTITIES -->
+<Output>
+    <vtk_StressStrain Strain = "1" Stress = "1"/>
+    <!--<vtk_IntVarList numM="1"> -->
+    <!--</vtk_IntVarList> -->
+    <!--<vtk_IntVarList numM="2"> -->
+    <!--</vtk_IntVarList> -->
+</Output>
+<!-- Initialization of the temperature and the external parameters -->
+<InitLoadExt>
+  <!-- <T Value="0.01" /> -->
+  <Param Index ="1" Value="0.01" />
+</InitLoadExt>
+<!-- SUCCESSIVE LOADINGS AND OUTPUT TIMES -->
+<Loading Tag="1">
+  <Time_Discretization Discretization="Linear" Nincr="10" Tfinal="100"  />
+
+  <xx Driving="Strain" Evolution="Linear" Value="0.0"/>
+  <yy Driving="Strain" Evolution="Linear" Value="0.0" />
+  <zz Driving="Strain" Evolution="Linear" Value="0.0" />
+  <xy Driving="Strain" Evolution="Linear" Value="0.0" />
+  <xz Driving="Strain" Evolution="Linear" Value="0.0" />
+  <yz Driving="Strain" Evolution="Linear" Value="0.0" />
+  <Param Index="1"     Evolution="Constant" />  
+
+</Loading>
+
+
+</Loading_Output>

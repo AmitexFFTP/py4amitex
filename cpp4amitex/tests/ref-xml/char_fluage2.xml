@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Loading_Output>
+
+<!-- OUPUT QUANTITIES -->
+<Output>
+    <vtk_StressStrain Strain = "1" Stress = "1"/>
+    <!--<vtk_IntVarList numM="1"> -->
+    <!--</vtk_IntVarList> -->
+    <!--<vtk_IntVarList numM="2"> -->
+    <!--</vtk_IntVarList> -->
+    <Zone numM="2"/>
+</Output>
+
+<!-- SUCCESSIVE LOADINGS AND OUTPUT TIMES -->
+<Loading Tag="1">
+    <Time_Discretization Discretization="User" Nincr="1" />
+    <Time_List>32832</Time_List>
+    <Output_zone Number="1"/>
+    <xx Driving="Strain" Evolution="Linear" Value="0.012"/>  <!-- instead of 0.01 in char_fluage.xml --> 
+    <yy Driving="Stress" Evolution="Linear" Value="0" />     <!-- an interruption on axial stress should give the same result than validation test 'beton_fluage' -->
+    <zz Driving="Stress" Evolution="Linear" Value="0" />
+    <xy Driving="Stress" Evolution="Linear" Value="0" />
+    <xz Driving="Stress" Evolution="Linear" Value="0" />
+    <yz Driving="Stress" Evolution="Linear" Value="0" />
+    <!-- proposition pour une interruption sur la quantite duale (min et max par défault = - et + huge(mytype)):
+    <xx Driving="Strain" Evolution="Linear" Value="0.012" Dual_minvalue="xx" Dual_maxvalue="yy"/> 
+    -->
+    <User_interruption Index="1" Value="0.42706742E+09" />          <!-- axial stress threshold for interruption --> 
+                                                                    <!-- user_interruption in cas_tests/lib_user_functions -->
+
+</Loading>
+
+ <Loading Tag="2">
+   <Time_Discretization Discretization="User" Nincr="31" />
+   <Time_List>
+        83808 143424 211680 289440 380160 483840 604800 738720 898560 1080000 1287360 1529280 1801440 2116800
+        2479680 2903040 3386880 3939840 4579200 5313600 6160320 7128000 8251200 9538560 11016000 12718080 14670720 16934400 19526400 22464000 25920000
+   </Time_List>
+    <Output_vtkList>
+      31
+    </Output_vtkList>
+    <Output_zone Number="30"/>
+    <xx Driving="Stress" Evolution="Constant" />
+    <yy Driving="Stress" Evolution="Constant" />
+    <zz Driving="Stress" Evolution="Constant" />
+    <xy Driving="Stress" Evolution="Constant" />
+    <xz Driving="Stress" Evolution="Constant" />
+    <yz Driving="Stress" Evolution="Constant" />
+</Loading> 
+
+</Loading_Output>

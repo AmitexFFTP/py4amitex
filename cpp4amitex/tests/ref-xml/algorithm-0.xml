@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Algorithm_Parameters>
+    <Algorithm Type="Basic_Scheme">
+        <Convergence_Criterion Value="Default" />
+        <Convergence_Acceleration Value="True" />
+        <Nitermax Value="3000" />
+    </Algorithm>
+    <Diffusion>
+        <Filter Type="Default" />
+        <Stationary Value="True" />
+    </Diffusion>
+</Algorithm_Parameters>

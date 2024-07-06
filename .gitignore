@@ -26,3 +26,11 @@ data_2_modified*
 py4amitex_*.egg-info
 
 .idea/
+.vscode/
+
+/build*/
+/_install*
+
+testresults
+
+.pytest_cache

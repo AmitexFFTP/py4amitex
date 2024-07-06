@@ -1,0 +1,6 @@
+#ifndef _AMITEX_CONFIG_HEADER_
+#define _AMITEX_CONFIG_HEADER_
+
+#cmakedefine AMITEX_DRIVER_API
+
+#endif

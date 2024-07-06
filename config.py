@@ -4,8 +4,7 @@ import os
 
 # Pathes towards amitex_fftp repository
 # TO SET MANUALLY
-#TODO : use Amitex_path env variable to get path of code
-AMITEX_DIR = "/stck/amarano/Codes/amitex_fftp"  # amitex main directory
+AMITEX_DIR = os.getenv("AMITEX_PATH", "/stck/amarano/Codes/amitex_fftp")  # amitex main directory
 AMITEX_TEST_RES_DIR = os.path.join(AMITEX_DIR, "resultats") # test case results
 
 

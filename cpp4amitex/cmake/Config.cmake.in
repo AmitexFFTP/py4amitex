@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/AmitexCppTargets.cmake")
+
+check_required_components(AmitexCpp)
+
+include(CMakeFindDependencyMacro)
+find_dependency(MPI REQUIRED CXX)

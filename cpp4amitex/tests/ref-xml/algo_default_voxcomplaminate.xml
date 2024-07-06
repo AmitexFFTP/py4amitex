@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Algorithm_Parameters>
+
+    <Algorithm Type="Basic_Scheme">                     <!-- "Default" (Basic_Scheme) ou "Basic_Scheme" -->
+        <Convergence_Criterion Value="Default"/>        <!-- "Default" (1e-4) ou valeur réelle positive <1e-3 -->
+        <Convergence_Acceleration Value="true"/>        <!-- "True" ou "False" -->
+    </Algorithm>
+
+    <Mechanics>    
+        <Filter Type="Default"/>                            <!-- "Default" (hexa) ou "no_filter" ou "hexa" ou "octa" -->
+        <Small_Perturbations Value="true"/>                 <!-- "True" ou "False" --> 
+    </Mechanics>
+
+    <Algorithm_laminate >
+        <Convergence_Criterion Value="Default"/>        <!-- "Default" (1e-2) ou valeur réelle positive entre 1e-1 et 1e-4  -->
+        <Convergence_Acceleration Value="true"/>        <!-- "True" ou "False" -->
+        <Initialisation_type Value="Linear"/>		<!-- Proportionnal, Linear, Default (=Linear) -->
+        <N_increments Value="1" />                      <!-- Nombre de sous pas de temps utilisés pour intégrer la loi umatLaminate à chaque pas de temps -->
+    </Algorithm_laminate>
+
+
+</Algorithm_Parameters>
+

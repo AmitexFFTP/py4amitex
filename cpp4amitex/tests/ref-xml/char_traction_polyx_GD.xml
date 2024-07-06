@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Loading_Output>
+
+<!-- OUPUT QUANTITIES -->
+<Output>
+    <vtk_StressStrain Strain = "1" Stress = "1"/>
+    <!--<vtk_IntVarList numM="1"> -->
+    <!--</vtk_IntVarList> -->
+    <!--<vtk_IntVarList numM="2"> -->
+    <!--</vtk_IntVarList> -->
+</Output>
+
+<!-- SUCCESSIVE LOADINGS AND OUTPUT TIMES -->
+<Loading Tag="1">
+    <Time_Discretization Discretization="Linear" Nincr="2000" Tfinal="2000"/>
+    <Output_vtkList>
+      2000
+    </Output_vtkList>
+    <xx Driving="Strain" Evolution="Linear" Value="0.2"/>
+    <yy Driving="Stress" Evolution="Constant" />
+    <zz Driving="Stress" Evolution="Constant" />
+    <xy Driving="Stress" Evolution="Constant" />
+    <xz Driving="Stress" Evolution="Constant" />
+    <yz Driving="Stress" Evolution="Constant" />
+    <yx Driving="Strain" Evolution="Constant" />
+    <zx Driving="Strain" Evolution="Constant" />
+    <zy Driving="Strain" Evolution="Constant" />
+</Loading>
+
+</Loading_Output>
+    <!--</Time_List>-->

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Algorithm_Parameters>
+
+    <Algorithm Type="Basic_Scheme">                     <!-- "Default" (Basic_Scheme) ou "Basic_Scheme" -->
+        <Convergence_Criterion Value="default"/>        <!-- "Default" (1e-4) ou valeure réelle positive <1e-3 -->
+        <Convergence_Acceleration Value="true"/>       <!-- "True" ou "False" -->
+    </Algorithm>
+
+    <Mechanics>
+        <Filter Type="Octa"/>                               <!-- "Default" (hexa) ou "no_filter" ou "hexa" ou "octa" -->
+        <Small_Perturbations Value="true"/>                 <!-- "True" ou "False" --> 
+    </Mechanics>
+
+</Algorithm_Parameters>
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Loading_Output>
+
+<!-- OUPUT QUANTITIES -->
+<Output>
+    <vtk_StressStrain Strain = "0" Stress = "0"/>
+    <!--<vtk_IntVarList numM="1"> -->
+    <!--</vtk_IntVarList> -->
+</Output>
+
+<!-- SUCCESSIVE LOADINGS AND OUTPUT TIMES -->
+<Loading Tag="1">
+    <Time_Discretization Discretization="Linear" Nincr="40" Tfinal="40"/>
+    <Output_vtkList>
+      1
+    </Output_vtkList>
+    <xx Driving="Stress" DirStress="1." />
+    <yy Driving="Stress" DirStress="1.3" />
+    <zz Driving="Strain" Evolution="Linear" Value="0.004" DirStress="1.6" />
+    <xy Driving="Stress" DirStress="0" />
+    <xz Driving="Stress" DirStress="0" />
+    <yz Driving="Stress" DirStress="0" />
+    <yx Driving="Stress" DirStress="0" />
+    <zx Driving="Stress" DirStress="0" />
+    <zy Driving="Stress" DirStress="0" />
+    <DirStress Type="cauchy" />  <!-- Cauchy ou PK1 : necessaire si GDEF + DirStress sur chacune des composantes precedentes --> 
+</Loading>
+
+
+</Loading_Output>

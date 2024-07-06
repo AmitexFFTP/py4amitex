@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Loading_Output>
+
+<!-- OUPUT QUANTITIES -->
+<Output>
+    <vtk_StressStrain Strain = "1" Stress = "1"/>
+    <!--<vtk_IntVarList numM="1"> -->
+    <!--</vtk_IntVarList> -->
+    <Zone numM="1">
+      <VarIntList>  1  </VarIntList>
+    </Zone>
+</Output>
+
+<!-- SUCCESSIVE LOADINGS AND OUTPUT TIMES -->
+<Loading Tag="1">
+    <Time_Discretization Discretization="Linear" Nincr="50" Tfinal="50"/>
+    <Output_vtkList>
+      1
+    </Output_vtkList>
+    <Output_cell Number="10"/>
+    <xx Driving="Strain" Evolution="Linear" Value="0.005"/>
+    <yy Driving="Stress" Evolution="Linear" Value="0" />
+    <zz Driving="Stress" Evolution="Linear" Value="0" />
+    <xy Driving="Stress" Evolution="Linear" Value="0" />
+    <xz Driving="Stress" Evolution="Linear" Value="0" />
+    <yz Driving="Stress" Evolution="Linear" Value="0" />
+</Loading>
+<Loading Tag="2">
+    <Time_Discretization Discretization="Linear" Nincr="100" Tfinal="150"/>
+    <Output_vtkList>
+      1
+    </Output_vtkList>
+    <Output_cell Number="20"/>
+    <xx Driving="Strain" Evolution="Linear" Value="-0.005"/>
+    <yy Driving="Stress" Evolution="Linear" Value="0" />
+    <zz Driving="Stress" Evolution="Linear" Value="0" />
+    <xy Driving="Stress" Evolution="Linear" Value="0" />
+    <xz Driving="Stress" Evolution="Linear" Value="0" />
+    <yz Driving="Stress" Evolution="Linear" Value="0" />
+</Loading>
+<Loading Tag="3">
+    <Time_Discretization Discretization="Linear" Nincr="100" Tfinal="250"/>
+    <Output_vtkList>
+      1
+    </Output_vtkList>
+    <xx Driving="Strain" Evolution="Linear" Value="0.005"/>
+    <yy Driving="Stress" Evolution="Linear" Value="0" />
+    <zz Driving="Stress" Evolution="Linear" Value="0" />
+    <xy Driving="Stress" Evolution="Linear" Value="0" />
+    <xz Driving="Stress" Evolution="Linear" Value="0" />
+    <yz Driving="Stress" Evolution="Linear" Value="0" />
+</Loading>
+
+</Loading_Output>

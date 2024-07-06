@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Loading_Output>
+
+<!-- OUPUT QUANTITIES -->
+<Output>
+    <vtk_FluxDGradD FluxD = "1" GradD="1"/>  
+    <Zone numM="1">
+    </Zone>
+</Output>
+
+
+<!-- TODO : INITIALISATION DE LA DIFFUSION - cas instationnaire -->
+<!--
+<InitDiffusion>
+     <Q1 Value="0."/>
+     <Q2 Value="2."/> 
+</InitDiffusion>
+-->
+
+<!-- SUCCESSIVE LOADINGS AND OUTPUT TIMES -->
+<Loading Tag="1">
+    <Time_Discretization Discretization="User" Nincr="1" />
+    <Time_List>1</Time_List>
+    <Output_vtkList>1</Output_vtkList>
+    <Output_zone Number="1"/>
+
+<!--
+    <x0 Driving="GradD" Evolution="Linear" Value="1."/>
+    <y0 Driving="GradD" Evolution="Linear" Value="2." />
+    <z0 Driving="GradD" Evolution="Linear" Value="3." />
+-->
+    
+    <x0 Driving="FluxD" Evolution="Linear" Value="1."/>
+    <y0 Driving="FluxD" Evolution="Linear" Value="2" />
+    <z0 Driving="FluxD" Evolution="Linear" Value="3" />
+
+</Loading>
+
+
+
+</Loading_Output>

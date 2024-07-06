@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Algorithm_Parameters>
+    <Algorithm Type="Basic_Scheme">                     <!-- "Default" (Basic_Scheme) or "Basic_Scheme" -->
+        <Convergence_Criterion Value="Default"/>        <!-- "Default" (1e-4) or a value <1e-3 -->
+        <Convergence_Acceleration Value="true"/>        <!-- "True" or "False" -->
+        <Nitermin Value="0"/>                           <!-- "0" or "1" : 1 = at least one iteration per loading increment-->
+        <Nitermin_acv Value="0"/>                       <!-- "0" or "1" : 1 = at least one iteration after each accelerated solution-->
+    </Algorithm>
+
+    <Mechanics>    
+        <Filter Type="Default"/>                            <!-- "Default" (hexa) or "no_filter" or "hexa" or "octa" -->
+        <Small_Perturbations Value="true"/>                 <!-- "True" or "False" --> 
+    </Mechanics>
+</Algorithm_Parameters>
+

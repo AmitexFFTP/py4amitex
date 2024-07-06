@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Loading_Output>
+
+      <!-- OUPUT QUANTITIES  -->
+      <Output>
+            <!-- FIELDS (in .vtk files) -->
+            <!-- Stress-Strain fields -->
+            <vtk_StressStrain Strain="0" Stress="1" />    <!-- choice of stress field but no strain
+            field  -->
+
+            <!-- Internal Variable fields -->
+            <vtk_IntVarList numM="1"> 3 </vtk_IntVarList>  <!-- For material 1 : choice of one field,
+            component 3         -->
+            <vtk_IntVarList numM="2"> 1 2 </vtk_IntVarList>  <!-- For material 2 : choice of two
+            fields, components 1 and 2 -->
+            <!-- For material 3 : no field output                          -->
+            <!-- REFAIRE LE POINT SUR LES SORTIE VARINT : dans le cas ou on a deux materiaux (on
+            complete a 0 ou on agrege des infos potentiellement tres differentes -->
+
+            <!-- PER ZONE OUTPUT (in .zstd files) -->
+            <Zone numM="1">                                  <!-- For material 1 : choice of stress & strain (default), and int.
+                  variable (component 1) -->
+                  <VarIntList> 1 </VarIntList>
+            </Zone>
+            <!-- For material 2 : no per zone output                                           -->
+            <Zone numM="3"> </Zone>                          <!-- For material 3 : choice of stress & strain (default) and no
+            internal variable -->
+
+      </Output>
+
+
+      <!-- SUCCESSIVE LOADINGS AND OUTPUT TIMES -->
+      <Loading Tag="1">
+            <Time_Discretization Discretization="Linear" Nincr="1000" Tfinal="10." />
+            <Output_cell Number="100" />                            <!-- (optional) reduces the number of output in .std  
+                                                                           one output per increment ib absent -->
+            <Output_zone Number="10" />                            <!-- (optional) defines he number of 'per zone' output in
+            .zstd files 
+                                                                           no output if absent -->
+            <Output_vtkList> 500 1000 </Output_vtkList>           <!-- (optional) defines the increments for
+            which fields output in .vtk files are required 
+                                                                           no output if absent     -->
+
+            <xx Driving="Strain" Evolution="Linear" Value="0.01" />
+            <yy Driving="Stress" Evolution="Linear" Value="0" />
+            <zz Driving="Stress" Evolution="Linear" Value="0" />
+            <xy Driving="Stress" Evolution="Linear" Value="0" />
+            <xz Driving="Stress" Evolution="Linear" Value="0" />
+            <yz Driving="Stress" Evolution="Linear" Value="0" />
+      </Loading>
+
+
+</Loading_Output>
