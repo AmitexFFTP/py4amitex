@@ -1,5 +1,5 @@
 from pathlib import Path
-from xml.etree.ElementTree import canonicalize, fromstring, indent, tostring
+from xml.etree.ElementTree import canonicalize, fromstring, tostring
 from difflib import unified_diff
 
 testsdir = Path(__file__).parent.parent.parent.parent / "tests"
@@ -74,7 +74,7 @@ def compareXML(genedXML, refXML):
                 regularizeAttrs(child)
 
         sortChilds(tree)
-        indent(tree)
+        # indent(tree)
         regularizeAttrs(tree)
         return tostring(tree, encoding="unicode")
 

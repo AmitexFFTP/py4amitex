@@ -39,7 +39,6 @@ AMITEX_PYTHON = "ON"
 
 [tool.pytest.ini_options]
 addopts = [
-    "--import-mode=importlib",
     "--junitxml=build/test-results-python.xml",
 ]
 testpaths = ["cpp4amitex/bindings/python/tests", "py4amitex/microgen"]

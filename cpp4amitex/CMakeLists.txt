@@ -80,7 +80,7 @@ if(AMITEX_TESTS)
 	add_subdirectory(tests)
 endif()
 
-option(AMITEX_PYTHON "build AMITEX Python bindings" OFF)
+option(AMITEX_PYTHON "build AMITEX Python bindings" ON)
 if(AMITEX_PYTHON)
 	add_subdirectory(bindings/python/src)
 endif()

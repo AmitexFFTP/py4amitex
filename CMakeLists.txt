@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(cpp4amitex LANGUAGES CXX)
+project(py4amitex LANGUAGES CXX)
 set(version 0.1.0)
 
 include(CTest)
