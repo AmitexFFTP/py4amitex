@@ -4,5 +4,6 @@ API Documentation
 .. toctree::
     :maxdepth: 2
 
-    API/input
     API/output
+    API/input
+    API/field
