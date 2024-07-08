@@ -41,7 +41,7 @@ AMITEX_PYTHON = "ON"
 addopts = [
     "--junitxml=build/test-results-python.xml",
 ]
-testpaths = ["cpp4amitex/bindings/python/tests", "py4amitex/microgen"]
+testpaths = ["cpp4amitex/bindings/python", "py4amitex/microgen"]
 
 #[tool.cibuildwheel]
 #test-command = "pytest {project}/tests"
