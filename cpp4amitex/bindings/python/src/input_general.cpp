@@ -8,6 +8,8 @@
 
 #include "amitex/input.hpp"
 
+#include "docstrings.hpp"
+
 namespace py = pybind11;
 using namespace amitex;
 using namespace pybind11::literals;
@@ -43,15 +45,17 @@ namespace amitex_python {
 
 void defineInputMod(py::module_& m) {
   m.doc() = R"pbdoc(
-        AMITEX Input generator 
-        -----------------------
 
-        .. currentmodule:: amitex.input
+        .. currentmodule:: py4amitex.input
 
         .. autosummary::
            :toctree: _generate
 
-           Algorithm
+           Input
+           Grid
+           AlgorithmParameters
+           Materials
+           LoadingOutput
     )pbdoc";
 
   // py::bind_vector<std::vector<GridLinPoint>>(m, "VectorGridLinePoint");
@@ -411,7 +415,7 @@ void defineInputMod(py::module_& m) {
         return py::make_iterator(it.begin(), it.end());
       });
 
-  py::class_<Input>(m, "Input")
+  py::class_<Input>(m, "Input", DOC(amitex, Input))
       .def(py::init<>())
       .def(py::init([](Grid& grid, AlgorithmParameters& algorithmParameters, Materials& materials,
                        LoadingOutput& loadingOutput) {
@@ -427,9 +431,9 @@ void defineInputMod(py::module_& m) {
       .def_readwrite("materials", &Input::materials)
       .def_readwrite("resultsDir", &Input::resultsDir)
       .def("outputPrefix", &Input::outputPrefix)
-      .def("generateFiles", &Input::generateFiles);
+      .def("generateFiles", &Input::generateFiles, DOC(amitex, Input, generateFiles));
 
-  m.attr("__version__") = "dev";
+  m.attr("__version__") = "1.0.0";
 }
 
 }  // namespace amitex_python
