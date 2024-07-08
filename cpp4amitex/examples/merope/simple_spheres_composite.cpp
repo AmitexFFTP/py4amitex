@@ -1,7 +1,5 @@
+#include <array>
 #include <iostream>
-#include <map>
-#include <string>
-#include <vector>
 
 #include "MultiInclusions/MultiInclusions.hxx"
 #include "MultiInclusions/SphereInclusions.hxx"
@@ -9,147 +7,14 @@
 
 #include "amitex/extract.hpp"
 #include "amitex/input.hpp"
+#include "amitex/input/material_builder.hpp"
 #include "amitex/simulation.hpp"
 
-using namespace merope;
-using namespace sac_de_billes;
+using VtkFormatAnIso = merope::vox::composite::vtk_format_anIso<3>;
 
-namespace amx = amitex;
-
-void setParametersAlgorithm(amx::Input& input) {
-  amx::Algorithm algo;
-  algo.type = "Basic_Scheme";
-  algo.convergenceAcceleration = true;
-  algo.convergenceCriterion = 1.e-4;
-  input.algorithmParameters.algorithm = algo;
-
-  // No diffusion for composite (crash anyway)
-  // amx::Diffusion diffu;
-  // diffu.filter = "Default";
-  // diffu.stationary = true;
-  // input.algorithParameters.diffusion = diffu;
-
-  amx::Mechanics meca;
-  meca.filter = "Default";
-  meca.smallPerturbations = true;  // not available with composites
-  input.algorithmParameters.mechanics = meca;
-}
-
-void setLoading(amx::Input& input) {
-  amx::Loading load;
-  double times[] = {1};
-  load.setTimeDiscretizationUser(1, times);
-  for (int i = 0; i < 3; i++) {
-    load.setEvolution(i, amx::DiffusionDriving::Gradient, amx::Evolution::Linear, 0.0);
-  }
-
-  for (int i = 0; i < 3; i++) {
-    for (int j = i; j < 3; j++)
-      load.setEvolution({i, j}, amx::MechanicDriving::Strain, amx::Evolution::Linear,
-                        i == 2 ? 1.0e-3 : 0.0);
-  }
-  load.setOutputVtkList({1});
-  input.loadingOutput.add(std::move(load));
-  input.loadingOutput.output.setVtkStressStrain(1, 1);
-}
-
-using Matrix3D = std::array<amx::Vector3D, 3>;
-
-Matrix3D computeStress(vox::Voxellation<3>& voxelation, const std::vector<double>& coefficients,
-                       const std::string& law = "reuss") {
-  Matrix3D result;
-  const auto& voxGrid = voxelation.getGrid();
-  amx::GridSize n{voxGrid.getNx(), voxGrid.getNy(), voxGrid.getNz()};
-  amx::Vector3D dx{{voxGrid.getLx() / voxGrid.getNx(), voxGrid.getLy() / voxGrid.getNy(),
-                    voxGrid.getLz() / voxGrid.getNz()}};
-  size_t totalSize = voxGrid.getNg();
-  amx::Grid grid{n, dx};
-  amx::Input input{grid};
-
-  setParametersAlgorithm(input);
-  setLoading(input);
-  auto maxCoeff = *std::max_element(coefficients.begin(), coefficients.end());
-  input.materials.referenceMaterialD = amx::ReferenceMaterialD{maxCoeff};
-
-  input.materials.referenceMaterial = amx::ReferenceMaterial{maxCoeff, maxCoeff};
-
-  input.materials.setNumberMaterials(coefficients.size());
-
-  std::vector<amx::Zone> zonePures;
-  for (auto _ : coefficients) zonePures.push_back(amx::Zone{grid.dims()});
-
-  amx::Zone zoneInter{grid.dims()};
-  std::map<std::vector<size_t>, size_t> compos;
-  auto& composites = input.materials.composites;
-  auto phases = voxelation.computePhaseGrid(grid.dims());
-  std::cout << phases.size() << "\n";
-  for (size_t p = 0; p < phases.size(); p++) {
-    amx::GridPoint pos = voxGrid.get_coord_index<3>(p);
-    amx::GridLinPoint lpos = grid.linearize(pos);
-    using Phase = std::tuple<merope::vox::VTK_PHASE, double>;
-    // Order of phase matte to avoid duplicates
-    std::vector<Phase> phase = phases[p];
-    std::sort(phase.begin(), phase.end(), [](Phase a, Phase b) { return get<0>(a) < get<0>(b); });
-    std::vector<size_t> phaseIds;
-    std::vector<double> volFracs;
-    for (const auto& p : phase) {
-      double vf = get<1>(p);
-      if (vf > amx::Composite::maxVolumeFraction) {
-        phaseIds.push_back(get<0>(p));
-        volFracs.push_back(vf);
-      }
-    }
-    if (phaseIds.size() == 0) throw amx::InputError{"phase volume fraction likely wrong"};
-    if (phaseIds.size() == 1) {
-      zonePures.at(get<0>(phases[p][0])).add(lpos);
-    } else {
-      zoneInter.add(pos);
-      auto it = compos.find(phaseIds);
-      if (it == compos.end()) {
-        auto [it2, ok] = compos.insert({phaseIds, composites.numberMaterials()});
-        if (!ok) throw amx::InputError{std::string{__func__} + " map could not inset"};
-        composites.add(amx::Composite{phaseIds, law});
-        it = it2;
-      }
-      size_t ic = it->second;
-      if (ic >= composites.numberMaterials()) {
-        std::cout << ic << " " << it->first.size() << "\n";
-        for (const auto& p : phase) {
-          std::cout << get<0>(p) << "\t" << get<1>(p) << "\n";
-        }
-      }
-      composites.at(ic).addVoxel(lpos, volFracs);
-    }
-  }
-  for (size_t m = 0; m < coefficients.size(); m++) {
-    zonePures.emplace_back(grid.dims());
-  }
-  input.resultsDir = "amitex_merope_comp/";
-
-  for (size_t m = 0; m < coefficients.size(); m++) {
-    amx::Material material;
-    material.setLawK("Fourier_iso_polarization");
-    material.setLaw("elasiso");
-    std::vector<double> coeffKs(4);
-    coeffKs[0] = coefficients.at(m);
-    for (size_t c = 1; c <= 3; c++) coeffKs[c] = 1 == c ? -coeffKs[0] : 0.0;
-    material.setCoeffs({coefficients.at(m)});
-    material.setCoeffComposites({coefficients.at(m)});
-    material.setCoeffKs(coeffKs);  // Why ?
-    material.addZone(zonePures[m]);
-    material.addZone(zoneInter);  // Zone absent otherwise !?
-    input.materials.material(m) = material;
-  }
-
-  runSimulationExternal(input);
-
-  amx::Extract ext{input.outputPrefix()};
-  // auto flux = ext.averageDiffusionFlux(0);
-  auto sig = ext.averageStress();
-  return sig;
-}
-
-int main() {
+std::vector<VtkFormatAnIso> calcMicro(std::array<size_t, 3> N, std::array<double, 3> L) {
+  using namespace merope;
+  using namespace sac_de_billes;
   auto sphIncl = SphereInclusions<3>();
   sphIncl.setLength({10, 10, 10});
   sphIncl.fromHisto(0, algoSpheres::TypeAlgo::RSA, 0.0, {{3, 0.5}}, {1});
@@ -157,13 +22,78 @@ int main() {
   auto multiInclusions = MultiInclusions<3>();
   multiInclusions.setInclusions(sphIncl);
   auto grid = vox::Voxellation<3>(multiInclusions);
-  grid.setPureCoeffs({1.0, 3.0});
-  grid.setHomogRule(homogenization::Rule::Voigt);
-  grid.setVoxelRule(vox::VoxelRule::Average);
-  grid.proceed({32, 32, 32});
 
-  auto sig = computeStress(grid, {1.0, 3.0}, "voigt");
+   grid.setVoxelRule(vox::VoxelRule::Laminate);
+   return grid.computeCompositeGrid(N);
+}
+
+int sim() {
+  using namespace amitex;
+  std::array<size_t, 3> N = {32, 32, 32};
+  std::array<double, 3> L = {10.0, 10, 10};
+
+  auto compGrid = calcMicro(N, L);
+  double DL = L[0] / N[0];
+  Input input;
+  Grid grid{N, {DL, DL, DL}};
+  input.grid = grid;
+
+  Materials materials;
+  buildMaterials(materials, grid.dims(), compGrid, IndexOrdering::C);
+
+  std::vector<std::vector<double>> coeffs = {{1.0, 2.0}, {1.0, 2.0}};
+
+  for (size_t i = 0; i < materials.numberMaterials(); i++) {
+    std::cout << materials.material(i).numberZones() << "\n";
+    for (const auto& zone : materials.material(i).zones()) {
+      std::cout << "Mat " << i << " #zones = " << zone.numberVoxels() << "\n";
+    }
+    materials.material(i).setLaw("elasiso");
+    materials.material(i).setCoeffs(coeffs[i]);
+    materials.material(i).setCoeffComposites(coeffs[i]);
+  }
+
+  for (size_t i = 0; i < materials.numberComposites(); i++) {
+    materials.composite(i).setLaw("laminate");
+    std::cout << "Composite " << i << " #vox=" << materials.composite(i).positions().size();
+  }
+
+  materials.referenceMaterial =
+      ReferenceMaterial{0.5 * (coeffs[0][0] + coeffs[1][0]), 0.5 * (coeffs[0][1] + coeffs[1][1])};
+  input.materials = std::move(materials);
+
+  Algorithm algo;
+  algo.type = "Basic_Scheme";
+  algo.convergenceAcceleration = true;
+  Mechanics meca;
+  meca.filter = "Default";
+  meca.smallPerturbations = true;
+  input.algorithmParameters.mechanics = meca;
+  input.algorithmParameters.algorithm = algo;
+
+  Loading load;
+  load.setTimeDiscretizationUser({1e-3, 2e-3, 1.e-2});
+  for (int i = 0; i < 3; i++) {
+    for (int j = i; j < 3; j++)
+      load.setEvolution({i, j}, MechanicDriving::Stress, Evolution::Linear, 0.0);
+  }
+  load.setEvolution(Component::XX, MechanicDriving::Strain, Evolution::Linear, 0.01);
+  input.loadingOutput.add(std::move(load));
+
+  input.resultsDir = "amitex_dir_simple_spheres";
+  input.generateFiles();
+  runSimulationExternal(input);
+
+  Extract ext{input.outputPrefix()};
+  auto sig = ext.averageStress();
   for (auto row : sig) {
     std::cout << row[0] << "\t" << row[1] << "\t" << row[2] << "\n";
   }
+  auto def = ext.averageStrain();
+  for (auto row : def) {
+    std::cout << row[0] << "\t" << row[1] << "\t" << row[2] << "\n";
+  }
+  return 0;
 }
+
+int main() { return sim(); }
