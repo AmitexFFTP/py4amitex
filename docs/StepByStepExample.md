@@ -240,10 +240,5 @@ with open("run.sh", "w", encoding="utf-8") as file:
 
 ## Full example
 
-Python: \ref minimal.py
-
-C++: \ref minimal.cpp
-
-\example minimal.py
-
-\example minimal.cpp
+```{literalinclude} ../examples/Input/minimal.py
+```

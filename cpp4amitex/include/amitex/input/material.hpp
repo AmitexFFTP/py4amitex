@@ -29,6 +29,7 @@ class CoeffComposite : public BasicCoeff {
   const char* xmlTag() const { return "Coeff_composite"; }
 };
 
+//! Definition of a "pure" material
 class Material {
  public:
   Material() = default;
@@ -72,7 +73,7 @@ class Material {
   //! Set mechanics coefficient constant zone values
   //! \param id index of coefficient
   //! \param binPath path to BIN file
-  void setCoeffZoneFromBin(size_t id, const std::string& binPath);
+  void setCoeffZoneFromBin(size_t id, const std::filesystem::path& binPath);
   //! Set all mechanics coefficients
   //! \param coefficients values of coefficient
   void setCoeffs(const std::vector<double>& coefficents) {
@@ -102,7 +103,7 @@ class Material {
   //! Set diffusion coefficient constant zone values
   //! \param id index of coefficient
   //! \param binPath path to BIN file
-  void setCoeffKZoneFromBin(size_t id, const std::string& binPath);
+  void setCoeffKZoneFromBin(size_t id, const std::filesystem::path& binPath);
   //! Set all diffusion coefficients
   //! \param coefficients values of coefficients
   void setCoeffKs(const std::vector<double>& coefficents) {
@@ -132,7 +133,7 @@ class Material {
   //! Set mechanics coefficient constant zone values (for composite materials)
   //! \param id index of coefficient
   //! \param binPath path to BIN file
-  void setCoeffCompositeZoneFromBin(size_t id, const std::string& binPath);
+  void setCoeffCompositeZoneFromBin(size_t id, const std::filesystem::path& binPath);
   //! Set mechanics coefficient constant value (for composite materials)
   //! \param coefficients values of coefficients
   void setCoeffComposites(const std::vector<double>& coefficents) {

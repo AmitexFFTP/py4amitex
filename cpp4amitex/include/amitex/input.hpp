@@ -17,6 +17,7 @@
 
 namespace amitex {
 
+//! Regroup all AMITEX input parameters
 class Input {
  public:
   Grid grid;                                  //!< Grid defining the unit cell and number of voxels

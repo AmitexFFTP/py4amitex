@@ -12,13 +12,14 @@
 //! Defined 3D fields that may be defined in a rectangluar region of space
 //! (e.g. for MPI partitioning)
 //!
-//! Optional bound-checked accessor (x(i,j,k) x[{i,j,k}]) is off when NDEBUG is defined
 
 namespace amitex {
 
-//! Field template class
+//! 3D Field template class
 //!
-//! The data_ is indexed by Fortran convention (ie left-most index is first in memory,
+//! The internal data is indexed by Fortran convention (ie left-most index is first in memory)
+//!
+//! Optional bound-checked accessor (x(i,j,k) x[{i,j,k}]) is off when NDEBUG is defined
 template <typename T = double>
 class Field {
  public:
