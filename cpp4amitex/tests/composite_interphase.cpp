@@ -58,6 +58,7 @@ TEST(Composite, InterphaseFromMat) {
 
   input.resultsDir = "testresults/interphasefrommat";
   input.generateFiles();
+  ASSERT_TRUE(input.materials.interphase.has_value());
   EXPECT_STREQ(
       toXMLString(input.materials.interphase.value()).c_str(),
       R"(<Interphase><Interphase_material numM="2" Nzones="1"/><Interphase_zone_list numM="1" Nzones="2"><ZoneList>1 3 </ZoneList></Interphase_zone_list></Interphase>)");
@@ -90,4 +91,48 @@ TEST(Composite, BugTangentForDefaultNormals) {
       EXPECT_NEAR(prod2, 0.0, 1.0e-7);
     }
   }
+}
+
+TEST(Composite, InterphaseFromMat2) {
+  // |0 1 0 | -> |C 1 C|
+  // |0 0 0 |    |C C C|
+
+  Grid grid{{3, 2, 1}, {1., 1., 1.}};
+
+  Material mat0, mat1, mat2;
+  mat0.setLaw("elasiso");
+  mat0.setCoeffComposites({1., 2.});
+  mat1.setLaw("elasiso");
+  mat1.setCoeffComposites({3., 4.});
+
+  Materials materials;
+  materials.add(std::move(mat0));
+  materials.add(std::move(mat1));
+
+  auto mat1pos = grid.linearize({0, 1, 0});
+  auto mat2pos = grid.linearize({2, 0, 0});
+
+  MaterialBuilder bd;
+  for (auto p : grid.allPoints()) {
+    auto lpos = grid.linearize(p);
+    VoxelSpec spec;
+    if (lpos == mat1pos) {
+      spec = VoxelSpec({{0, 0.1}, {0, 0.2}, {1, 0.8}});
+    } else if (lpos == mat2pos) {
+      spec = VoxelSpec({{0, 1.}});
+    } else {
+      spec = VoxelSpec({{0, 0.1}, {1, 0.9}});
+    }
+    bd.addVoxel(materials, lpos, spec);
+  }
+  materials.composite(0).setLaw("laminate");
+
+  Input input{grid, AlgorithmParameters{Algorithm{"Basic_Scheme", true}}, std::move(materials),
+              LoadingOutput{}};
+
+  input.resultsDir = "testresults/interphasefrommat2";
+  input.generateFiles();
+  ASSERT_TRUE(input.materials.interphase.has_value());
+  EXPECT_STREQ(toXMLString(input.materials.interphase.value()).c_str(),
+               R"(<Interphase><Interphase_material numM="2" Nzones="1"/></Interphase>)");
 }

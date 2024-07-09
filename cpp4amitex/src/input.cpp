@@ -134,6 +134,47 @@ static void genCompositeZone(Composite& mat, const Materials& materials, const s
           auto index = indexPos.at(lpos - *pmin);
           if (index >= 0) {
             zones.at(index) = izone;
+          }
+        }
+      }
+      izone++;
+    }
+    writeBIN(dir + "/zone" + std::to_string(i + 1) + ".bin", zones);
+  }
+}
+
+static void genInterphase(Materials& materials) {
+  if (materials.numberComposites() == 0) return;
+  auto& interphase = materials.interphase;
+  size_t nphases = 0;
+  size_t pmin = 0, pmax = 0;
+  for (size_t c = 0; c < materials.numberComposites(); c++) {
+    auto& mat = materials.composite(c);
+    nphases = std::max(nphases, mat.numberPhases());
+    const auto& matPos = mat.positions();
+    auto [matpmin, matpmax] = std::minmax_element(matPos.begin(), matPos.end());
+    pmin = std::min(*matpmin, pmin);
+    pmax = std::max(*matpmax, pmax);
+  }
+  // Construct dictionary  position -> is composite
+  std::vector<bool> isComposite(pmax - pmin + 1);
+  std::fill(isComposite.begin(), isComposite.end(), false);
+  for (size_t c = 0; c < materials.numberComposites(); c++) {
+    auto& mat = materials.composite(c);
+    for (size_t p : mat.positions()) {
+      isComposite[p - pmin] = true;
+    }
+  }
+
+  for (size_t m = 0; m < materials.numberMaterials(); m++) {
+    const Material& pureMat = materials.material(m);
+    std::vector<std::size_t> coveredZones;  // zones fully covered by a composite
+    size_t izone = 1;
+    for (const auto& zone : pureMat.zones()) {
+      size_t coveredPos = 0;
+      for (auto lpos : zone.linearPositions()) {
+        if (lpos >= pmin && lpos <= pmax) {
+          if (isComposite.at(lpos - pmin)) {
             coveredPos++;
           }
         }
@@ -143,14 +184,12 @@ static void genCompositeZone(Composite& mat, const Materials& materials, const s
       }
       izone++;
     }
-    writeBIN(dir + "/zone" + std::to_string(i + 1) + ".bin", zones);
-
-    if (coveredZones.size() > 0) {
+    if (coveredZones.size() > 0 || pureMat.numberZones() == 0) {
       if (!interphase) interphase = Interphase{};
       if (coveredZones.size() == pureMat.numberZones())
-        interphase.value().addMaterial(mat.materialIndices()[i], pureMat.numberZones());
+        interphase.value().addMaterial(m, pureMat.numberZones());
       else
-        interphase.value().addZones(mat.materialIndices()[i], coveredZones);
+        interphase.value().addZones(m, coveredZones);
     }
   }
 }
@@ -217,6 +256,7 @@ static void generateComposite(Materials& materials, const std::string& path) {
       idx++;
     }
   }
+  genInterphase(materials);
 }
 
 }  // namespace amitex
