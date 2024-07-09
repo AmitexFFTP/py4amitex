@@ -9,6 +9,7 @@
 
 namespace amitex {
 
+//! Definitions of all loadings and output settings
 class LoadingOutput {
  public:
   LoadingOutput() = default;

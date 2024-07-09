@@ -23,9 +23,9 @@
 #endif
 
 
-static const char *__doc_amitex_Algorithm = R"doc()doc";
+static const char *__doc_amitex_Algorithm = R"doc(Main algorithm parameters)doc";
 
-static const char *__doc_amitex_AlgorithmLaminate = R"doc()doc";
+static const char *__doc_amitex_AlgorithmLaminate = R"doc(Special algorithm parameters for simulations with composite law (laminate, reuss, …))doc";
 
 static const char *__doc_amitex_AlgorithmLaminate_AlgorithmLaminate = R"doc()doc";
 
@@ -45,7 +45,7 @@ static const char *__doc_amitex_AlgorithmLaminate_xmlWriteAttributes = R"doc()do
 
 static const char *__doc_amitex_AlgorithmLaminate_xmlWriteInner = R"doc()doc";
 
-static const char *__doc_amitex_AlgorithmParameters = R"doc()doc";
+static const char *__doc_amitex_AlgorithmParameters = R"doc(Group of all algorithm parameters)doc";
 
 static const char *__doc_amitex_AlgorithmParameters_AlgorithmParameters = R"doc()doc";
 
@@ -247,7 +247,7 @@ Parameter ``index``:
 
 static const char *__doc_amitex_Composite_volumeFractions_2 = R"doc()doc";
 
-static const char *__doc_amitex_ConvergenceAcceleration = R"doc()doc";
+static const char *__doc_amitex_ConvergenceAcceleration = R"doc(Convergence accelaration setting(s))doc";
 
 static const char *__doc_amitex_ConvergenceAcceleration_ConvergenceAcceleration = R"doc()doc";
 
@@ -273,7 +273,7 @@ static const char *__doc_amitex_ConvergenceAcceleration_xmlWriteAttributes = R"d
 
 static const char *__doc_amitex_ConvergenceAcceleration_xmlWriteInner = R"doc()doc";
 
-static const char *__doc_amitex_ConvergenceForced = R"doc()doc";
+static const char *__doc_amitex_ConvergenceForced = R"doc(Force convergence)doc";
 
 static const char *__doc_amitex_ConvergenceForced_ConvergenceForced = R"doc()doc";
 
@@ -400,9 +400,11 @@ static const char *__doc_amitex_Extract_setSymComponents = R"doc()doc";
 static const char *__doc_amitex_Extract_toTensor3D = R"doc()doc";
 
 static const char *__doc_amitex_Field =
-R"doc(Field template class
+R"doc(3D Field template class
 
-The data_ is indexed by Fortran convention (ie left-most index is first in memory,)doc";
+The internal data is indexed by Fortran convention (ie left-most index is first in memory)
+
+Optional bound-checked accessor (x(i,j,k) x[{i,j,k}]) is off when NDEBUG is defined)doc";
 
 static const char *__doc_amitex_Field_Field = R"doc()doc";
 
@@ -494,7 +496,7 @@ static const char *__doc_amitex_Field_uncheckedAt = R"doc(get data_ at grid poin
 
 static const char *__doc_amitex_Field_uncheckedAt_2 = R"doc()doc";
 
-static const char *__doc_amitex_Grid = R"doc()doc";
+static const char *__doc_amitex_Grid = R"doc(Unit cell geometry (sizes, lengths...))doc";
 
 static const char *__doc_amitex_Grid_AllLinPoints = R"doc()doc";
 
@@ -802,9 +804,9 @@ static const char *__doc_amitex_List_xmlWriteAttributes = R"doc()doc";
 
 static const char *__doc_amitex_List_xmlWriteInner = R"doc()doc";
 
-static const char *__doc_amitex_Loading = R"doc()doc";
+static const char *__doc_amitex_Loading = R"doc((partial) loading)doc";
 
-static const char *__doc_amitex_LoadingOutput = R"doc()doc";
+static const char *__doc_amitex_LoadingOutput = R"doc(Definitions of all loadings and output settings)doc";
 
 static const char *__doc_amitex_LoadingOutput_LoadingOutput = R"doc()doc";
 
@@ -1167,9 +1169,12 @@ static const char *__doc_amitex_Loading_xmlWriteAttributes = R"doc()doc";
 
 static const char *__doc_amitex_Loading_xmlWriteInner = R"doc()doc";
 
-static const char *__doc_amitex_Material = R"doc()doc";
+static const char *__doc_amitex_Material = R"doc(Definition of a "pure" material)doc";
 
-static const char *__doc_amitex_MaterialBuilder = R"doc()doc";
+static const char *__doc_amitex_MaterialBuilder =
+R"doc(Higher-level contruction of materials from voxel specification
+
+**note**: This module is concerned with construction of zones and composite specification, the user must specify the material behavior (law, coefficient))doc";
 
 static const char *__doc_amitex_MaterialBuilder_MaterialBuilder = R"doc()doc";
 
@@ -1614,7 +1619,7 @@ static const char *__doc_amitex_Mechanics_xmlWriteAttributes = R"doc()doc";
 
 static const char *__doc_amitex_Mechanics_xmlWriteInner = R"doc()doc";
 
-static const char *__doc_amitex_Output = R"doc()doc";
+static const char *__doc_amitex_Output = R"doc(Output parametrization)doc";
 
 static const char *__doc_amitex_Output_VtkIntVarList = R"doc()doc";
 
@@ -1881,7 +1886,7 @@ static const char *__doc_amitex_VtkStressStrain_xmlWriteAttributes = R"doc()doc"
 
 static const char *__doc_amitex_VtkStressStrain_xmlWriteInner = R"doc()doc";
 
-static const char *__doc_amitex_Zone = R"doc()doc";
+static const char *__doc_amitex_Zone = R"doc(Zone, that is a list of voxel positions)doc";
 
 static const char *__doc_amitex_Zone_Zone =
 R"doc(Parameter ``position``:

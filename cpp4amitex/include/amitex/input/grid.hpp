@@ -7,6 +7,7 @@
 
 namespace amitex {
 
+//! Unit cell geometry (sizes, lengths...)
 class Grid {
  public:
   Grid() = default;

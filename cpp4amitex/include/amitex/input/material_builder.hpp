@@ -61,6 +61,10 @@ class VoxelSpec {
       phases;  //! (material index, volume fraction, zone)
 };
 
+//! Higher-level contruction of materials from voxel specification
+//!
+//! \note This module is concerned with construction of zones and composite specification, the user
+//! must specify the material behavior (law, coefficient)
 class MaterialBuilder {
  public:
   MaterialBuilder() = default;

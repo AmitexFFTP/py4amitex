@@ -7,10 +7,10 @@
 #include "amitex/input/algorithm_composite.hpp"
 
 //! \file algorithm_parameters.hpp
-//! Group of all algorithm parameters
 
 namespace amitex {
 
+//! Group of all algorithm parameters
 class AlgorithmParameters {
  public:
   AlgorithmParameters() = default;

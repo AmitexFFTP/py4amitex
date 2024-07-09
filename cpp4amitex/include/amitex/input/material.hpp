@@ -29,6 +29,7 @@ class CoeffComposite : public BasicCoeff {
   const char* xmlTag() const { return "Coeff_composite"; }
 };
 
+//! Definition of a "pure" material
 class Material {
  public:
   Material() = default;

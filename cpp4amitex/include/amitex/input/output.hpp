@@ -38,6 +38,7 @@ class VtkFluxDGradD {
   int gradd = 0;
 };
 
+//! Output parametrization
 class Output {
  public:
   class Zone {

@@ -7,6 +7,7 @@
 
 namespace amitex {
 
+//! Zone, that is a list of voxel positions
 class Zone {
  public:
   //! \param position list of grid coordinates

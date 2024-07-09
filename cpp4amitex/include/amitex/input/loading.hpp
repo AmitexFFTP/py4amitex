@@ -47,6 +47,7 @@ enum class Evolution { Constant = 0, Linear = 1 };  // External ?
 //! Type of stress tensor
 enum DirStress { Cauchy, PK1 };
 
+//! (partial) loading
 class Loading {
  public:
   const char* xmlTag() const { return "Loading"; }

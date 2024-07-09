@@ -9,10 +9,10 @@
 #include "amitex/private/value_element.hpp"
 
 //! \file algorithm.hpp
-//! Main algorithm parameters
 
 namespace amitex {
 
+//! Convergence accelaration setting(s)
 class ConvergenceAcceleration {
  public:
   ConvergenceAcceleration() = default;
@@ -35,6 +35,7 @@ class ConvergenceAcceleration {
   std::optional<bool> value;
 };
 
+//! Force convergence
 class ConvergenceForced {
  public:
   ConvergenceForced() = default;
@@ -76,6 +77,7 @@ class Substepping {
   int depth = 1;
 };
 
+//! Main algorithm parameters
 class Algorithm {
  public:
   Algorithm() = default;

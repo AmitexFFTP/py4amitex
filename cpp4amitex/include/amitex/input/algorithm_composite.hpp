@@ -6,10 +6,11 @@
 #include "amitex/private/value_element.hpp"
 
 //! \file algorithm_composite.hpp
-//! Special algorithm parameters for simulations with composite law (laminate, reuss, …)
+
 
 namespace amitex {
 
+//! Special algorithm parameters for simulations with composite law (laminate, reuss, …)
 class AlgorithmLaminate {
  public:
   AlgorithmLaminate() = default;
