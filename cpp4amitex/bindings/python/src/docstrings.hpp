@@ -640,7 +640,7 @@ static const char *__doc_amitex_InitLoadExt_xmlWriteAttributes = R"doc()doc";
 
 static const char *__doc_amitex_InitLoadExt_xmlWriteInner = R"doc()doc";
 
-static const char *__doc_amitex_Input = R"doc()doc";
+static const char *__doc_amitex_Input = R"doc(Regroup all AMITEX input parameters)doc";
 
 static const char *__doc_amitex_InputError = R"doc(Thrown by input parametrizing)doc";
 

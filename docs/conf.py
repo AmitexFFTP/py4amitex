@@ -12,7 +12,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.getenv('PY4AMITEX_DIR', '../_install/lib')))
+# sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 

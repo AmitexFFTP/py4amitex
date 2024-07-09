@@ -25,7 +25,7 @@ To launch c++ tests:
 
 It uses [Sphinx](https://www.sphinx-doc.org)
 
-In ``docs``
+The python module(s) need to be compiled and in (python) path. In ``docs``
 
     make html
 
