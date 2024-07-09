@@ -101,21 +101,21 @@ void Material::xmlWriteInner(std::ostream& stream) const {
   }
 }
 
-void Material::setCoeffZoneFromBin(size_t id, const std::string& binPath) {
+void Material::setCoeffZoneFromBin(size_t id, const std::filesystem::path& binPath) {
   std::vector<double> data;
   readBin(binPath, data);
   coeffs.at(id) = std::move(Coeff{std::move(data)});
   coeffs.at(id).setIndex(id);
 }
 
-void Material::setCoeffKZoneFromBin(size_t id, const std::string& binPath) {
+void Material::setCoeffKZoneFromBin(size_t id, const std::filesystem::path& binPath) {
   std::vector<double> data;
   readBin(binPath, data);
   coeffKs.at(id) = std::move(CoeffK{std::move(data)});
   coeffKs.at(id).setIndex(id);
 }
 
-void Material::setCoeffCompositeZoneFromBin(size_t id, const std::string& binPath) {
+void Material::setCoeffCompositeZoneFromBin(size_t id, const std::filesystem::path& binPath) {
   std::vector<double> data;
   readBin(binPath, data);
   coeffComposites.at(id) = std::move(CoeffComposite{std::move(data)});
