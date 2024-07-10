@@ -1828,15 +1828,19 @@ static const char *__doc_amitex_Value_xmlWriteAttributes = R"doc()doc";
 
 static const char *__doc_amitex_Value_xmlWriteInner = R"doc()doc";
 
-static const char *__doc_amitex_VoxelSpec = R"doc(Basic specification (index, volume fraction, zone) of a voxel (composite if more than one voxel))doc";
+static const char *__doc_amitex_VoxelSpec = R"doc(Basic specification (index, volume fraction, zone) of a voxel (composite if more than one phase))doc";
 
 static const char *__doc_amitex_VoxelSpec_VoxelSpec = R"doc()doc";
 
-static const char *__doc_amitex_VoxelSpec_VoxelSpec_2 = R"doc()doc";
+static const char *__doc_amitex_VoxelSpec_VoxelSpec_2 =
+R"doc(Parameter ``phases``:
+    list of (material index, volume fraction))doc";
 
-static const char *__doc_amitex_VoxelSpec_VoxelSpec_3 = R"doc()doc";
+static const char *__doc_amitex_VoxelSpec_VoxelSpec_3 =
+R"doc(Parameter ``phases``:
+    list of (material index, volume fraction, zone index))doc";
 
-static const char *__doc_amitex_VoxelSpec_phases = R"doc()doc";
+static const char *__doc_amitex_VoxelSpec_phases = R"doc((material index, volume fraction, zone))doc";
 
 static const char *__doc_amitex_VtkFluxDGradD = R"doc(Control output of diffusion flux and gradient)doc";
 

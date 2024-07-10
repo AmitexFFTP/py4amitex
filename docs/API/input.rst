@@ -9,6 +9,7 @@ Input generator
     algorithm
     materials
     loadings
+    materialbuilder
     field
 
 General

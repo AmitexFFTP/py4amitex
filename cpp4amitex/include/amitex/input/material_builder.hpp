@@ -49,16 +49,20 @@
 
 namespace amitex {
 
-//! Basic specification (index, volume fraction, zone) of a voxel (composite if more than one voxel)
+//! Basic specification (index, volume fraction, zone) of a voxel (composite if more than one phase)
 class VoxelSpec {
  public:
   VoxelSpec() = default;
+  //! \param phases  list of (material index, volume fraction)
   VoxelSpec(const std::vector<std::tuple<size_t, double>>& phases) {
     for (auto [pid, vf] : phases) this->phases.push_back({pid, vf, 0});
   }
+  //! \param phases  list of (material index, volume fraction, zone index)
   VoxelSpec(const std::vector<std::tuple<size_t, double, size_t>>& phases) : phases{phases} {}
+
+  //! (material index, volume fraction, zone)
   std::vector<std::tuple<size_t, double, size_t>>
-      phases;  //! (material index, volume fraction, zone)
+      phases;
 };
 
 //! Higher-level contruction of materials from voxel specification
