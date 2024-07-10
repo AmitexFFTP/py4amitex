@@ -8,17 +8,17 @@ authors = [
   { name = "G. Bareigts", email = "guillame.bareigts@cea.com" },
 ]
 
-
-[build-system]
-requires = ["scikit-build-core>=0.3.3"]
-build-backend = "scikit_build_core.build"
-
 requires-python = ">=3.8"
 
 dependencies = [
     "numpy",
     "vtk"
 ]
+
+[build-system]
+requires = ["scikit-build-core>=0.3.3"]
+build-backend = "scikit_build_core.build"
+
 
 [project.optional-dependencies]
 test = ["pytest"]
