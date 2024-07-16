@@ -1,6 +1,6 @@
 from sys import argv, stdout
 from re import match
-from xml.etree.ElementTree import canonicalize, fromstring, indent, tostring
+from xml.etree.ElementTree import canonicalize, fromstring, tostring
 from difflib import unified_diff
 
 if len(argv) >= 3:
@@ -34,7 +34,7 @@ if len(argv) >= 3:
             for child in elem:
                 regularizeAttrs(child)
         sortChilds(tree)
-        indent(tree)
+        # indent(tree)
         regularizeAttrs(tree)
         return tostring(tree, encoding="unicode")
     
