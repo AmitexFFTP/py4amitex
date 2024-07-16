@@ -1,0 +1,77 @@
+# This file is a template, and might need editing before it works on your project.
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/C++.gitlab-ci.yml
+
+# use the official gcc image, based on debian
+# can use versions as well, like gcc:5.2
+# see https://hub.docker.com/_/gcc/
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_TITLE =~ /-draft$/
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.build_general:
+  stage: build
+  script:
+    - pip3 install pytest numpy vtk
+    - cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=_install -DAMITEX_PYTHON=ON
+    - cmake --build build -j 2
+    - cmake --install build
+    - ctest --test-dir build --output-junit test-results-cpp.xml --output-on-failure
+    - PYTHONPATH=_install/lib pytest
+  artifacts:
+    paths:
+      - _install/
+    reports:
+      junit: 
+        - build/test-results-cpp.xml
+        - build/test-results-python.xml
+  cache:
+    paths:
+        - "build"        
+
+.build_debian_like:
+  before_script:
+    - apt-get update -y
+    - apt-get upgrade -y
+    - apt-get install -y build-essential python3 python3-pip python3-venv cmake
+    - python3 -m venv venv
+    - source venv/bin/activate
+  extends:
+    - .build_general
+
+.build_rhel_like:
+  before_script:
+    - dnf update -y
+    - dnf clean all
+    - dnf install -y make python38-devel cmake
+    # default 8.5 does not work
+    - dnf install -y gcc-toolset-9-gcc gcc-toolset-9-gcc-c++
+    - source /opt/rh/gcc-toolset-9/enable
+    - python3.8 -m venv venv
+    - source venv/bin/activate  
+  extends:
+    - .build_general
+
+rocky8:
+  image: rockylinux:8
+  extends:
+    - .build_rhel_like
+    
+jammy:
+  image: ubuntu:jammy
+  extends:
+    - .build_debian_like
+
+noble:
+ image: ubuntu:noble
+ extends:
+   - .build_debian_like
