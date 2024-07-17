@@ -101,23 +101,24 @@ Docs can then be browsed at `docs/html/index.html`.
 
 With a few exceptions, only the C++ API is documented, as the python API is very similar.
 
-## Compilers and compatibility
+## Compatibility
 
-Only tested on Linux. Tested mainly with gcc 11.4.0 (Ubuntu 22.04)
+Tested with:
+- gcc 9.2, python 3.8 (Rocky Linux 8)
+- gcc 11.4, python 3.10 (Ubuntu 22.04)
+- gcc 13.2, python 3.12 (Ubuntu 24.04)
 
 Known to work with:
-- gcc 11.4.0 (Ubuntu 22.04)
-- clang 14.0.0 (Ubuntu 22.04)
-- gcc 8.1.0 (CentOS 7)
-- icpx/icpc in oneAPI 2022.2.1 (Ubuntu 22.04)
-    (**note**: version 2021.1 compiles the c++ lit but chokes on the python bindings)
+- gcc 11.4 (Ubuntu 22.04)
+- clang 14.0 (Ubuntu 22.04)
+- gcc 8.1 (CentOS 7)
+- icpx/icpc in oneAPI 2022.2 (Ubuntu 22.04)
+    (**note**: version 2021.1 (chokes on the python bindings, compiles otherwise))
 
 Known not to work with:
+- gcc 8.5 (chokes on the python bindings, compiles otherwise)
+- icpx/icpc in oneAPI 2021.1 (chokes on the python bindings, compiles otherwise))
 - compilers not supporting c++17
 - compiler/system where the compiler use an old system standard library not supportting c++17
 
 Some stdc++ versions need to link with `-lstdc++fs` in addition (the current build system adds it for gcc < 9)
-
-**Note**
-
-The standard C++ library (libstdc++) on some old compiler/systems need to use 
