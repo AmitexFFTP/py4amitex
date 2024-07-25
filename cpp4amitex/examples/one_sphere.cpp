@@ -32,10 +32,10 @@ int main() {
   mat.setLawK("Fourier_iso_polarization");
   mat.setNumberCoeffK(4);
 
-  mat.addZone(zone0, {}, {kappas[0], 0.0, 0.0, -kappas[0]});
-  mat.addZone(zone1, {}, {kappas[1], 0.0, 0.0, -kappas[1]});
+  mat.addZone(std::move(zone0), {}, {kappas[0], 0.0, 0.0, -kappas[0]});
+  mat.addZone(std::move(zone1), {}, {kappas[1], 0.0, 0.0, -kappas[1]});
 
-  materials.add(mat);
+  materials.add(std::move(mat));
 
   Algorithm algo{"Basic_Scheme", true};
   algo.convergenceCriterion = 1.e-4;

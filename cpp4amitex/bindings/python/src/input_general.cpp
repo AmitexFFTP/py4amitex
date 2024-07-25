@@ -67,18 +67,24 @@ void defineInputMod(py::module_& m) {
       .def_readwrite("value", &Value<std::string>::value);
   py::class_<Type>(m, "Type").def(py::init<const char*>()).def_readwrite("type", &Type::type);
 
-  py::class_<ConvergenceAcceleration>(m, "ConvergenceAcceleration", DOC(amitex, ConvergenceAcceleration))
+  py::class_<ConvergenceAcceleration>(m, "ConvergenceAcceleration",
+                                      DOC(amitex, ConvergenceAcceleration))
       .def(py::init<>())
-      .def(py::init<bool, std::optional<int>>(), "value"_a, "modACV"_a = std::nullopt, DOC(amitex, ConvergenceAcceleration, ConvergenceAcceleration))
-      .def_readwrite("value", &ConvergenceAcceleration::value, DOC(amitex, ConvergenceAcceleration, value))
-      .def_readwrite("modACV", &ConvergenceAcceleration::modACV, DOC(amitex, ConvergenceAcceleration, modACV));
+      .def(py::init<bool, std::optional<int>>(), "value"_a, "modACV"_a = std::nullopt,
+           DOC(amitex, ConvergenceAcceleration, ConvergenceAcceleration))
+      .def_readwrite("value", &ConvergenceAcceleration::value,
+                     DOC(amitex, ConvergenceAcceleration, value))
+      .def_readwrite("modACV", &ConvergenceAcceleration::modACV,
+                     DOC(amitex, ConvergenceAcceleration, modACV));
 
   py::class_<ConvergenceForced>(m, "ConvergenceForced", DOC(amitex, ConvergenceForced))
       .def(py::init<>())
-      .def(py::init<bool, int, int>(), "value"_a, "nitCVFor"_a = 0, "nCVFor"_a = 0, DOC(amitex, ConvergenceForced, ConvergenceForced, 2) )
-      .def_readwrite("value", &ConvergenceForced::value, DOC(amitex, ConvergenceForced, value) )
-      .def_readwrite("nitCVFor", &ConvergenceForced::nitCVFor, DOC(amitex, ConvergenceForced, nitCVFor) )
-      .def_readwrite("nCVFor", &ConvergenceForced::nCVFor, DOC(amitex, ConvergenceForced, nCVFor) );
+      .def(py::init<bool, int, int>(), "value"_a, "nitCVFor"_a = 0, "nCVFor"_a = 0,
+           DOC(amitex, ConvergenceForced, ConvergenceForced, 2))
+      .def_readwrite("value", &ConvergenceForced::value, DOC(amitex, ConvergenceForced, value))
+      .def_readwrite("nitCVFor", &ConvergenceForced::nitCVFor,
+                     DOC(amitex, ConvergenceForced, nitCVFor))
+      .def_readwrite("nCVFor", &ConvergenceForced::nCVFor, DOC(amitex, ConvergenceForced, nCVFor));
 
   py::class_<Substepping>(m, "Substepping", DOC(amitex, Substepping))
       .def(py::init<>())
@@ -134,9 +140,11 @@ void defineInputMod(py::module_& m) {
 
   py::class_<SmallPerturbations>(m, "SmallPerturbations", DOC(amitex, SmallPerturbations))
       .def(py::init<>())
-      .def(py::init<bool, const std::string&>(), "value"_a, "displacementGradient"_a = "", DOC(amitex, SmallPerturbations, SmallPerturbations, 2))
+      .def(py::init<bool, const std::string&>(), "value"_a, "displacementGradient"_a = "",
+           DOC(amitex, SmallPerturbations, SmallPerturbations, 2))
       .def_readwrite("value", &SmallPerturbations::value, DOC(amitex, SmallPerturbations, value))
-      .def_readwrite("displacementGradient", &SmallPerturbations::displacementGradient, DOC(amitex, SmallPerturbations, displacementGradient));
+      .def_readwrite("displacementGradient", &SmallPerturbations::displacementGradient,
+                     DOC(amitex, SmallPerturbations, displacementGradient));
 
   py::class_<Mechanics>(m, "Mechanics", DOC(amitex, Mechanics))
       .def(py::init<>())
@@ -151,12 +159,14 @@ void defineInputMod(py::module_& m) {
             } else {
               a.smallPerturbations = std::get<SmallPerturbations>(cv);
             }
-          }, DOC(amitex, Mechanics, smallPerturbations))
+          },
+          DOC(amitex, Mechanics, smallPerturbations))
       .DEF_TYPE_PROPERTY(filter, Mechanics);
 
   py::class_<Diffusion>(m, "Diffusion", DOC(amitex, Diffusion))
       .def(py::init<>())
-      .def(py::init<const std::string&, bool>(), "filter"_a, "stationary"_a,  DOC(amitex, Diffusion, Diffusion, 2))
+      .def(py::init<const std::string&, bool>(), "filter"_a, "stationary"_a,
+           DOC(amitex, Diffusion, Diffusion, 2))
       .DEF_VALUE_PROPERTY(stationary, bool, Diffusion)
       .DEF_TYPE_PROPERTY(filter, Diffusion);
 
@@ -183,7 +193,8 @@ void defineInputMod(py::module_& m) {
       .def(py::init())
       .def(py::init<const Algorithm&, const std::optional<Mechanics>&,
                     const std::optional<Diffusion>&>(),
-           "algorithm"_a, "mechanics"_a = std::nullopt, "diffusion"_a = std::nullopt, DOC(amitex, AlgorithmParameters, AlgorithmParameters, 2))
+           "algorithm"_a, "mechanics"_a = std::nullopt, "diffusion"_a = std::nullopt,
+           DOC(amitex, AlgorithmParameters, AlgorithmParameters, 2))
       .def_readwrite("algorithm", &AlgorithmParameters::algorithm,
                      DOC(amitex, AlgorithmParameters, algorithm))
       .def_readwrite("mechanics", &AlgorithmParameters::mechanics,
@@ -370,9 +381,12 @@ void defineInputMod(py::module_& m) {
       .def("numberCoeffK", &Material::numberCoeffK, DOC(amitex, Material, numberCoeffK))
       .def("numberCoeffComposite", &Material::numberCoeffComposite,
            DOC(amitex, Material, numberCoeffComposite))
-      .def("addZone", &Material::addZone, "zone"_a, "coeffs"_a = std::vector<double>{},
-           "coeffKs"_a = std::vector<double>{}, "coeffComposites"_a = std::vector<double>{},
-           DOC(amitex, Material, addZone))
+      .def("addZone",
+           static_cast<void (Material::*)(const Zone&, const std::vector<double>&,
+                                          const std::vector<double>&, const std::vector<double>&)>(
+               &Material::addZone),
+           "zone"_a, "coeffs"_a = std::vector<double>{}, "coeffKs"_a = std::vector<double>{},
+           "coeffComposites"_a = std::vector<double>{}, DOC(amitex, Material, addZone))
       .def("numberZones", &Material::numberZones, DOC(amitex, Material, numberZones))
       .def("numberIntVars", &Material::numberIntVars, DOC(amitex, Material, numberIntVars))
       .def("addIntVar", static_cast<void (Material::*)(double)>(&Material::addIntVar),
@@ -419,12 +433,17 @@ void defineInputMod(py::module_& m) {
 
   py::class_<Materials>(m, "Materials", DOC(amitex, Materials))
       .def(py::init<>())
-      .def("add", static_cast<void (Materials::*)(const Material&)>(&Materials::add), DOC(amitex, Materials, add))
-      .def("add", static_cast<void (Materials::*)(const Composite&)>(&Materials::add), DOC(amitex, Materials, add, 2))
-      .def_readwrite("referenceMaterial", &Materials::referenceMaterial, DOC(amitex, Materials, referenceMaterial))
-      .def_readwrite("referenceMaterialD", &Materials::referenceMaterialD, DOC(amitex, Materials, referenceMaterialD))
+      .def("add", static_cast<void (Materials::*)(const Material&)>(&Materials::add),
+           DOC(amitex, Materials, add))
+      .def("add", static_cast<void (Materials::*)(const Composite&)>(&Materials::add),
+           DOC(amitex, Materials, add, 2))
+      .def_readwrite("referenceMaterial", &Materials::referenceMaterial,
+                     DOC(amitex, Materials, referenceMaterial))
+      .def_readwrite("referenceMaterialD", &Materials::referenceMaterialD,
+                     DOC(amitex, Materials, referenceMaterialD))
       .def("numberMaterials", &Materials::numberMaterials, DOC(amitex, Materials, numberMaterials))
-      .def("numberComposites", &Materials::numberComposites, DOC(amitex, Materials, numberComposites))
+      .def("numberComposites", &Materials::numberComposites,
+           DOC(amitex, Materials, numberComposites))
       .def("toXML", &toXML<Materials>)
       // .def("material", [](Materials& m, size_t i) -> Material& { return m.material(i); })
       .def("material", static_cast<Material& (Materials::*)(size_t)>(&Materials::material),
@@ -433,8 +452,8 @@ void defineInputMod(py::module_& m) {
            py::return_value_policy::reference, DOC(amitex, Materials, composite));
 
   py::class_<Grid>(m, "Grid", DOC(amitex, Grid))
-      .def(py::init<GridSize, Vector3D>(), "dims"_a, "dx"_a,  DOC(amitex, Grid, Grid, 2))
-      .def("setPbc", &Grid::setPbc,  DOC(amitex, Grid, setPbc))
+      .def(py::init<GridSize, Vector3D>(), "dims"_a, "dx"_a, DOC(amitex, Grid, Grid, 2))
+      .def("setPbc", &Grid::setPbc, DOC(amitex, Grid, setPbc))
       .def_property("pbc", nullptr, &Grid::setPbc)
       .def("setOrigin", &Grid::setOrigin, DOC(amitex, Grid, setOrigin))
       .def_property("origin", nullptr, &Grid::setOrigin)
@@ -442,19 +461,28 @@ void defineInputMod(py::module_& m) {
       .def("dims", &Grid::dims, DOC(amitex, Grid, dims))
       .def("voxelLengths", &Grid::voxelLengths, DOC(amitex, Grid, voxelLengths))
       .def("linearize", &Grid::linearize, DOC(amitex, Grid, linearize))
-      .def("distance", static_cast<double (Grid::*)(const GridPoint& a, const GridPoint& b) const>(
-                           &Grid::distance), DOC(amitex, Grid, distance))
-      .def("distance", static_cast<double (Grid::*)(const GridPoint& a, const Vector3D& b) const>(
-                           &Grid::distance), DOC(amitex, Grid, distance, 2))
-      .def("allPoints",
-           [](Grid& grid) {
-             auto it = grid.allPoints();
-             return py::make_iterator(it.begin(), it.end());
-           }, DOC(amitex, Grid, allPoints))
-      .def("allLinPoints", [](Grid& grid) {
-        auto it = grid.allLinPoints();
-        return py::make_iterator(it.begin(), it.end());
-      }, DOC(amitex, Grid, allLinPoints));
+      .def("distance",
+           static_cast<double (Grid::*)(const GridPoint& a, const GridPoint& b) const>(
+               &Grid::distance),
+           DOC(amitex, Grid, distance))
+      .def("distance",
+           static_cast<double (Grid::*)(const GridPoint& a, const Vector3D& b) const>(
+               &Grid::distance),
+           DOC(amitex, Grid, distance, 2))
+      .def(
+          "allPoints",
+          [](Grid& grid) {
+            auto it = grid.allPoints();
+            return py::make_iterator(it.begin(), it.end());
+          },
+          DOC(amitex, Grid, allPoints))
+      .def(
+          "allLinPoints",
+          [](Grid& grid) {
+            auto it = grid.allLinPoints();
+            return py::make_iterator(it.begin(), it.end());
+          },
+          DOC(amitex, Grid, allLinPoints));
 
   py::class_<Input>(m, "Input", DOC(amitex, Input))
       .def(py::init<>())
@@ -463,12 +491,14 @@ void defineInputMod(py::module_& m) {
              return Input{grid, std::move(algorithmParameters), std::move(materials),
                           std::move(loadingOutput)};
            }),
-           "note: AlgorithmParameters, Materials, LoadingOutput passed to constructor are moved internally "
+           "note: AlgorithmParameters, Materials, LoadingOutput passed to constructor are moved "
+           "internally "
            "for performance reasons, invalidating their content",
            "grid"_a, "algorithmParameters"_a, "materials"_a, "loadingOutput"_a)
       .def_readwrite("grid", &Input::grid, DOC(amitex, Input, grid))
       .def_readwrite("loadingOutput", &Input::loadingOutput, DOC(amitex, Input, loadingOutput))
-      .def_readwrite("algorithmParameters", &Input::algorithmParameters, DOC(amitex, Input, algorithmParameters))
+      .def_readwrite("algorithmParameters", &Input::algorithmParameters,
+                     DOC(amitex, Input, algorithmParameters))
       .def_readwrite("materials", &Input::materials, DOC(amitex, Input, materials))
       .def_readwrite("resultsDir", &Input::resultsDir, DOC(amitex, Input, resultsDir))
       .def("outputPrefix", &Input::outputPrefix, DOC(amitex, Input, outputPrefix))

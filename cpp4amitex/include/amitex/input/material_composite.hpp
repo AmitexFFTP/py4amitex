@@ -92,7 +92,7 @@ class MaterialComposite {
   //! Get number of defined composite materials
   size_t numberMaterials() const { return materials_.size(); }
   //! Add a composite material
-  void add(Composite&& composite) { materials_.push_back(composite); }
+  void add(Composite&& composite) { materials_.push_back(std::move(composite)); }
   void add(const Composite& composite) { materials_.push_back(composite); }
 
   //! Get a composite material

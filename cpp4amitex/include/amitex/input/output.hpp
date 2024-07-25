@@ -68,7 +68,7 @@ class Output {
 
   //! Add zones of a material to .zstd output
   void addZone(const Zone& zone) { zones.push_back(zone); }
-  void addZone(Zone&& zone) { zones.push_back(zone); };
+  void addZone(Zone&& zone) { zones.push_back(std::move(zone)); };
   //! Add zones of a material to .zstd output
   //! \param numM index of material
   //! \param intVarList list of internal variable indices

@@ -26,7 +26,7 @@ class List {
     }
   }
   void add(const T& value) { values.push_back(value); }
-  void add(T&& value) { values.push_back(value); }
+  void add(T&& value) { values.push_back(std::move(value)); }
   //! Get the number of listed values
   size_t numberValues() const { return values.size(); }
 

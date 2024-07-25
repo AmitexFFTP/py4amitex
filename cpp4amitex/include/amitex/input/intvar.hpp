@@ -13,7 +13,7 @@ class IntVar : public BasicCoeff {
   IntVar() : BasicCoeff{} {}
   IntVar(double value) : BasicCoeff{value} {}
   IntVar(const std::vector<double>& zoneValues) : BasicCoeff{zoneValues} {}
-  IntVar(Field<double>&& field) : field{field} {}
+  IntVar(Field<double>&& field) : field{std::move(field)} {}
   IntVar(const Field<double>& field) : field{field} {}
   const char* xmlTag() const { return "IntVar"; }
   bool xmlHasBody() const { return false; }

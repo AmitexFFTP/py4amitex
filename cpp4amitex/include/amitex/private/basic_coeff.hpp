@@ -22,7 +22,7 @@ class BasicCoeff {
   //! \param values list of values by increasing zone index
   //! \note It is recommanded to use \ref Material::addZone for this purpose
   BasicCoeff(const std::vector<double>& values) : values{values} {}
-  BasicCoeff(std::vector<double>&& values) : values{values} {}
+  BasicCoeff(std::vector<double>&& values) : values{std::move(values)} {}
 
   const char* xmlTag() const { return "BasicCoeff"; }
   bool xmlHasBody() const { return false; }

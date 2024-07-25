@@ -195,6 +195,9 @@ class Material {
   void addZone(const Zone& zone, const std::vector<double>& coeffs = {},
                const std::vector<double>& coeffKs = {},
                const std::vector<double>& coeffComposites = {});
+  void addZone(Zone&& zone, const std::vector<double>& coeffs = {},
+               const std::vector<double>& coeffKs = {},
+               const std::vector<double>& coeffComposites = {});
 
   //! \return zone list
   const std::vector<Zone>& zones() const { return zones_; }

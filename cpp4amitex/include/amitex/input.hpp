@@ -32,9 +32,9 @@ class Input {
   Input(const Grid& grid, AlgorithmParameters&& algorithmParameters, Materials&& materials,
         LoadingOutput&& loadingOutput)
       : grid{grid},
-        algorithmParameters{algorithmParameters},
-        materials{materials},
-        loadingOutput{loadingOutput} {}
+        algorithmParameters{std::move(algorithmParameters)},
+        materials{std::move(materials)},
+        loadingOutput{std::move(loadingOutput)} {}
   Input(const Grid& grid, const AlgorithmParameters& algorithmParameters,
         const Materials& materials, const LoadingOutput& loadingOutput)
       : grid{grid},

@@ -24,7 +24,7 @@ class LoadingOutput {
     setLastId();
   }
   void add(Loading&& loading) {
-    loadings.push_back(loading);
+    loadings.push_back(std::move(loading));
     setLastId();
   }
 

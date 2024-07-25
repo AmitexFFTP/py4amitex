@@ -55,7 +55,7 @@ class Materials {
     setLastId();
   }
   void add(Material&& material) {
-    materials.push_back(material);
+    materials.push_back(std::move(material));
     setLastId();
   }
   //! Get a material
@@ -75,7 +75,7 @@ class Materials {
     setLastId();
   }
   void add(Composite&& composite) {
-    composites.add(composite);
+    composites.add(std::move(composite));
     setLastId();
   }
   Composite& composite(int id) { return composites.at(id); }
