@@ -404,7 +404,9 @@ R"doc(3D Field template class
 
 The internal data is indexed by Fortran convention (ie left-most index is first in memory)
 
-Optional bound-checked accessor (x(i,j,k) x[{i,j,k}]) is off when NDEBUG is defined)doc";
+Optional bound-checked accessor (x(i,j,k) x[{i,j,k}]) is off when NDEBUG is defined
+
+Assignment does not copy the underlying buffer, generate a fresh copy with the method ``copy()`` instead)doc";
 
 static const char *__doc_amitex_Field_Field = R"doc()doc";
 
@@ -434,7 +436,7 @@ Parameter ``ibegin``:
 Parameter ``iend``:
     end of the rane in grid coordinates (*exclusive*))doc";
 
-static const char *__doc_amitex_Field_at = R"doc(get data_ at grid point with bound checking)doc";
+static const char *__doc_amitex_Field_at = R"doc(get data at grid point with bound checking)doc";
 
 static const char *__doc_amitex_Field_at_2 = R"doc()doc";
 
@@ -442,11 +444,11 @@ static const char *__doc_amitex_Field_bounds = R"doc(Get range [begin, end) of a
 
 static const char *__doc_amitex_Field_checkBounds = R"doc()doc";
 
+static const char *__doc_amitex_Field_copy = R"doc(Create a new instance with a copy of the internal data)doc";
+
 static const char *__doc_amitex_Field_data = R"doc(get underlying data buffer)doc";
 
 static const char *__doc_amitex_Field_data_2 = R"doc()doc";
-
-static const char *__doc_amitex_Field_data_3 = R"doc()doc";
 
 static const char *__doc_amitex_Field_dataPtr = R"doc()doc";
 
@@ -467,32 +469,36 @@ static const char *__doc_amitex_Field_inBounds_2 = R"doc(Check if {`ix`, `iy`, `
 static const char *__doc_amitex_Field_lbound = R"doc(Get lower bound (inclusive))doc";
 
 static const char *__doc_amitex_Field_loadFromVtk =
-R"doc(Create a field from a TVK file
+R"doc(Create a field from a VTK file
 
 Parameter ``path``:
     file path)doc";
 
+static const char *__doc_amitex_Field_managed =
+R"doc(Returns:
+    `true` if the underlying data is managed)doc";
+
 static const char *__doc_amitex_Field_nx = R"doc()doc";
 
 static const char *__doc_amitex_Field_operator_array =
-R"doc(get data_ at grid point with optional bound checking
+R"doc(get data at grid point with optional bound checking
 
 Parameter ``p``:
     grid coordinates)doc";
 
 static const char *__doc_amitex_Field_operator_array_2 = R"doc()doc";
 
-static const char *__doc_amitex_Field_operator_call = R"doc(get data_ at grid point with optional bound checking)doc";
+static const char *__doc_amitex_Field_operator_call = R"doc(get data at grid point with optional bound checking)doc";
 
 static const char *__doc_amitex_Field_operator_call_2 = R"doc()doc";
 
-static const char *__doc_amitex_Field_shallowCopy = R"doc(Create a new instance that shares memory buffer with the original **warning**:  The validity of the field data is not check (same as the general case of taking a pointer to data))doc";
-
 static const char *__doc_amitex_Field_size = R"doc(Get total size)doc";
+
+static const char *__doc_amitex_Field_storage = R"doc()doc";
 
 static const char *__doc_amitex_Field_ubound = R"doc(Get upper bound (exclusive))doc";
 
-static const char *__doc_amitex_Field_uncheckedAt = R"doc(get data_ at grid point without bound checking)doc";
+static const char *__doc_amitex_Field_uncheckedAt = R"doc(get data at grid point without bound checking)doc";
 
 static const char *__doc_amitex_Field_uncheckedAt_2 = R"doc()doc";
 
@@ -1278,6 +1284,8 @@ Parameter ``coeffs``:
 
 Parameter ``coeffKs``:
     diffusion coefficients)doc";
+
+static const char *__doc_amitex_Material_addZone_2 = R"doc()doc";
 
 static const char *__doc_amitex_Material_coeff =
 R"doc(Returns:

@@ -41,7 +41,7 @@ TEST(IntVar, ElasIsoEigs) {
   material.setCoeffs({lambda, mu});
   Field<double> freeStr0{grid.dims()};
   freeStr0.fill(0.);
-  material.addIntVar(freeStr0.shallowCopy());
+  material.addIntVar(freeStr0);
   for (int i = 1; i < 6; i++) material.addIntVar(0);
   material.addZone({grid.dims(), grid.allPoints().begin(), grid.allPoints().end()});
   materials.add(material);

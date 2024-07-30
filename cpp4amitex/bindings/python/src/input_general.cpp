@@ -392,8 +392,7 @@ void defineInputMod(py::module_& m) {
       .def("addIntVar", static_cast<void (Material::*)(double)>(&Material::addIntVar),
            DOC(amitex, Material, addIntVar))
       .def(
-          "addIntVar",
-          [](Material& mat, const Field<double>& f) { mat.addIntVar(f.shallowCopy()); },
+          "addIntVar", [](Material& mat, const Field<double>& f) { mat.addIntVar(f); },
           DOC(amitex, Material, addIntVar, 2))
       .def("setCoeffName", &Material::setCoeffName, DOC(amitex, Material, setCoeffName))
       .def("setCoeffKName", &Material::setCoeffKName, DOC(amitex, Material, setCoeffKName))

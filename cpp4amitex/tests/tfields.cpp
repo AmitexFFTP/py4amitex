@@ -39,10 +39,18 @@ TEST(Fields, FieldInt) {
 
   EXPECT_THROW(field.at(0, 3, 2), std::out_of_range);
 
-  Field view = field.shallowCopy();
+  Field view = field;
 
   view[{0, 4, 1}] = -61;
   EXPECT_EQ(field(0, 4, 1), -61);
   view[{4, 5, 1}] = -62;
   EXPECT_EQ(field(4, 5, 1), -62);
+
+  Field newf = field.copy();
+  std::array<GridPoint, 3> points = {GridPoint{0, 4, 1}, {4, 5, 1}, {1, 0, 1}};
+  for (auto p : points) {
+    int expected = field[p];
+    newf[p] = -33;
+    EXPECT_EQ(field[p], expected);
+  }
 }

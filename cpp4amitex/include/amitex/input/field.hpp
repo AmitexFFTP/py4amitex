@@ -1,6 +1,7 @@
 #ifndef _AMITEX_FIELD_HEADER_
 #define _AMITEX_FIELD_HEADER_
 
+#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
@@ -20,35 +21,32 @@ namespace amitex {
 //! The internal data is indexed by Fortran convention (ie left-most index is first in memory)
 //!
 //! Optional bound-checked accessor (x(i,j,k) x[{i,j,k}]) is off when NDEBUG is defined
+//!
+//! Assignment does not copy the underlying buffer, generate a fresh copy with the method
+//! ``copy()`` instead
 template <typename T = double>
 class Field {
  public:
   Field() = default;
   //! Field on the whole grid
   //! \param gridDims grid dimensions
-  Field(GridSize gridDims)
-      : nx{gridDims},
-        data_(gridDims[0] * gridDims[1] * gridDims[2]),
-        ibegin{0, 0, 0},
-        iend{gridDims} {
-    dataPtr_ = data_.data();
+  Field(GridSize gridDims) : nx{gridDims}, ibegin{0, 0, 0}, iend{gridDims} {
+    storage_ = std::make_shared<std::vector<T>>(gridDims[0] * gridDims[1] * gridDims[2]);
+    dataPtr_ = storage_->data();
   }
   //! Field on the whole grid, non-owning memory
   //! \param gridDims grid dimensions
   //! \param buffer
   Field(GridSize gridDims, T* dataPtr)
-      : nx{gridDims},
-        data_(gridDims[0] * gridDims[1] * gridDims[2]),
-        ibegin{0, 0, 0},
-        iend{gridDims},
-        dataPtr_{dataPtr} {}
+      : nx{gridDims}, storage_(nullptr), ibegin{0, 0, 0}, iend{gridDims}, dataPtr_{dataPtr} {}
   //! Field on a rectangular region
   //! \param gridDims grid dimensions
   //! \param ibegin beginning of the rane in grid coordinates (*inclusive*)
   //! \param iend end of the rane in grid coordinates (*exclusive*)
-  Field(GridSize gridDims, GridSize ibegin, GridSize iend)
-      : nx{gridDims}, data_(gridDims[0] * gridDims[1] * gridDims[2]), ibegin{ibegin}, iend{iend} {
-    dataPtr_ = data_.data();
+  Field(GridSize gridDims, GridSize ibegin, GridSize iend) : ibegin{ibegin}, iend{iend} {
+    for (size_t i = 0; i < nx.size(); i++) nx[i] = iend[i] - ibegin[i];
+    storage_ = std::make_shared<std::vector<T>>(size());
+    dataPtr_ = storage_->data();
   }
 
   //! Get dimensions
@@ -57,12 +55,12 @@ class Field {
   //! Get total size
   size_t size() const { return nx[0] * nx[1] * nx[2]; }
 
-  //! get data_ at grid point without bound checking
+  //! get data at grid point without bound checking
   const T& uncheckedAt(size_t ix, size_t iy, size_t iz) const {
     size_t idx =
         (ix - ibegin[0]) +
         (iend[0] - ibegin[0]) * ((iy - ibegin[1]) + (iend[1] - ibegin[1]) * (iz - ibegin[2]));
-    return data_[idx];
+    return storage_[idx];
   }
   T& uncheckedAt(size_t ix, size_t iy, size_t iz) {
     size_t idx =
@@ -70,7 +68,7 @@ class Field {
         (iend[0] - ibegin[0]) * ((iy - ibegin[1]) + (iend[1] - ibegin[1]) * (iz - ibegin[2]));
     return dataPtr_[idx];
   }
-  //! get data_ at grid point with optional bound checking
+  //! get data at grid point with optional bound checking
   const T& operator()(size_t ix, size_t iy, size_t iz) const {
 #ifndef NDEBUG
     checkBounds({ix, iy, iz});
@@ -83,7 +81,7 @@ class Field {
 #endif
     return uncheckedAt(ix, iy, iz);
   }
-  //! get data_ at grid point with optional bound checking
+  //! get data at grid point with optional bound checking
   //! \param p grid coordinates
   T& operator[](GridPoint p) {
 #ifndef NDEBUG
@@ -97,7 +95,7 @@ class Field {
 #endif
     return uncheckedAt(p[0], p[1], p[2]);
   }
-  //! get data_ at grid point with bound checking
+  //! get data at grid point with bound checking
   const T& at(size_t ix, size_t iy, size_t iz) const {
     checkBounds({ix, iy, iz});
     return uncheckedAt(ix, iy, iz);
@@ -108,7 +106,7 @@ class Field {
   }
   //! Fill all the (owned) space with `value`.
   void fill(const T& value) {
-    for (size_t i = 0; i < data_.size(); i++) {
+    for (size_t i = 0; i < size(); i++) {
       dataPtr_[i] = value;
     };
   }
@@ -134,28 +132,26 @@ class Field {
   //! check if no data allocated
   bool empty() const { return size() == 0; }
 
-  //! Create a new instance that shares memory buffer with the original
-  //! \warning
-  //! The validity of the field data is not check (same as the general case of taking a pointer to
-  //! data)
-  Field shallowCopy() const {
-    Field view;
-    view.dataPtr_ = dataPtr_;
-    view.nx = nx;
-    view.ibegin = ibegin;
-    view.iend = iend;
-    return view;
+  //! \return `true` if the underlying data is managed
+  bool managed() const { return storage_ != nullptr; }
+
+  //! Create a new instance with a copy of the internal data
+  Field copy() const {
+    Field dest{nx, ibegin, iend};
+    std::copy(dataPtr_, dataPtr_ + size(), dest.dataPtr_);
+    return dest;
   }
-  //! Create a field from a TVK file
+
+  //! Create a field from a VTK file
   //! \param path file path
   static Field<T> loadFromVtk(const std::filesystem::path& path) {
     std::vector<T> data;
     auto header = readVTK(path, data);
-    Field<T> ret;
+    Field ret;
     ret.nx = header.dimensions;
     ret.iend = ret.nx;
-    ret.data_ = std::move(data);
-    ret.dataPtr_ = &ret.data_[0];
+    ret.storage_ = std::make_shared<std::vector<T>>(std::move(data));
+    ret.dataPtr_ = ret.storage_->data();
     return ret;
   }
 
@@ -171,7 +167,7 @@ class Field {
     }
   }
   T* dataPtr_ = nullptr;
-  std::vector<T> data_;
+  std::shared_ptr<std::vector<T>> storage_;
   GridSize nx = {0, 0, 0};  // global grid
   // local partition
   GridSize ibegin = {0, 0, 0};
