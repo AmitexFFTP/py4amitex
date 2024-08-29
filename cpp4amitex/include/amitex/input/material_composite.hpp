@@ -6,8 +6,6 @@
 
 #include "amitex/input/zone.hpp"
 
-#include "amitex/private/input_element.hpp"
-
 //! \file material_composite.hpp
 //! Definition of composite materials
 

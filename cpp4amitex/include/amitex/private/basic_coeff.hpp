@@ -1,11 +1,9 @@
 #ifndef _AMITEX_BASIC_COEFF_HEADER_
 #define _AMITEX_BASIC_COEFF_HEADER_
 
+#include <string>
 #include <string_view>
 #include <vector>
-
-#include "amitex/private/input_element.hpp"
-#include "amitex/private/xml_utils.hpp"
 
 //! \file basic_coeff.h
 //! Template for defining 'Coeff'-like elements in the input XML

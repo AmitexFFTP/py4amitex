@@ -9,7 +9,6 @@
 #include <string>
 
 #include "amitex/private/xml_document.hpp"
-// #include "amitex/private/xml_utils.hpp"
 
 namespace amitex_tests {
 

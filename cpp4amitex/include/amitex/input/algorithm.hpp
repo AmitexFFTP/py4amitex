@@ -4,7 +4,6 @@
 #include <optional>
 #include <variant>
 
-#include "amitex/private/input_element.hpp"
 #include "amitex/private/type_element.hpp"
 #include "amitex/private/value_element.hpp"
 

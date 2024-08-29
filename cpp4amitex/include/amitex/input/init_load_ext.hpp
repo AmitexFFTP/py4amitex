@@ -3,7 +3,6 @@
 
 #include <vector>
 
-#include "amitex/private/input_element.hpp"
 #include "amitex/private/value_element.hpp"
 
 //! \file init_load_ext.hpp

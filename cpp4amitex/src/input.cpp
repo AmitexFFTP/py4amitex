@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <fstream>
 
 #include "amitex/errors.hpp"
 #include "amitex/io.hpp"

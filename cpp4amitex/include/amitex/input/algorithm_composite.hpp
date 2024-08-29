@@ -2,7 +2,6 @@
 #define _AMITEX_ALGORITHM_COMPOSITE_HEADER_
 
 #include "amitex/input/algorithm.hpp"
-#include "amitex/private/input_element.hpp"
 #include "amitex/private/value_element.hpp"
 
 //! \file algorithm_composite.hpp

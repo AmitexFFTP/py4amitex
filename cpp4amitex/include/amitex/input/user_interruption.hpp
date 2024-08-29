@@ -4,7 +4,6 @@
 #include <ostream>
 
 #include "amitex/input/common.hpp"
-#include "amitex/private/input_element.hpp"
 
 //! \file user_interruption
 //! Used to parametrize a user-provided "user_functions"

@@ -1,7 +1,6 @@
 #ifndef _AMITEX_INTERPHASE_HEADER
 #define _AMITEX_INTERPHASE_HEADER
 
-#include "amitex/private/input_element.hpp"
 #include "amitex/private/list_element.hpp"
 
 namespace amitex {

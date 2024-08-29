@@ -26,7 +26,6 @@ set(SOURCES_INPUT
 	user_interruption.cpp
 	material_builder.cpp
 	run_external.cpp
-	xml_utils.cpp
 	xml_document.cpp
 )
 

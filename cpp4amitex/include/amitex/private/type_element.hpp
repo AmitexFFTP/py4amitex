@@ -6,9 +6,6 @@
 #include <string_view>
 #include <vector>
 
-#include "amitex/private/input_element.hpp"
-#include "amitex/private/xml_utils.hpp"
-
 namespace amitex {
 
 //! Helper class to defined elements with <ELEMENT Type="…"> signature

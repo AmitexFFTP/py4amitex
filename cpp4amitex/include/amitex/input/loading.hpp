@@ -8,7 +8,6 @@
 #include "amitex/input/init_load_ext.hpp"
 #include "amitex/input/user_interruption.hpp"
 
-#include "amitex/private/input_element.hpp"
 #include "amitex/private/list_element.hpp"
 
 namespace amitex {

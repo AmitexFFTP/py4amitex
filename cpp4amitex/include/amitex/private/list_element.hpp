@@ -6,9 +6,6 @@
 #include <sstream>
 #include <vector>
 
-#include "amitex/private/input_element.hpp"
-#include "amitex/private/xml_utils.hpp"
-
 namespace amitex {
 
 //! Helper class to define elements containing space-separated list of values

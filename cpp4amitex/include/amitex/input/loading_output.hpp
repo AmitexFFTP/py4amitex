@@ -5,8 +5,6 @@
 #include "amitex/input/loading.hpp"
 #include "amitex/input/output.hpp"
 
-#include "amitex/private/input_element.hpp"
-
 namespace amitex {
 
 //! Definitions of all loadings and output settings

@@ -5,9 +5,6 @@
 #include <optional>
 #include <vector>
 
-#include "amitex/private/input_element.hpp"
-#include "amitex/private/xml_utils.hpp"
-
 namespace amitex {
 
 //! Helper class to easily interact with elements of <ELEMENT Value="…"> signature

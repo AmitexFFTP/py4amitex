@@ -1,7 +1,6 @@
 #ifndef _AMITEX_OUTPUT_HEADER_
 #define _AMITEX_OUTPUT_HEADER_
 
-#include "amitex/private/input_element.hpp"
 #include "amitex/private/list_element.hpp"
 
 namespace amitex {

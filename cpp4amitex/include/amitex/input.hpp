@@ -13,8 +13,6 @@
 #include "amitex/input/materials.hpp"
 #include "amitex/input/output.hpp"
 
-#include "amitex/private/input_element.hpp"
-
 namespace amitex {
 
 //! Regroup all AMITEX input parameters

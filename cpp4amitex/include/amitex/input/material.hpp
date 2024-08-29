@@ -9,7 +9,6 @@
 #include "amitex/input/zone.hpp"
 
 #include "amitex/private/basic_coeff.hpp"
-#include "amitex/private/input_element.hpp"
 
 //! \file materials.hpp
 //! Definition of a "pure" material

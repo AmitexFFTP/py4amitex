@@ -3,7 +3,6 @@
 #include <cmath>
 
 #include "amitex/errors.hpp"
-#include "amitex/private/xml_utils.hpp"
 
 namespace amitex {
 
