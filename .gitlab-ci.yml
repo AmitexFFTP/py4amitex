@@ -22,6 +22,7 @@ workflow:
   stage: build
   script:
     - pip3 install pytest numpy vtk
+    - export CXX=g++
     - cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=_install -DAMITEX_PYTHON=ON
     - cmake --build build -j 2
     - cmake --install build
