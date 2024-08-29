@@ -22,8 +22,13 @@ workflow:
   stage: build
   script:
     - pip3 install pytest numpy vtk
-    - export CXX=g++
-    - cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=_install -DAMITEX_PYTHON=ON
+    - |+
+      if [[ $COMPILER == "INTEL" ]]
+      then
+        CMAKE_OPTS="-DCMAKE_CXX_COMPILER=icpx $CMAKE_OPTS" 
+      fi
+      echo cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=_install -DAMITEX_PYTHON=ON $CMAKE_OPTS
+      cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=_install -DAMITEX_PYTHON=ON $CMAKE_OPTS
     - cmake --build build -j 2
     - cmake --install build
     - ctest --test-dir build --output-junit test-results-cpp.xml --output-on-failure
@@ -53,10 +58,26 @@ workflow:
   before_script:
     - dnf update -y
     - dnf clean all
-    - dnf install -y make python38-devel cmake
-    # default 8.5 does not work
-    - dnf install -y gcc-toolset-9-gcc gcc-toolset-9-gcc-c++
-    - source /opt/rh/gcc-toolset-9/enable
+    - dnf groupinstall development -y
+    - dnf install python38-devel cmake -y
+    - |+
+      if [[ $COMPILER == "INTEL" ]]
+      then
+        echo '[oneAPI]' > oneAPI.repo
+        echo 'name=Intel® oneAPI repository' >> oneAPI.repo
+        echo 'baseurl=https://yum.repos.intel.com/oneapi' >> oneAPI.repo
+        echo 'enabled=1' >> oneAPI.repo
+        echo 'gpgcheck=1' >> oneAPI.repo
+        echo 'repo_gpgcheck=1' >> /oneAPI.repo
+        echo 'gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB' >> oneAPI.repo
+        mv oneAPI.repo /etc/yum.repos.d
+        dnf install -y intel-basekit
+        . /opt/intel/oneapi/setvars.sh
+      else
+        # default 8.5 does not work
+        dnf install -y gcc-toolset-9-gcc gcc-toolset-9-gcc-c++
+        source /opt/rh/gcc-toolset-9/enable
+      fi
     - python3.8 -m venv venv
     - source venv/bin/activate  
   extends:
@@ -64,15 +85,29 @@ workflow:
 
 rocky8:
   image: rockylinux:8
+  variables:
+    COMPILER: GNU
   extends:
     - .build_rhel_like
-    
+
+rocky8-intel:
+  image: rockylinux:8
+  variables:
+    COMPILER: INTEL
+    CMAKE_OPTS: "-DCMAKE_CXX_STANDARD_LIBRARIES=-lstdc++fs"
+  extends:
+    - .build_rhel_like
+
 jammy:
   image: ubuntu:jammy
+  variables:
+    COMPILER: GNU
   extends:
     - .build_debian_like
 
 noble:
- image: ubuntu:noble
- extends:
-   - .build_debian_like
+  image: ubuntu:noble
+  variables:
+    COMPILER: GNU
+  extends:
+    - .build_debian_like
