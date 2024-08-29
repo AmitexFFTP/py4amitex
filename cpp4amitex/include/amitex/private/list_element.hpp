@@ -3,6 +3,7 @@
 
 #include <iomanip>
 #include <optional>
+#include <sstream>
 #include <vector>
 
 #include "amitex/private/input_element.hpp"
@@ -16,14 +17,16 @@ template <typename T>
 class List {
  public:
   List(const char* tag) : tag_{tag} {}
-  const char* xmlTag() const { return tag_; }
-  bool xmlHasBody() const { return values.size() > 0; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const {
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement(tag_);
+    std::stringstream stream;
     for (const auto& value : values) {
       // Lack of precision affected comparison with original XMLs
       stream << std::setprecision(12) << value << ' ';
     }
+    ret.appendChild(doc.createText(stream.str()));
+    return ret;
   }
   void add(const T& value) { values.push_back(value); }
   void add(T&& value) { values.push_back(std::move(value)); }

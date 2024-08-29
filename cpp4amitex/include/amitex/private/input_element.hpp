@@ -10,16 +10,10 @@ namespace amitex {
 //! \file input_element.h
 
 //! Define the basic requirement for input data that generates XML
-template <typename T>
-concept InputElement = requires(const T& el, std::ostream& stream) {
-  //! \return the tag of the element
-  { el.xmlTag() } -> std::convertible_to<const char*>;
-  //! \return true if the element has inner text and / or elements
-  { el.xmlHasBody() } -> std::same_as<bool>;
-  //! Helper function to write the attributes of the XML element
-  el.xmlWriteAttributes(stream);
-  //! Helper function to write the inner data of the XML element
-  el.xmlWriteInner(stream);
+template <typename T, TDoc>
+concept InputElement = requires(const T& el, TDoc& doc) {
+  //! \return XML representation
+  { el.toXMLElement(doc) } -> std::same_as<TDoc::Node>;
 };
 
 }  // namespace amitex

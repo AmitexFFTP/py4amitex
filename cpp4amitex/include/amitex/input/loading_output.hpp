@@ -13,10 +13,18 @@ namespace amitex {
 class LoadingOutput {
  public:
   LoadingOutput() = default;
-  const char* xmlTag() const { return "Loading_Output"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+
+  template <typename TDoc>
+  TDoc toXMLDocument() const {
+    TDoc doc{"Loading_Output"};
+    auto root = doc.getRoot();
+    root.appendChild(output.toXMLElement(doc));
+    if (initLoadExt) root.appendChild(initLoadExt.value().toXMLElement(doc));
+    for (const auto& loading : loadings) {
+      root.appendChild(loading.toXMLElement(doc));
+    }
+    return doc;
+  }
 
   //! Append a partial loading
   void add(const Loading& loading) {

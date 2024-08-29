@@ -27,6 +27,7 @@ set(SOURCES_INPUT
 	material_builder.cpp
 	run_external.cpp
 	xml_utils.cpp
+	xml_document.cpp
 )
 
 if(AMITEX_API)

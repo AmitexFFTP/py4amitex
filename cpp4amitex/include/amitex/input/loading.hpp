@@ -50,10 +50,33 @@ enum DirStress { Cauchy, PK1 };
 //! (partial) loading
 class Loading {
  public:
-  const char* xmlTag() const { return "Loading"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const;
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Loading");
+    ret.setAttribute("Tag", id + 1);
+    ret.appendChild(tdisc.toXMLElement(doc));
+    if (userTimeList) ret.appendChild(tlist.toXMLElement(doc));
+    if (outputVtkList.numberValues() > 0) ret.appendChild(outputVtkList.toXMLElement(doc));
+    for (const auto& driver : diffu_drivers) {
+      ret.appendChild(driver.toXMLElement(doc));
+    }
+    for (const auto& driver : meca_drivers) {
+      ret.appendChild(driver.toXMLElement(doc));
+    }
+    if (any_of(meca_drivers.begin(), meca_drivers.end(),
+               [](const auto& d) { return d.dirstress; })) {
+      ret.appendChild(dirstress_.toXMLElement(doc));
+    }
+    if (temperature) ret.appendChild(temperature.value().toXMLElement(doc));
+    for (const auto& param : params) ret.appendChild(param.toXMLElement(doc));
+    if (outputCell.number >= 0) ret.appendChild(outputCell.toXMLElement(doc));
+    if (outputZone.number >= 0) ret.appendChild(outputZone.toXMLElement(doc));
+    for (const auto& driver : gradGradUDrivers) {
+      ret.appendChild(driver.toXMLElement(doc));
+    }
+    for (const auto& userItpt : userItpts) ret.appendChild(userItpt.toXMLElement(doc));
+    return ret;
+  }
   //! Discretize time by a constant interval
   //! \param increments the number of timesteps
   //! \param tFinal final time
@@ -217,10 +240,30 @@ class Loading {
     MechanicsDriver(AxisIndexPair component) : component{component} {
       tag = std::string{AxisStrings[component.first]} + AxisStrings[component.second];
     }
-    const char* xmlTag() const { return tag.c_str(); }
-    bool xmlHasBody() const { return false; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement(tag);
+      switch (driving) {
+        case MechanicDriving::Strain:
+          ret.setAttribute("Driving", "Strain");
+          break;
+        case MechanicDriving::Stress:
+
+          ret.setAttribute("Driving", "Stress");
+      }
+      switch (evolution) {
+        case Evolution::Constant:
+          // Redondant (?) if dirstress is imposed
+          if (!(driving == MechanicDriving::Stress && dirstress))
+            ret.setAttribute("Evolution", "Constant");
+          break;
+        case Evolution::Linear:
+          ret.setAttribute("Evolution", "Linear");
+          ret.setAttribute("Value", value);
+      }
+      if (dirstress) ret.setAttribute("DirStress", dirstress.value());
+      return ret;
+    }
 
     AxisIndexPair component;
     MechanicDriving driving = MechanicDriving::Strain;
@@ -235,10 +278,26 @@ class Loading {
     DiffusionDriver(int component) : component{component} {
       tag = std::string{AxisStrings[component]} + "0";
     }
-    const char* xmlTag() const { return tag.c_str(); }
-    bool xmlHasBody() const { return false; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement(tag);
+      switch (driving) {
+        case DiffusionDriving::Gradient:
+          ret.setAttribute("Driving", "GradD");
+          break;
+        case DiffusionDriving::Flux:
+          ret.setAttribute("Driving", "FluxD");
+      }
+      switch (evolution) {
+        case Evolution::Constant:
+          ret.setAttribute("Evolution", "Constant");
+          break;
+        case Evolution::Linear:
+          ret.setAttribute("Evolution", "Linear");
+          ret.setAttribute("Value", value);
+      }
+      return ret;
+    }
 
     int component;
     DiffusionDriving driving = DiffusionDriving::Gradient;
@@ -251,10 +310,20 @@ class Loading {
    public:
     DirStress_() = default;
     DirStress_(DirStress dirstress) : dirstress{dirstress} {}
-    const char* xmlTag() const { return "DirStress"; }
-    bool xmlHasBody() const { return 0; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("DirStress");
+      switch (dirstress) {
+        case Cauchy:
+          ret.setAttribute("Type", "Cauchy");
+          break;
+        case PK1:
+          ret.setAttribute("Type", "PK1");
+          break;
+      }
+      return ret;
+    }
 
    private:
     DirStress dirstress = Cauchy;
@@ -263,10 +332,20 @@ class Loading {
   class GradGradU {
    public:
     GradGradU(AxisIndexPair ii, int j);
-    const char* xmlTag() const { return tag_.c_str(); }
-    bool xmlHasBody() const { return 0; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement(tag_);
+      switch (evolution) {
+        case Evolution::Constant:
+          ret.setAttribute("Evolution", "Constant");
+          break;
+        case Evolution::Linear:
+          ret.setAttribute("Evolution", "Linear");
+          ret.setAttribute("Value", value);
+      }
+      return ret;
+    }
 
     AxisIndexPair tcomponent;
     int vcomponent;
@@ -282,10 +361,17 @@ class Loading {
     TimeDiscretisation() = default;
     TimeDiscretisation(const char* discretization, size_t increments, double t_final = -1.0)
         : discretization{discretization}, nincr{increments}, tfinal{t_final} {}
-    const char* xmlTag() const { return "Time_Discretization"; }
-    bool xmlHasBody() const { return false; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("Time_Discretization");
+      ret.setAttribute("Discretization", discretization);
+      ret.setAttribute("Nincr", nincr);
+      if (tfinal > 0.0) {
+        ret.setAttribute("Tfinal", tfinal);
+      }
+      return ret;
+    }
 
    private:
     std::string discretization = "Linear";
@@ -295,20 +381,29 @@ class Loading {
   class Temperature {
    public:
     Temperature() = default;
-    const char* xmlTag() const { return "T"; }
-    bool xmlHasBody() const { return false; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("T");
+      setEvolutionAttr<TDoc>(ret, evolution, value);
+      return ret;
+    }
+
     Evolution evolution;
     double value = 0;
   };
   class Param {
    public:
     Param() = default;
-    const char* xmlTag() const { return "Param"; }
-    bool xmlHasBody() const { return false; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("Param");
+      ret.setAttribute("Index", index + 1);
+      setEvolutionAttr<TDoc>(ret, evolution, value);
+      return ret;
+    }
+
     size_t index;
     Evolution evolution;
     double value = 0;
@@ -317,10 +412,13 @@ class Loading {
    public:
     OutputNumber(const char* tag) : tag_{tag} {}
     OutputNumber(int number) : number{number} {};
-    const char* xmlTag() const { return tag_; }
-    bool xmlHasBody() const { return false; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement(tag_);
+      ret.setAttribute("Number", number);
+      return ret;
+    }
     int number = -1;
 
    private:
@@ -344,6 +442,18 @@ class Loading {
   OutputNumber outputZone{"Output_zone"};
   std::vector<UserInterruption> userItpts;
   std::vector<GradGradU> gradGradUDrivers;
+
+  template <typename TDoc>
+  static void setEvolutionAttr(typename TDoc::Node elem, Evolution evolution, double value) {
+    switch (evolution) {
+      case Evolution::Constant:
+        elem.setAttribute("Evolution", "Constant");
+        break;
+      case Evolution::Linear:
+        elem.setAttribute("Evolution", "Linear");
+        elem.setAttribute("Value", value);
+    }
+  }
 };
 };  // namespace amitex
 

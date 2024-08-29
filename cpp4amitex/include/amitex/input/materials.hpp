@@ -14,10 +14,14 @@ namespace amitex {
 class ReferenceMaterial {
  public:
   ReferenceMaterial(double lambda0, double mu0) : lambda0{lambda0}, mu0{mu0} {}
-  const char* xmlTag() const { return "Reference_Material"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Reference_Material");
+    ret.setAttribute("Lambda0", lambda0);
+    ret.setAttribute("Mu0", mu0);
+    return ret;
+  }
 
  private:
   double lambda0, mu0;
@@ -27,10 +31,13 @@ class ReferenceMaterial {
 class ReferenceMaterialD {
  public:
   ReferenceMaterialD(double K0) : K0{K0} {}
-  const char* xmlTag() const { return "Reference_MaterialD"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Reference_MaterialD");
+    ret.setAttribute("K0", K0);
+    return ret;
+  }
 
  private:
   double K0;
@@ -40,10 +47,21 @@ class ReferenceMaterialD {
 class Materials {
  public:
   Materials() = default;
-  const char* xmlTag() const { return "Materials"; }
-  bool xmlHasBody() const;
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+
+  template <typename TDoc>
+  TDoc toXMLDocument() const {
+    TDoc doc{"Materials"};
+    auto root = doc.getRoot();
+    if (referenceMaterial) root.appendChild(referenceMaterial.value().toXMLElement(doc));
+    if (referenceMaterialD) root.appendChild(referenceMaterialD.value().toXMLElement(doc));
+    for (const auto& mat : materials) {
+      root.appendChild(mat.toXMLElement(doc));
+    }
+    if (composites.numberMaterials() > 0) root.appendChild(composites.toXMLElement(doc));
+    if (interphase) root.appendChild(interphase.value().toXMLElement(doc));
+    return doc;
+  }
+
   //! Get the number of materials
   size_t numberMaterials() const { return materials.size(); }
   //! Set the number of materials (can substract materials or add empty materials )

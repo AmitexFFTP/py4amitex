@@ -22,15 +22,17 @@ class Value {
     this->value = value;
     return *this;
   }
-  const char* xmlTag() const { return tag_; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const {
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement(tag_);
     if (value)
-      writeXMLAttributes(stream, "Value", value.value());
-    else
-      writeXMLAttributes(stream, "Value", "Default");
+      ret.setAttribute("Value", value.value());
+    else {
+      ret.setAttribute("Value", "Default");
+    }
+    return ret;
   }
-  void xmlWriteInner(std::ostream& stream) const {}
+
   //! Get the value
   std::optional<T> value;
 

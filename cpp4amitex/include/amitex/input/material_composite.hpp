@@ -81,10 +81,13 @@ class Composite {
 class MaterialComposite {
  public:
   MaterialComposite() = default;
-  const char* xmlTag() const { return "Material_composite"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Material_composite");
+    ret.appendChild(coeffComposite.toXMLElement(doc));
+    return ret;
+  }
 
   //! Set directory where generated files wil be located
   void setDirectory(std::string_view path) { coeffComposite.directory = path; };
@@ -103,10 +106,12 @@ class MaterialComposite {
  private:
   class CoeffComposite {
    public:
-    const char* xmlTag() const { return "Coeff_composite"; }
-    bool xmlHasBody() const { return false; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("Coeff_composite");
+      ret.setAttribute("directory", directory);
+      return ret;
+    }
     std::string directory;
   };
   CoeffComposite coeffComposite;

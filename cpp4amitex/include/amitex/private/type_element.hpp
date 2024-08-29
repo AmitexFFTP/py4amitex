@@ -21,10 +21,12 @@ class Type {
     this->type = type;
     return *this;
   }
-  const char* xmlTag() const { return tag_; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const { writeXMLAttributes(stream, "Type", type); }
-  void xmlWriteInner(std::ostream& stream) const {}
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement(tag_);
+    ret.setAttribute("Type", type);
+    return ret;
+  }
 
   std::string type = "Default";
 

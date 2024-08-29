@@ -25,10 +25,16 @@ class ConvergenceAcceleration {
     return *this;
   }
   operator bool() const { return value.value(); }
-  const char* xmlTag() const { return "Convergence_Acceleration"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Convergence_Acceleration");
+    if (value)
+      ret.setAttribute("Value", value.value());
+    else
+      ret.setAttribute("Value", "Default");
+    if (modACV) ret.setAttribute("modACV", modACV.value());
+    return ret;
+  }
 
   //! number of iterations between two convergence accelerations
   std::optional<int> modACV;
@@ -45,11 +51,15 @@ class ConvergenceForced {
     this->value = value;
     return *this;
   }
-  operator bool() const { return false; }
-  const char* xmlTag() const { return "Convergence_Forced"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+  operator bool() const { return value; }
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Convergence_Forced");
+    ret.setAttribute("Value", value);
+    ret.setAttribute("Nit_cvfor", nitCVFor);
+    ret.setAttribute("Ncvfor", nCVFor);
+    return ret;
+  }
 
   bool value;
   //! TODO: Document
@@ -62,10 +72,15 @@ class ConvergenceForced {
 class Substepping {
  public:
   Substepping() = default;
-  const char* xmlTag() const { return "Substepping"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Substepping");
+    ret.setAttribute("Nitermax2", nitermax2);
+    ret.setAttribute("Geom_ratio", geomRatio);
+    ret.setAttribute("Nsub", nsub);
+    ret.setAttribute("Depth", depth);
+    return ret;
+  }
 
   //! initial number of iterations before supstepping
   int nitermax2 = 1;
@@ -120,10 +135,24 @@ class Algorithm {
   //! Force convergence
   std::optional<ConvergenceForced> convergenceForced;
 
-  const char* xmlTag() const { return "Algorithm"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteInner(std::ostream& stream) const;
-  void xmlWriteAttributes(std::ostream& stream) const { writeXMLAttributes(stream, "Type", type); }
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Algorithm");
+    ret.setAttribute("Type", type);
+    ret.appendChild(convergenceCriterion.toXMLElement(doc));
+    if (convergenceAcceleration.value) ret.appendChild(convergenceAcceleration.toXMLElement(doc));
+    if (nitermax.value) ret.appendChild(nitermax.toXMLElement(doc));
+    if (convergenceCriterionSmacro.value)
+      ret.appendChild(convergenceCriterionSmacro.toXMLElement(doc));
+    if (convergenceCriterionCompatibility.value)
+      ret.appendChild(convergenceCriterionCompatibility.toXMLElement(doc));
+    if (nitermin.value) ret.appendChild(nitermin.toXMLElement(doc));
+    if (niterminACV.value) ret.appendChild(niterminACV.toXMLElement(doc));
+    if (initialize.value) ret.appendChild(initialize.toXMLElement(doc));
+    if (substepping) ret.appendChild(substepping.value().toXMLElement(doc));
+    if (convergenceForced) ret.appendChild(convergenceForced.value().toXMLElement(doc));
+    return ret;
+  }
 };
 
 class Diffusion {
@@ -134,12 +163,12 @@ class Diffusion {
   Type filter{"Filter"};
   Value<bool> stationary{"Stationary", true};
 
-  const char* xmlTag() const { return "Diffusion"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const {
-    writeXML(stream, filter);
-    writeXML(stream, stationary);
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Diffusion");
+    ret.appendChild(filter.toXMLElement(doc));
+    ret.appendChild(stationary.toXMLElement(doc));
+    return ret;
   }
 };
 
@@ -154,10 +183,14 @@ class SmallPerturbations {
     return *this;
   }
   operator bool() const { return value; }
-  const char* xmlTag() const { return "Small_Perturbations"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Small_Perturbations");
+    ret.setAttribute("Value", value);
+    if (!displacementGradient.empty())
+      ret.setAttribute("Displacement_Gradient", displacementGradient);
+    return ret;
+  }
 
   //! Toggle non symmetrized displacement gradients (="nsysm" or ommited)
   std::string displacementGradient;
@@ -175,10 +208,14 @@ class Mechanics {
   // Toggle non-symmetric reference material behavior for finite strains
   Value<bool> C0Sym{"C0Sym"};
 
-  const char* xmlTag() const { return "Mechanics"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Mechanics");
+    ret.appendChild(filter.toXMLElement(doc));
+    ret.appendChild(smallPerturbations.toXMLElement(doc));
+    if (C0Sym.value) ret.appendChild(C0Sym.toXMLElement(doc));
+    return ret;
+  }
 };
 
 }  // namespace amitex

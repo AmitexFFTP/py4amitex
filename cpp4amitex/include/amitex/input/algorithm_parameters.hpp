@@ -22,10 +22,17 @@ class AlgorithmParameters {
   std::optional<Diffusion> diffusion;
   std::optional<Mechanics> mechanics;
   std::optional<AlgorithmLaminate> algorithmLaminate;
-  const char* xmlTag() const { return "Algorithm_Parameters"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+
+  template <typename TDoc>
+  TDoc toXMLDocument() const {
+    TDoc doc{"Algorithm_Parameters"};
+    auto root = doc.getRoot();
+    root.appendChild(algorithm.toXMLElement(doc));
+    if (diffusion) root.appendChild(diffusion.value().toXMLElement(doc));
+    if (mechanics) root.appendChild(mechanics.value().toXMLElement(doc));
+    if (algorithmLaminate) root.appendChild(algorithmLaminate.value().toXMLElement(doc));
+    return doc;
+  }
 };
 
 }  // namespace amitex

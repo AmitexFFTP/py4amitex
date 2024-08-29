@@ -13,42 +13,31 @@
 
 namespace amitex {
 
-template <typename T>
-void writeXMLAttributes(std::ostream& stream, std::string_view attr, const T& value) {
-  stream << " " << attr << "=\"" << value << "\"";
-}
-
-template <>
-void writeXMLAttributes(std::ostream& stream, std::string_view attr, const bool& value);
-
-template <typename T>
+template <typename T, typename TDoc>
 #if __cpp_concepts >= 201907L
-  requires InputElement<T>
+  requires InputElement<T, TDoc>
 #endif
-void writeXML(std::ostream& stream, const T& value) {
-  stream << "<" << value.xmlTag();
-  value.xmlWriteAttributes(stream);
-  if (value.xmlHasBody()) {
-    stream << ">";
-    value.xmlWriteInner(stream);
-    stream << "</" << value.xmlTag() << ">";
-  } else {
-    stream << "/>";
-  }
+void writeXML(std::ostream& stream, const T& obj) {
+  TDoc doc{"DOC"};
+  auto el = obj.toXMLElement(doc);
+  doc.getRoot().appendChild(el);
+  doc.write(stream, el);
 }
 
-template <typename T>
+template <typename T, typename TDoc>
 #if __cpp_concepts >= 201907L
-  requires InputElement<T>
+  requires InputElement<T, TDoc>
 #endif
 void writeXMLFileStream(std::ostream& file, const T& obj) {
   file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+  TDoc doc{"DOC"};
+  obj.toXMLElement(doc);
   writeXML(file, obj);
 }
 
-template <typename T>
+template <typename T, typename TDoc>
 #if __cpp_concepts >= 201907L
-  requires InputElement<T>
+  requires InputElement<T, TDoc>
 #endif
 void writeXMLFile(const std::filesystem::path& path, const T& obj) {
   std::ofstream file{path};

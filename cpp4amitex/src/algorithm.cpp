@@ -11,27 +11,6 @@ ConvergenceAcceleration::ConvergenceAcceleration(
   }
 }
 
-void ConvergenceAcceleration::xmlWriteAttributes(std::ostream& stream) const {
-  if (value)
-    writeXMLAttributes(stream, "Value", value.value());
-  else
-    writeXMLAttributes(stream, "Value", "Default");
-  if (modACV) writeXMLAttributes(stream, "modACV", modACV.value());
-}
-
-void ConvergenceForced::xmlWriteAttributes(std::ostream& stream) const {
-  writeXMLAttributes(stream, "Value", value);
-  writeXMLAttributes(stream, "Nit_cvfor", nitCVFor);
-  writeXMLAttributes(stream, "Ncvfor", nCVFor);
-}
-
-void Substepping::xmlWriteAttributes(std::ostream& stream) const {
-  writeXMLAttributes(stream, "Nitermax2", nitermax2);
-  writeXMLAttributes(stream, "Geom_ratio", geomRatio);
-  writeXMLAttributes(stream, "Nsub", nsub);
-  writeXMLAttributes(stream, "Depth", depth);
-}
-
 Algorithm::Algorithm(const std::string& type,
                      const std::variant<bool, ConvergenceAcceleration>& convergenceAcceleration,
                      std::optional<double> convergenceCriterion, std::optional<int> nitermax,
@@ -54,25 +33,6 @@ Algorithm::Algorithm(const std::string& type,
       substepping{substepping},
       convergenceForced{convergenceForced} {}
 
-void Algorithm::xmlWriteInner(std::ostream& stream) const {
-  writeXML(stream, convergenceCriterion);
-  if (convergenceAcceleration.value) writeXML(stream, convergenceAcceleration);
-  if (nitermax.value) writeXML(stream, nitermax);
-  if (convergenceCriterionSmacro.value) writeXML(stream, convergenceCriterionSmacro);
-  if (convergenceCriterionCompatibility.value) writeXML(stream, convergenceCriterionCompatibility);
-  if (nitermin.value) writeXML(stream, nitermin);
-  if (niterminACV.value) writeXML(stream, niterminACV);
-  if (initialize.value) writeXML(stream, initialize);
-  if (substepping) writeXML(stream, substepping.value());
-  if (convergenceForced) writeXML(stream, convergenceForced.value());
-}
-
-void SmallPerturbations::xmlWriteAttributes(std::ostream& stream) const {
-  writeXMLAttributes(stream, "Value", value);
-  if (!displacementGradient.empty())
-    writeXMLAttributes(stream, "Displacement_Gradient", displacementGradient);
-}
-
 Mechanics::Mechanics(const std::string& filter,
                      std::variant<SmallPerturbations, bool> smallPerturbations) {
   this->filter = filter;
@@ -81,12 +41,6 @@ Mechanics::Mechanics(const std::string& filter,
   } else {
     this->smallPerturbations = std::get<SmallPerturbations>(smallPerturbations);
   }
-}
-
-void Mechanics::xmlWriteInner(std::ostream& stream) const {
-  writeXML(stream, filter);
-  writeXML(stream, smallPerturbations);
-  if (C0Sym.value) writeXML(stream, C0Sym);
 }
 
 }  // namespace amitex

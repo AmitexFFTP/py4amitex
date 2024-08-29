@@ -5,13 +5,14 @@
 
 #include "amitex/errors.hpp"
 #include "amitex/io.hpp"
+#include "amitex/private/xml_document.hpp"
 
 namespace amitex {
 
 template <typename T>
 static void handleZoneCoeffs(T& coeff, const std::string& resultsDir, size_t m, size_t c) {
   coeff.setIndex(c);
-  auto path = resultsDir + "/" + coeff.xmlTag() + std::to_string(m + 1) + "_" +
+  auto path = resultsDir + "/" + coeff.xmlTag + std::to_string(m + 1) + "_" +
               std::to_string(c + 1) + ".bin";
   coeff.setFile(path);
   if (coeff.zoneValues().size() > 0) {
@@ -48,13 +49,13 @@ static void generateComposite(Materials& materials, const std::string& path);
 
 void Input::generateFiles() {
   std::filesystem::create_directories(resultsDir + "/output");
-  writeXMLFile(algorithmPath(), algorithmParameters);
+  algorithmParameters.toXMLDocument<xml::Document>().writeFile(algorithmPath());
 
   if (algorithmParameters.mechanics && !loadingOutput.output.vtkStressStrain)
     loadingOutput.output.vtkStressStrain = VtkStressStrain{0, 0};
   if (algorithmParameters.diffusion && !loadingOutput.output.vtkFluxDGradD)
     loadingOutput.output.vtkFluxDGradD = VtkFluxDGradD{0, 0};
-  writeXMLFile(loadingPath(), loadingOutput);
+  loadingOutput.toXMLDocument<xml::Document>().writeFile(loadingPath());
 
   if (grid.totalSize() == 0) throw InputError{"Input::generateFiles(): grid not initialized"};
   std::vector<int32_t> numM(grid.totalSize());
@@ -90,7 +91,7 @@ void Input::generateFiles() {
     throw InputError{"Not all voxels are covered by a material"};
   if (!checkZoneCovered(numZ.data(), grid.totalSize()))
     throw InputError{"Not all voxels are covered by a zone"};
-  writeXMLFile(materialsPath(), materials);
+  materials.toXMLDocument<xml::Document>().writeFile(materialsPath());
 
   writeVTK(materialIdsPath(), grid.dims(), grid.voxelLengths(), numM.data(), grid.totalSize());
   writeVTK(zoneIdsPath(), grid.dims(), grid.voxelLengths(), numZ.data(), grid.totalSize());

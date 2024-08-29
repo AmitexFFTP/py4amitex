@@ -18,10 +18,14 @@ namespace amitex {
 class InitLoadExt {
  public:
   InitLoadExt() = default;
-  const char* xmlTag() const { return "InitLoadExt"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("InitLoadExt");
+    if (temperature.value) ret.appendChild(temperature.toXMLElement(doc));
+    for (const auto& param : params) ret.appendChild(param.toXMLElement(doc));
+    return ret;
+  }
 
   //! Set parameter
   //! \param index Index of parameter
@@ -34,10 +38,15 @@ class InitLoadExt {
   class Param {
    public:
     Param() = default;
-    bool xmlHasBody() const { return 0; }
-    const char* xmlTag() const { return "Param"; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {};
+
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("Param");
+      ret.setAttribute("Index", index + 1);
+      ret.setAttribute("Value", value);
+      return ret;
+    }
+
     size_t index;
     double value = 0;
   };

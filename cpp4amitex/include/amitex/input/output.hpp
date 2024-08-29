@@ -11,10 +11,13 @@ class VtkStressStrain {
  public:
   VtkStressStrain() = default;
   VtkStressStrain(int stress, int strain) : stress{stress}, strain{strain} {}
-  const char* xmlTag() const { return "vtk_StressStrain"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("vtk_StressStrain");
+    ret.setAttribute("Strain", strain);
+    ret.setAttribute("Stress", stress);
+    return ret;
+  }
 
   //! Output stress to VTK file(s) (0 or 1)
   int stress = 0;
@@ -27,10 +30,13 @@ class VtkFluxDGradD {
  public:
   VtkFluxDGradD() = default;
   VtkFluxDGradD(int fluxd, int gradd) : fluxd{fluxd}, gradd{gradd} {}
-  const char* xmlTag() const { return "vtk_FluxDGradD"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("vtk_FluxDGradD");
+    ret.setAttribute("FluxD", fluxd);
+    ret.setAttribute("GradD", gradd);
+    return ret;
+  }
 
   //! Output flux to VTK file(s) (0 or 1)
   int fluxd = 0;
@@ -46,10 +52,13 @@ class Output {
     Zone() = default;
     //! \param numM material index
     Zone(size_t numM) : numM{numM} {};
-    const char* xmlTag() const { return "Zone"; }
-    bool xmlHasBody() const;
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const;
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("Zone");
+      ret.setAttribute("numM", numM + 1);
+      if (varIntList.numberValues() > 0) ret.appendChild(varIntList.toXMLElement(doc));
+      return ret;
+    }
 
     //! Set the list of internal variables to be printed
     //! \param list list of indices of the internal variables
@@ -61,10 +70,15 @@ class Output {
     List<size_t> varIntList{"VarIntList"};
   };
 
-  const char* xmlTag() const { return "Output"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Output");
+    if (vtkStressStrain) ret.appendChild(vtkStressStrain.value().toXMLElement(doc));
+    if (vtkFluxDGradD) ret.appendChild(vtkFluxDGradD.value().toXMLElement(doc));
+    for (const auto& zone : zones) ret.appendChild(zone.toXMLElement(doc));
+    for (const auto& ivarList : intVarList) ret.appendChild(ivarList.toXMLElement(doc));
+    return ret;
+  }
 
   //! Add zones of a material to .zstd output
   void addZone(const Zone& zone) { zones.push_back(zone); }
@@ -101,7 +115,12 @@ class Output {
    public:
     VtkIntVarList(size_t numM) : numM{numM}, List{"vtk_IntVarList"} {};
     size_t numM;
-    void xmlWriteAttributes(std::ostream& stream) const;
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = List<size_t>::toXMLElement(doc);
+      ret.setAttribute("numM", numM + 1);
+      return ret;
+    }
   };
 
   std::vector<Zone> zones;
