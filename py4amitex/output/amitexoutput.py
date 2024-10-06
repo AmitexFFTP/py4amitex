@@ -87,6 +87,33 @@ class AmitexOutput:
         """
         return self._get_field('strain', component, increment)
 
+    def get_diffusionflux_field(self, component, increment):
+        """Return the requested strain field component.
+
+        Parameters
+        ----------
+        component : str, requested flux component. ex: 'x', 'y' or 'z'
+        increment : int, time increment associated to the requested field
+
+        Returns
+        -------
+        a : (Nx, Ny, Nz) numpy array --> flux field component
+        """
+        return self._get_field('diffusionflux', component, increment)
+
+    def get_concentration_field(self, increment):
+        """Return the requested strain field component.
+
+        Parameters
+        ----------
+        increment : int, time increment associated to the requested field
+
+        Returns
+        -------
+        a : (Nx, Ny, Nz) numpy array --> concentration field 
+        """
+        return self._get_field('concentration', None, increment)
+
     def get_varInt_field(self, varInt_idx, increment, matId):
         """Return the requested internal variable field.
 
@@ -165,6 +192,63 @@ class AmitexOutput:
         self.load_stress_fields()
         self.load_strain_fields()
         self.load_varInt_fields()
+
+    def load_concentration_fields(self, increments_list=None, output_slice=None):
+        """Load concentration fields for requested increments.
+
+        Parameters
+        ----------
+        increments_list : list(str), optional
+            List of time increments to read. The default is None, which reads
+            all time increment data for the requested field.
+        output_slice : numpy array (3,2), optional
+            Specific slice of field data to return. The default is None.
+        """
+        if 'concentration' not in self.data['fields']:
+            self.data['fields']['concentration'] = {}
+        try:
+            concentration = self.reader.read_vtk_fields('concentration', 'all',
+                                                        increments_list, None, output_slice)
+            # For each increment, load the field data into the data structure
+            for incr in concentration.keys():
+                self.data['fields']['concentration'][incr] = concentration[incr][0]
+            print('--> Concentration field has been loaded')
+        except ValueError:
+            print(' --> Concentration field not loaded (not available or wrong format)')
+        return
+
+    def load_diffusionflux_fields(self, components_list='all', increments_list=None, 
+                         output_slice=None):
+        """Load flux fields for requested increments and components.
+
+        Parameters
+        ----------
+        components_list : list(str), optional
+            List of components of the flux field to read. Components can be indices
+            or letters (like '0' or 'x'). The default is 'all'.
+        increments_list : list(str), optional
+            List of time increments to read. The default is None, which reads
+            all time increment data for the requested field/components.
+        output_slice : numpy array (3,2), optional
+        Specific slice of field data to return. The default is None.
+        """
+        if 'diffusionflux' not in self.data['fields']:
+            self.data['fields']['diffusionflux'] = {}
+        # try:
+        flux = self.reader.read_vtk_fields('diffusionflux', components_list,
+                                        increments_list, None, output_slice)
+        # For each increment, and then each component loaded, add field to data
+        for incr in flux.keys():
+            if incr not in self.data['fields']['diffusionflux']:
+                self.data['fields']['diffusionflux'][incr] = {}
+            for comp in flux[incr].keys():
+                if comp not in self.data['fields']['diffusionflux'][incr]:
+                    self.data['fields']['diffusionflux'][incr][comp] = {}
+                self.data['fields']['diffusionflux'][incr][comp] = flux[incr][comp]
+        print('--> diffusionflux field has been loaded')
+        # except ValueError:
+        #     print(' --> diffusionflux field not loaded (not available or wrong format)')
+        return
 
     def load_stress_fields(self, components_list='all', increments_list=None,
                            output_slice=None):
@@ -404,7 +488,7 @@ class AmitexOutput:
         ----------
         field : string
             Type of field to read among ['stress', 'strain', 'piola',
-            'varInt'].
+            'varInt','concentration','diffusionflux'].
         component : Components can be indices or letters (like '0' or 'xx').
         increment : int
             time increment value of the requested field
@@ -434,7 +518,7 @@ class AmitexOutput:
             # check if requested increment is loaded
             if increment not in self.data['fields']['varInt'][f"M{matId}"]:
                 msg = (f"-- No field loaded for increment {increment}, for the"
-                       f" requested internal variable of matertial {matId}.")
+                       f" requested internal variable of material {matId}.")
                 print(msg)
                 return
             # Check if component is available
@@ -445,7 +529,17 @@ class AmitexOutput:
                 return
             a = self.data['fields']['varInt'][f"M{matId}"][increment][component]
             return a
-        # case of stress or strain fields
+        # case of concentration field
+        if field in ['concentration']:
+            # check if requested increment is loaded
+            if increment not in self.data['fields'][field]:
+                msg = (f"-- No concentration field loaded for increment " 
+                       f" {increment}.")
+                print(msg)
+                return
+            a = self.data['fields'][field][increment]
+            return a
+        # case of stress, strain or flux fields
         # check if requested increment is loaded
         if increment not in self.data['fields'][field]:
             msg = (f"-- No data loaded for increment {increment}, for the"
