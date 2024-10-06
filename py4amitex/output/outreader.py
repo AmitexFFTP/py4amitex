@@ -58,6 +58,8 @@ class OutReader:
         self._set_vtk(self.std_file, 'piola')
         self._set_vtk(self.std_file, 'strain')
         self._set_vtk(self.std_file, 'varInt')
+        self._set_vtk(self.std_file, 'concentration')
+        self._set_vtk(self.std_file, 'diffusionflux')
         # update finite strain flag
         self.update_finite_strain()
 
@@ -201,7 +203,7 @@ class OutReader:
         ----------
         field_type : string
             Type of field to read among ['stress', 'strain', 'piola',
-            'varInt']. The default is None
+            'varInt', 'concentration', 'diffusionflux']. The default is None
         components_list : list(str), optional
             List of components of the field to read. Components can be indices
             or letters (like '0' or 'xx'). The default is 'all'.
@@ -218,7 +220,7 @@ class OutReader:
         Returns
         -------
         Output_fields : dict()
-            Dictionnary with one entry per time increment, containing the
+            Dictionary with one entry per time increment, containing the
             requested field data. Items with all components of a stress
             or strain field contain a (Nx, Ny, Nz, 6 or 9) array. Items with
             internal variable fields or a subset of stress/strain components
@@ -226,6 +228,9 @@ class OutReader:
         """
         # get list of time increments to load
         I = self._get_vtk_incr_to_read(increments_list)
+        # if field is not concentration -> remove potential 0 increment
+        if field_type not in ['concentration']:
+            I.remove(0)
         # check if field_type is available
         if field_type not in self.vtk_files[I[0]]:
             msg = (f"'{field_type}' not in available data. Available vtk fields"
@@ -240,20 +245,29 @@ class OutReader:
         # init output_fields dict
         Output_fields = dict.fromkeys(I)
         # fill output time increment per time increment
+        
         for i in Output_fields:
             Output_fields[i] = {}
-            if field_type in ['stress', 'strain', 'piola']:
+            name_list = ['stress', 'strain', 'piola', 'concentration',
+                         'diffusionflux']
+            # get path of field file
+            if field_type in name_list:
                 file_dict = self.vtk_files[i][field_type]
             else:
                 file_dict = self.vtk_files[i][field_type][mId]
+            # select cell of point field
+            cell=True
+            if field_type in ['concentration']:
+                cell=False
+            # read file 
             for k in comp_list:
                 v = file_dict[k]
                 Output_fields[i][k] = OutReader.read_vtk_legacy(v,
-                                                        output_slice)
+                                                        output_slice, cell)
         return Output_fields
 
     @staticmethod
-    def read_vtk_legacy(vtk_path, output_slice=None):
+    def read_vtk_legacy(vtk_path, output_slice=None, celldata=True):
         """Read one Amitex_fftp vtk output and return the fields stored in it.
 
         Parameters
@@ -278,12 +292,18 @@ class OutReader:
         reader.SetFileName(str(p))
         reader.Update()
         # read raw data
-        Array = reader.GetOutput().GetCellData().GetArray(0)
+        if celldata:
+            Array = reader.GetOutput().GetCellData().GetArray(0)
+        else:
+            Array = reader.GetOutput().GetPointData().GetArray(0)
         dim = reader.GetOutput().GetDimensions()
-        output_shape = tuple([i-1 for i in dim])
+        if celldata:
+            output_shape = tuple([i-1 for i in dim])
+        else:
+            output_shape = dim
         data = numpy_support.vtk_to_numpy(Array)
         data = data.reshape(output_shape, order='F')
-        # get usefull slice
+        # get useful slice
         if output_slice is not None:
             data = data[output_slice[0,0]:output_slice[0,1],
                         output_slice[1,0]:output_slice[1,1],
@@ -400,7 +420,8 @@ class OutReader:
     def _find_vtk(std_file, field_type='stress'):
         """Find all vtk files in output dir for given type of field.
 
-        'type' can be 'stress', 'strain' or 'varInt'
+        'type' can be 'stress', 'strain', 'varInt', 'concentration', or 
+        'diffusionflux'.
         """
         # Create pattern to find requested vtk output files
         if field_type == 'stress':
@@ -419,6 +440,17 @@ class OutReader:
             field = 'varInt'
             pat = std_file.stem + '_M\d_varInt\d+_\d+.vtk'
             comp_pattern = re.compile('varInt\d+')
+        elif field_type == 'concentration':  
+            field = 'C' 
+            pat = std_file.stem + '_C_\d+.vtk'  
+            comp_pattern = re.compile('conc')  
+        elif field_type == 'diffusionflux':  
+            field = 'DFlux'  
+            pat = std_file.stem + '_DFlux\d?_\d+.vtk'  
+            comp_pattern = re.compile('DFlux\d')  
+        else: 
+            raise ValueError(f"Unknown field_type: {field_type}")  
+        
         pattern = re.compile(pat)
         increment_pattern = re.compile('\d+.vtk')
         material_pattern = re.compile('_M\d+')
@@ -442,7 +474,7 @@ class OutReader:
                 # add increment to list of vtk output increments and to fict
                 increments.append(incr)
                 files[filepath]['increment'] = incr
-                # find compomenent associated to vtk file
+                # find component associated to vtk file
                 tmp = comp_pattern.findall(filepath)
                 if len(tmp) == 0:
                     # all components are within the same vtk file
@@ -544,6 +576,16 @@ class OutReader:
                             if v == (files[f]['component']-1):
                                 c = k
                     self.vtk_files[i][field_type][c] = files[f]['path']
+                # if flux -> get vector like component key
+                elif field_type in ['diffusionflux']:
+                    for k, v in StdIndexing._vector_indexes.items():
+                        if v == (files[f]['component']-1):
+                            c = k
+                    self.vtk_files[i][field_type][c] = files[f]['path']
+                # if concentration or temperature -> no component key
+                elif field_type in ['concentration']:
+                    self.vtk_files[i][field_type][0] = files[f]['path']
+                # internal variables -> variable index is component key
                 elif field_type == 'varInt':
                     mat = f"M{files[f]['matId']}"
                     if mat not in self.vtk_files[i][field_type]:
@@ -692,9 +734,10 @@ class OutReader:
     def _get_vtk_comp(self, field_type, components_list, I, mId):
         """Return list of components to read in vtk files."""
         comp_ignored = []
+        # Tensor fields
         if field_type in ['stress', 'strain', 'piola']:
             if components_list != 'all':
-                # Check if
+                # Check components to read
                 ok_comp = StdIndexing._tensor_indexes
                 comp_list = [k for k,v in ok_comp.items()
                              if (k in components_list or
@@ -703,8 +746,24 @@ class OutReader:
                                 if not (k in ok_comp.keys() or
                                         k in ok_comp.values())]
             else:
-                # ??? in case of all components in one file ?
+                # in case of all components 
                 comp_list = list(self.vtk_files[I[0]][field_type])
+        # vector fields
+        elif field_type in ['diffusionflux']:
+            if components_list != 'all':
+                # Check components to read
+                ok_comp = StdIndexing._vector_indexes
+                comp_list = [k for k,v in ok_comp.items()
+                             if (k in components_list or
+                                 v in components_list)]
+                comp_ignored = [k for k in components_list
+                                if not (k in ok_comp.keys() or
+                                        k in ok_comp.values())]
+            else:
+                # in case of all components 
+                comp_list = list(self.vtk_files[I[0]][field_type])  
+        elif field_type in ['concentration']:
+            comp_list =  [0]             
         else:
             if mId is None:
                 msg = ('The material Id must be specified when '
@@ -766,10 +825,14 @@ class OutReader:
                 print("\n\t *", end='')
                 print(f"Increment {incr} : ", end='')
                 for k,v in self.vtk_files[incr].items():
-                    if k in ['stress', 'strain', 'piola']:
+                    field_names = ['stress', 'strain', 'piola',
+                                    'diffusionflux']
+                    if k in field_names:
                         print(f"\n\t\t - {k} : ", end='')
                         for c in v.keys():
                             print(f" {c}", end='')
+                    if k in ['concentration']:
+                        print(f"\n\t\t - {k}  ", end='')
                     if k == 'varInt':
                         for matId in v.keys():
                             print(f"\n\t\t - {k} material {matId} : ", end='')
