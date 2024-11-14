@@ -11,7 +11,7 @@ Environment variable:
 ## Build
 
 ```
-cmake -S. -Bbuild-dir
+cmake -S. -Bbuild
 cmake --build build
 ```
 

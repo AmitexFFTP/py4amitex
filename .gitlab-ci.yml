@@ -41,8 +41,9 @@ workflow:
         - build/test-results-cpp.xml
         - build/test-results-python.xml
   cache:
+    key: $CI_JOB_NAME
     paths:
-        - "build"        
+        - "build"    
 
 .build_debian_like:
   before_script:
@@ -71,7 +72,7 @@ workflow:
         echo 'repo_gpgcheck=1' >> /oneAPI.repo
         echo 'gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB' >> oneAPI.repo
         mv oneAPI.repo /etc/yum.repos.d
-        dnf install -y intel-basekit
+        dnf install -y intel-oneapi-compiler-dpcpp-cpp
         . /opt/intel/oneapi/setvars.sh
       else
         # default 8.5 does not work

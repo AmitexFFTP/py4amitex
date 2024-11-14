@@ -203,6 +203,35 @@ void buildMaterials(Materials& materials, GridSize dims,
   }
 }
 
+void buildMaterials(Materials& materials, GridSize dims, const std::vector<PhaseType>& phases,
+                    IndexOrdering ordering) {
+  MaterialBuilder bd;
+  GridSize dimo;
+  if (ordering == IndexOrdering::C) {
+    dimo = {dims[0], dims[1], dims[2]};
+  } else {
+    dimo = {dims[2], dims[1], dims[0]};
+  }
+  Grid grid{dims, {1, 1, 1}};
+  size_t index = 0;
+  for (size_t i = 0; i < dimo[0]; i++) {
+    for (size_t j = 0; j < dimo[1]; j++) {
+      for (size_t k = 0; k < dimo[2]; k++) {
+        GridLinPoint lpos;
+        if (ordering == IndexOrdering::C) {
+          lpos = grid.linearize({i, j, k});
+        } else {
+          lpos = grid.linearize({k, j, i});
+        }
+        VoxelSpec spec;
+        spec.phases.push_back({phases[index], 1.0, 0});
+        bd.addVoxel(materials, lpos, spec);
+        index++;
+      }
+    }
+  }
+}
+
 Grid buildMaterialsFromVtk(Materials& materials, const std::string& materialIdPath,
                            const std::string& zoneIdPath, int minId) {
   if (materialIdPath.size() == 0 && zoneIdPath.size() == 0)

@@ -1,24 +1,40 @@
 #include <iostream>
 #include <string>
 
+#include <map>
+
+#include "Grid/Grid_VER.hxx"
 #include "MultiInclusions/MultiInclusions.hxx"
 #include "MultiInclusions/SphereInclusions.hxx"
-#include "Voxellation/Voxellation.hxx"
+#include "Voxellation/DynamicVoxellizer.hxx"
 
 #include "amitex/extract.hpp"
 #include "amitex/input.hpp"
 #include "amitex/simulation.hpp"
 
-static void makeZones(const merope::Grid_VER& grid, amitex::Material& mat,
-                      const std::vector<std::vector<double>>& coefficients,
-                      const std::vector<std::vector<double>>& coefficientsK);
-
-amitex::Material makeMaterialDiffusion(const merope::vox::Voxellation<3>& voxelation,
-                                       const std::pair<std::string, std::string>& law) {
+amitex::Material makeMaterialDiffusion(
+    std::array<size_t, 3> N, const merope::vox::voxellizer::GridRepresentation<3>& voxelation,
+    const std::pair<std::string, std::string>& law) {
   amitex::Material material;
   material.setLawK(law.first, law.second);
   material.setNumberCoeffK(1);
-  makeZones(voxelation.getGrid(), material, {}, {voxelation.getCoefficents()});
+  const auto& coeffs = voxelation.get<merope::vox::composite::Pure<double>>();
+
+  std::map<double, std::vector<std::array<size_t, 3>>> uniqueCoeffs;
+
+  for (size_t i = 0; i < N[0]; i++) {
+    for (size_t j = 0; j < N[1]; j++) {
+      for (size_t k = 0; k < N[2]; k++) {
+        size_t id = k + N[2] * (j + N[1] * i);
+        uniqueCoeffs[coeffs[id]].push_back({i, j, k});
+      }
+    }
+  }
+  for (const auto& [coeff, pos] : uniqueCoeffs) {
+    amitex::Zone zone{N, pos};
+    material.addZone(zone, {}, {coeff});
+  }
+  std::cout << "#zones = " << material.numberZones() << std::endl;
   return material;
 }
 
@@ -36,7 +52,6 @@ amitex::AlgorithmParameters defaultDiffusionAlgorithm() {
   return algo_params;
 }
 
-
 int main() {
   using namespace merope;
   using namespace sac_de_billes;
@@ -46,17 +61,20 @@ int main() {
 
   size_t n = 32;
   double dx = 10. / n;
+  std::array<size_t, 3> N = {n, n, n};
+  std::array<double, 3> L = {n * dx, n * dx, n * dx};
   auto sphIncl = SphereInclusions<3>();
-  sphIncl.setLength({n * dx, n * dx, n * dx});
+  sphIncl.setLength(L);
   sphIncl.fromHisto(0, algoSpheres::TypeAlgo::RSA, 0.0, {{3, 0.5}}, {1});
 
   auto multiInclusions = MultiInclusions<3>();
   multiInclusions.setInclusions(sphIncl);
-  auto grid = vox::Voxellation<3>(multiInclusions);
-  grid.setPureCoeffs({1.0, 3.0});
-  grid.setHomogRule(homogenization::Rule::Voigt);
-  grid.setVoxelRule(vox::VoxelRule::Average);
-  grid.proceed({n, n, n});
+  auto structure = Structure<3>{multiInclusions};
+  auto grid = vox::voxellizer::GridRepresentation<3>{
+      structure, vox::create_grid_parameters_N_L<3>(N, L), vox::VoxelRule::Average};
+  grid.apply_coefficients({1.0, 3.0});
+  grid.apply_homogRule(homogenization::Rule::Voigt);
+  // grid.proceed({n, n, n});
 
   amitex::Input input;
   input.resultsDir = "amitex_merope_spheres_with_build_mat";
@@ -73,7 +91,7 @@ int main() {
 
   input.materials.referenceMaterialD = amitex::ReferenceMaterialD{3.};
 
-  amitex::Material material = makeMaterialDiffusion(grid, {"Fourier_iso"s, ""s});
+  amitex::Material material = makeMaterialDiffusion(N, grid, {"Fourier_iso"s, ""s});
   input.materials.add(material);
 
   amitex::runSimulationExternal(input, 2);
@@ -83,27 +101,4 @@ int main() {
   auto grad = ext.averageDiffusionGradient(0);
   std::cout << "Flux\tGradient\n";
   for (size_t i = 0; i < 3; i++) std::cout << flux[i] << '\t' << grad[i] << '\n';
-}
-
-static void makeZones(const merope::Grid_VER& grid, amitex::Material& mat,
-                      const std::vector<std::vector<double>>& coefficients,
-                      const std::vector<std::vector<double>>& coefficientsK) {
-  using amitex::Zone;
-  using namespace merope;
-  NodesList::const_iterator pIt;
-
-  // For each phase index id, save its value at each point in this phase
-  unsigned short id;
-  std::vector<NodesList>::const_iterator l;
-  for (l = grid.getPhases().begin(), id = 0; l != grid.getPhases().end(); ++l, ++id) {
-    Zone zone{{grid.getNx(), grid.getNy(), grid.getNz()}};
-    for (pIt = l->begin(); pIt != l->end(); ++pIt) {
-      zone.add(grid.get_coord_index<3>(*pIt));
-    }
-    std::vector<double> coeffs(coefficients.size());
-    for (size_t c = 0; c < coefficients.size(); c++) coeffs[c] = coefficients[c].at(id);
-    std::vector<double> coeffKs(coefficientsK.size());
-    for (size_t c = 0; c < coefficientsK.size(); c++) coeffKs[c] = coefficientsK[c].at(id);
-    mat.addZone(zone, coeffs, coeffKs);
-  }
 }
