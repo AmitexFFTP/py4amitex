@@ -29,7 +29,7 @@ endif()
 add_executable(amitex_tests 
 	${AMITEX_TESTS_SRC}
 )
-target_link_libraries(amitex_tests AmitexCpp GTest::gtest_main)
+target_link_libraries(amitex_tests AmitexCpp GTest::gtest_main pthread)
 
 include(GoogleTest)
 gtest_discover_tests(amitex_tests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} XML_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/gtest_xml)

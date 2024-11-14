@@ -3,16 +3,16 @@
 
 #include "MultiInclusions/MultiInclusions.hxx"
 #include "MultiInclusions/SphereInclusions.hxx"
-#include "Voxellation/Voxellation.hxx"
+#include "Voxellation/DynamicVoxellizer.hxx"
 
 #include "amitex/extract.hpp"
 #include "amitex/input.hpp"
 #include "amitex/input/material_builder.hpp"
 #include "amitex/simulation.hpp"
 
-using VtkFormatAnIso = merope::vox::composite::vtk_format_anIso<3>;
+using VtkFormatAnIso = merope::vox::composite::stl_format_AnIso<3, long>;
 
-std::vector<VtkFormatAnIso> calcMicro(std::array<size_t, 3> N, std::array<double, 3> L) {
+auto calcMicro(std::array<size_t, 3> N, std::array<double, 3> L) {
   using namespace merope;
   using namespace sac_de_billes;
   auto sphIncl = SphereInclusions<3>();
@@ -21,10 +21,12 @@ std::vector<VtkFormatAnIso> calcMicro(std::array<size_t, 3> N, std::array<double
 
   auto multiInclusions = MultiInclusions<3>();
   multiInclusions.setInclusions(sphIncl);
-  auto grid = vox::Voxellation<3>(multiInclusions);
+  auto structure = Structure<3>{multiInclusions};
+  auto grid = vox::voxellizer::GridRepresentation<3>{
+      structure, vox::create_grid_parameters_N_L<3>(N, L), vox::VoxelRule::Laminate};
 
-   grid.setVoxelRule(vox::VoxelRule::Laminate);
-   return grid.computeCompositeGrid(N);
+  grid.convert_to_stl_format();
+  return grid;
 }
 
 int sim() {
@@ -32,7 +34,10 @@ int sim() {
   std::array<size_t, 3> N = {32, 32, 32};
   std::array<double, 3> L = {10.0, 10, 10};
 
-  auto compGrid = calcMicro(N, L);
+  // auto compGrid = calcMicro(N, L);
+  auto mgrid = calcMicro(N, L).get<VtkFormatAnIso>();
+  // exit(0);
+  const std::vector<VtkFormatAnIso>& compGrid = mgrid;
   double DL = L[0] / N[0];
   Input input;
   Grid grid{N, {DL, DL, DL}};
@@ -40,7 +45,6 @@ int sim() {
 
   Materials materials;
   buildMaterials(materials, grid.dims(), compGrid, IndexOrdering::C);
-
   std::vector<std::vector<double>> coeffs = {{1.0, 2.0}, {1.0, 2.0}};
 
   for (size_t i = 0; i < materials.numberMaterials(); i++) {
@@ -82,6 +86,7 @@ int sim() {
 
   input.resultsDir = "amitex_dir_simple_spheres";
   input.generateFiles();
+  exit(0);
   runSimulationExternal(input);
 
   Extract ext{input.outputPrefix()};

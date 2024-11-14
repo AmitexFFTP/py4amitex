@@ -1968,6 +1968,8 @@ static const char *__doc_amitex_buildMaterials_3 = R"doc()doc";
 
 static const char *__doc_amitex_buildMaterials_4 = R"doc(With normals)doc";
 
+static const char *__doc_amitex_buildMaterials_5 = R"doc(Pure phase only)doc";
+
 static const char *__doc_amitex_buildMaterialsFromVtk =
 R"doc(Build materials from VTK files 'material ids' and 'zone ids'
 

@@ -61,8 +61,7 @@ class VoxelSpec {
   VoxelSpec(const std::vector<std::tuple<size_t, double, size_t>>& phases) : phases{phases} {}
 
   //! (material index, volume fraction, zone)
-  std::vector<std::tuple<size_t, double, size_t>>
-      phases;
+  std::vector<std::tuple<size_t, double, size_t>> phases;
 };
 
 //! Higher-level contruction of materials from voxel specification
@@ -118,7 +117,8 @@ void buildMaterials(Materials& materials, GridSize dims,
                     IndexOrdering ordering = IndexOrdering::C);
 
 //! For Mérope interop
-using ShortSpec = std::vector<std::tuple<unsigned short, double>>;
+using PhaseType = long;
+using ShortSpec = std::vector<std::tuple<PhaseType, double>>;
 
 void buildMaterials(Materials& materials, GridSize dims, const std::vector<ShortSpec>& phases,
                     IndexOrdering ordering = IndexOrdering::C);
@@ -126,6 +126,10 @@ void buildMaterials(Materials& materials, GridSize dims, const std::vector<Short
 //! With normals
 void buildMaterials(Materials& materials, GridSize dims,
                     const std::vector<std::tuple<ShortSpec, Vector3D>>& phases,
+                    IndexOrdering ordering = IndexOrdering::C);
+
+//! Pure phase only
+void buildMaterials(Materials& materials, GridSize dims, const std::vector<PhaseType>& phases,
                     IndexOrdering ordering = IndexOrdering::C);
 
 //! Build materials from VTK files 'material ids' and 'zone ids'
