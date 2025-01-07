@@ -66,7 +66,7 @@ class Material {
   //! Set mechanics coefficient constant zone values
   //! \param id index of coefficient
   //! \param coeff value of coefficient
-  void setCoeffZone(size_t id, const std::vector<double> zoneCoeffs) {
+  void setCoeffZone(size_t id, const std::vector<double>& zoneCoeffs) {
     coeffs.at(id) = std::move(Coeff{zoneCoeffs});
     coeffs.at(id).setIndex(id);
   }
@@ -96,7 +96,7 @@ class Material {
   //! Set diffusion coefficient constant zone values
   //! \param id index of coefficient
   //! \param coeff value of coefficient
-  void setCoeffKZone(size_t id, const std::vector<double> zoneCoeffs) {
+  void setCoeffKZone(size_t id, const std::vector<double>& zoneCoeffs) {
     coeffKs.at(id) = std::move(CoeffK{zoneCoeffs});
     coeffKs.at(id).setIndex(id);
   }
@@ -126,7 +126,7 @@ class Material {
   //! Set mechanics coefficient constant zone values (for composite materials)
   //! \param id index of coefficient
   //! \param coeff value of coefficient
-  void setCoeffCompositeZone(size_t id, const std::vector<double> zoneCoeffs) {
+  void setCoeffCompositeZone(size_t id, const std::vector<double>& zoneCoeffs) {
     coeffComposites.at(id) = CoeffComposite{zoneCoeffs};
     coeffComposites.at(id).setIndex(id);
   }
@@ -231,13 +231,13 @@ class Material {
  private:
   int id = -1;
   size_t nbZones = 0;
-  std::string law, lib, lawK, libK;
+  std::string law = "", lib = "", lawK = "", libK = "";
   // coefficients
-  std::vector<Coeff> coeffs;
-  std::vector<CoeffK> coeffKs;
-  std::vector<CoeffComposite> coeffComposites;
-  std::vector<Zone> zones_;
-  std::vector<IntVar> intvars_;
+  std::vector<Coeff> coeffs = {};
+  std::vector<CoeffK> coeffKs = {};
+  std::vector<CoeffComposite> coeffComposites = {};
+  std::vector<Zone> zones_ = {};
+  std::vector<IntVar> intvars_ = {};
 };
 
 }  // namespace amitex

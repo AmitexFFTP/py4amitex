@@ -63,9 +63,7 @@ void MaterialBuilder::addVoxelAux(Materials& materials, GridLinPoint lpos,
     zones.at(zoneId).add(lpos);
   }
   MaterialComposite& composites = materials.composites;
-  if (phaseIds.size() == 1) {
-    size_t mid = phaseIds[0];
-  } else {
+  if (phaseIds.size() > 1) {
     auto it = compos.find(phaseIds);
     if (it == compos.end()) {
       auto [it2, ok] = compos.insert({phaseIds, composites.numberMaterials()});
@@ -240,7 +238,7 @@ static Vector3D getTangent(Vector3D normal) {
 #ifdef AMITEX_DEBUG
   double prod2 = 0.0;
   for (size_t i = 0; i < ret.size(); i++) prod2 += ret[i] * normal[i];
-  assert(prod2 == prod2 && abs(prod2) < 1.e-7);
+  assert(prod2 == prod2 && std::abs(prod2) < 1.e-7);
 #endif
 
   return ret;

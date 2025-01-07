@@ -29,11 +29,11 @@ void writeBIN(const std::filesystem::path& path, const std::vector<unsigned long
 
 //! Information contained in the header of a VTK file
 struct VtkHeader {
-  std::array<size_t, 3> dimensions;  //! grid dimensions
-  std::array<double, 3> spacing;     //! grid dimensions
-  std::array<double, 3> origin;      //! grid origin
-  std::string scalarType;            //! scalar type
-  size_t cellDataSize;               //! cell data size
+  std::array<size_t, 3> dimensions = {0, 0, 0};  //! grid dimensions
+  std::array<double, 3> spacing = {0, 0, 0};     //! grid dimensions
+  std::array<double, 3> origin = {0, 0, 0};      //! grid origin
+  std::string scalarType = "";                   //! scalar type
+  size_t cellDataSize = 0;                       //! cell data size
 };
 
 //! Read VTK file

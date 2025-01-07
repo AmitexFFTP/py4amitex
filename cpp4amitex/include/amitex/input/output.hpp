@@ -43,7 +43,7 @@ class Output {
  public:
   class Zone {
    public:
-    Zone() = default;
+    Zone() : Zone{0} {};
     //! \param numM material index
     Zone(size_t numM) : numM{numM} {};
     const char* xmlTag() const { return "Zone"; }
@@ -60,6 +60,8 @@ class Output {
    private:
     List<size_t> varIntList{"VarIntList"};
   };
+
+  Output() : vtkFluxDGradD{}, vtkStressStrain{}, zones{}, intVarList{} {}
 
   const char* xmlTag() const { return "Output"; }
   bool xmlHasBody() const { return true; }

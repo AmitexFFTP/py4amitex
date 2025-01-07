@@ -80,7 +80,7 @@ class Composite {
 //! Define all composite materials
 class MaterialComposite {
  public:
-  MaterialComposite() = default;
+  MaterialComposite() : coeffComposite{}, materials_{} {};
   const char* xmlTag() const { return "Material_composite"; }
   bool xmlHasBody() const { return true; }
   void xmlWriteAttributes(std::ostream& stream) const {}
@@ -103,6 +103,7 @@ class MaterialComposite {
  private:
   class CoeffComposite {
    public:
+    CoeffComposite() : directory{} {}
     const char* xmlTag() const { return "Coeff_composite"; }
     bool xmlHasBody() const { return false; }
     void xmlWriteAttributes(std::ostream& stream) const;

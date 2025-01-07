@@ -14,15 +14,16 @@ namespace amitex {
 
 class BasicCoeff {
  public:
-  BasicCoeff() {}
+  BasicCoeff() : BasicCoeff{0.0} {}
   //! Define a coefficient by a constant value
-  BasicCoeff(double value) : constantValue_{value} {}
+  BasicCoeff(double value) : BasicCoeff{std::vector<double>{}} { constantValue_ = value; }
 
   //! Define a coefficient by a constant value per zone
   //! \param values list of values by increasing zone index
   //! \note It is recommanded to use \ref Material::addZone for this purpose
-  BasicCoeff(const std::vector<double>& values) : values{values} {}
-  BasicCoeff(std::vector<double>&& values) : values{std::move(values)} {}
+  BasicCoeff(const std::vector<double>& values) : BasicCoeff{std::vector<double>{values}} {}
+  BasicCoeff(std::vector<double>&& values)
+      : values{std::move(values)}, id{-1}, file{}, name_{}, constantValue_{0.} {}
 
   const char* xmlTag() const { return "BasicCoeff"; }
   bool xmlHasBody() const { return false; }
@@ -45,8 +46,8 @@ class BasicCoeff {
   void setName(std::string_view name) { this->name_ = name; }
 
  protected:
-  int id = -1;
-  double constantValue_ = 0.0;
+  int id;
+  double constantValue_;
   std::vector<double> values;
   std::string file;
   std::string name_;

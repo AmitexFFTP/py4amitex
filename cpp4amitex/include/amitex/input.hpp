@@ -26,9 +26,10 @@ class Input {
   LoadingOutput loadingOutput;                //!< see \ref LoadingOutput
   std::string resultsDir = "amitex_results";  //!< Where generated and AMITEX output will be
 
-  Input() = default;
-  Input(Grid&& grid) : grid{grid} {}
-  Input(const Grid& grid) : grid{grid} {}
+  Input() : Input{Grid{}} {};
+  Input(Grid&& grid)
+      : Input{std::move(grid), AlgorithmParameters{}, Materials{}, LoadingOutput{}} {}
+  Input(const Grid& grid) : Input{grid, AlgorithmParameters{}, Materials{}, LoadingOutput{}} {}
   Input(const Grid& grid, AlgorithmParameters&& algorithmParameters, Materials&& materials,
         LoadingOutput&& loadingOutput)
       : grid{grid},

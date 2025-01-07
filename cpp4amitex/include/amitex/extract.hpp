@@ -40,9 +40,9 @@ class Extract {
   };
 
   std::string prefix = "output";
-  DiffusionQuantities currentDiffusion;
-  MechanicalQuantities currentMechanics;
-  std::filesystem::file_time_type lastWrite;
+  DiffusionQuantities currentDiffusion{};
+  MechanicalQuantities currentMechanics{};
+  std::filesystem::file_time_type lastWrite{};
 
   void setSymComponents(TensorLin& values);
   void readStd(DiffusionQuantities& q);

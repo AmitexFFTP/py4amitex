@@ -12,7 +12,7 @@ namespace amitex {
 //! Definitions of all loadings and output settings
 class LoadingOutput {
  public:
-  LoadingOutput() = default;
+  LoadingOutput() : loadings{}, output{}, initLoadExt{} {};
   const char* xmlTag() const { return "Loading_Output"; }
   bool xmlHasBody() const { return true; }
   void xmlWriteAttributes(std::ostream& stream) const {}

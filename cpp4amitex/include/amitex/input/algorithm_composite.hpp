@@ -7,7 +7,6 @@
 
 //! \file algorithm_composite.hpp
 
-
 namespace amitex {
 
 //! Special algorithm parameters for simulations with composite law (laminate, reuss, …)
@@ -22,7 +21,7 @@ class AlgorithmLaminate {
   //! Convergence criterion (>1e-4 and  >1e-1)
   Value<double> convergenceCriterion{"Convergence_Criterion"};
   //! Toggle convergence acceleration
-  ConvergenceAcceleration convergenceAcceleration;
+  ConvergenceAcceleration convergenceAcceleration{};
   //! Initialization type (Proportionnal, Linear, Default (=Linear)
   Value<std::string> initializationType{"Initialisation_type"};
   //! Number of substeps for laminate law
