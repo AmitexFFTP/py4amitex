@@ -27,7 +27,7 @@ namespace amitex {
 template <typename T = double>
 class Field {
  public:
-  Field() = default;
+  Field() : Field{{0, 0, 0}} {};
   //! Field on the whole grid
   //! \param gridDims grid dimensions
   Field(GridSize gridDims) : nx{gridDims}, ibegin{0, 0, 0}, iend{gridDims} {
@@ -48,6 +48,11 @@ class Field {
     storage_ = std::make_shared<std::vector<T>>(size());
     dataPtr_ = storage_->data();
   }
+
+  Field(const Field&) = default;
+  Field& operator=(const Field&) = default;
+  Field(Field&&) noexcept = default;
+  Field& operator=(Field&&) noexcept = default;
 
   //! Get dimensions
   std::array<size_t, 3> dims() const { return nx; }
@@ -167,7 +172,7 @@ class Field {
     }
   }
   T* dataPtr_ = nullptr;
-  std::shared_ptr<std::vector<T>> storage_;
+  std::shared_ptr<std::vector<T>> storage_ = nullptr;
   GridSize nx = {0, 0, 0};  // global grid
   // local partition
   GridSize ibegin = {0, 0, 0};

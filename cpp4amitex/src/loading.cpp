@@ -117,8 +117,8 @@ void Loading::Param::xmlWriteAttributes(std::ostream& stream) const {
   writeEvolutionAttr(stream, evolution, value);
 }
 
-Loading::GradGradU::GradGradU(AxisIndexPair ii, int j) : tcomponent{ii}, vcomponent{j} {
-  tag_ = "gradgradU_";
+Loading::GradGradU::GradGradU(AxisIndexPair ii, int j)
+    : tcomponent{ii}, vcomponent{j}, tag_{"gradgradU_"} {
   tag_ += AxisStrings[ii.first];
   tag_ += AxisStrings[ii.second];
   tag_ += "_";

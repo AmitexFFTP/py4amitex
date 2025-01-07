@@ -61,7 +61,7 @@ class VoxelSpec {
   VoxelSpec(const std::vector<std::tuple<size_t, double, size_t>>& phases) : phases{phases} {}
 
   //! (material index, volume fraction, zone)
-  std::vector<std::tuple<size_t, double, size_t>> phases;
+  std::vector<std::tuple<size_t, double, size_t>> phases = {};
 };
 
 //! Higher-level contruction of materials from voxel specification
@@ -91,7 +91,7 @@ class MaterialBuilder {
 
  private:
   double minVolFrac = Composite::maxVolumeFraction;
-  std::map<std::vector<size_t>, size_t> compos;
+  std::map<std::vector<size_t>, size_t> compos = {};
 
   void addVoxelAux(Materials& materials, GridLinPoint pos, const std::vector<size_t>& phases,
                    const std::vector<double>& volfracs, const std::vector<size_t>& zone,

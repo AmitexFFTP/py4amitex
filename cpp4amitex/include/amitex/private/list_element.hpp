@@ -15,8 +15,8 @@ namespace amitex {
 template <typename T>
 class List {
  public:
-  List(const char* tag) : tag_{tag} {}
-  const char* xmlTag() const { return tag_; }
+  List(const std::string& tag) : values{}, tag_{tag} {}
+  const char* xmlTag() const { return tag_.c_str(); }
   bool xmlHasBody() const { return values.size() > 0; }
   void xmlWriteAttributes(std::ostream& stream) const {}
   void xmlWriteInner(std::ostream& stream) const {
@@ -34,7 +34,7 @@ class List {
   std::vector<T> values;
 
  private:
-  const char* tag_;
+  std::string tag_;
 };
 
 }  // namespace amitex

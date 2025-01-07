@@ -14,15 +14,15 @@ namespace amitex {
 template <typename T>
 class Value {
  public:
-  explicit Value(const char* tag) : tag_{tag} {}
-  Value(const char* tag, const T& value) : value{value}, tag_{tag} {}
-  Value(const char* tag, const std::optional<T>& value) : value{value}, tag_{tag} {}
+  explicit Value(const std::string& tag) : Value{tag, std::nullopt} {}
+  Value(const std::string& tag, const T& value) : value{value}, tag_{tag} {}
+  Value(const std::string& tag, const std::optional<T>& value) : value{value}, tag_{tag} {}
   operator T() const { return value.value(); }
   Value& operator=(const T& value) {
     this->value = value;
     return *this;
   }
-  const char* xmlTag() const { return tag_; }
+  const char* xmlTag() const { return tag_.c_str(); }
   bool xmlHasBody() const { return false; }
   void xmlWriteAttributes(std::ostream& stream) const {
     if (value)
@@ -35,7 +35,7 @@ class Value {
   std::optional<T> value;
 
  private:
-  const char* tag_;
+  std::string tag_;
 };
 
 }  // namespace amitex

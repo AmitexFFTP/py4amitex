@@ -10,9 +10,9 @@ namespace amitex {
 //! Internal variable
 class IntVar : public BasicCoeff {
  public:
-  IntVar() : BasicCoeff{} {}
-  IntVar(double value) : BasicCoeff{value} {}
-  IntVar(const std::vector<double>& zoneValues) : BasicCoeff{zoneValues} {}
+  IntVar() : BasicCoeff{}, field{} {}
+  IntVar(double value) : BasicCoeff{value}, field{} {}
+  IntVar(const std::vector<double>& zoneValues) : BasicCoeff{zoneValues}, field{} {}
   IntVar(Field<double>&& field) : field{std::move(field)} {}
   IntVar(const Field<double>& field) : field{field} {}
   const char* xmlTag() const { return "IntVar"; }

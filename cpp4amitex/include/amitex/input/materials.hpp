@@ -39,7 +39,8 @@ class ReferenceMaterialD {
 //! Definition of all materials
 class Materials {
  public:
-  Materials() = default;
+  Materials()
+      : materials{}, referenceMaterial{}, referenceMaterialD{}, composites{}, interphase{} {};
   const char* xmlTag() const { return "Materials"; }
   bool xmlHasBody() const;
   void xmlWriteAttributes(std::ostream& stream) const {}

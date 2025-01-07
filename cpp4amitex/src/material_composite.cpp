@@ -8,7 +8,7 @@
 namespace amitex {
 
 Composite::Composite(const std::vector<size_t>& phaseIndices, const std::string& law)
-    : phaseIndices_{phaseIndices}, law_{law} {
+    : phaseIndices_{phaseIndices}, law_{law}, pos_{}, volfracs_{}, S_{}, N_{}, T_{} {
   size_t nphases = phaseIndices.size();
   volfracs_.resize(nphases);
   for (size_t i = 0; i < 3; i++) N_[i].resize((nphases * (nphases - 1)) / 2);

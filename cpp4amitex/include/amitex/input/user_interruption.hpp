@@ -14,8 +14,8 @@ namespace amitex {
 //! Define user interruptions
 class UserInterruption {
  public:
-  UserInterruption() = default;
-  UserInterruption(double value) : value_{value} {};
+  UserInterruption() : UserInterruption{0.} {}
+  UserInterruption(double value) : value_{value}, index_{0} {};
   //! Set index
   void setIndex(size_t index) { index_ = index; }
   const char* xmlTag() const { return "User_interruption"; }

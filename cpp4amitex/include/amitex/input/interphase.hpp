@@ -42,11 +42,11 @@ class Interphase {
     bool xmlHasBody() const { return true; }
     void xmlWriteAttributes(std::ostream& stream) const;
     void xmlWriteInner(std::ostream& stream) const;
-    size_t numM, nZones;
+    size_t numM = 0, nZones = 0;
     List<size_t> zoneList{"ZoneList"};
   };
-  std::vector<InterphaseMaterial> materials;
-  std::vector<InterphaseZoneList> zoneLists;
+  std::vector<InterphaseMaterial> materials = {};
+  std::vector<InterphaseZoneList> zoneLists = {};
 };
 
 }  // namespace amitex

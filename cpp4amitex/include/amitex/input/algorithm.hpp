@@ -31,14 +31,14 @@ class ConvergenceAcceleration {
   void xmlWriteInner(std::ostream& stream) const {}
 
   //! number of iterations between two convergence accelerations
-  std::optional<int> modACV;
-  std::optional<bool> value;
+  std::optional<int> modACV = std::nullopt;
+  std::optional<bool> value = std::nullopt;
 };
 
 //! Force convergence
 class ConvergenceForced {
  public:
-  ConvergenceForced() = default;
+  ConvergenceForced() : ConvergenceForced(0.0) {}
   ConvergenceForced(bool value, int nitCVFor = 0, int nCVFor = 0)
       : value{value}, nitCVFor{nitCVFor}, nCVFor{nCVFor} {};
   ConvergenceForced& operator=(bool value) {
@@ -80,7 +80,7 @@ class Substepping {
 //! Main algorithm parameters
 class Algorithm {
  public:
-  Algorithm() = default;
+  Algorithm() : Algorithm{"Default", true} {};
   Algorithm(const std::string& type,
             const std::variant<bool, ConvergenceAcceleration>& convergenceAcceleration,
             std::optional<double> convergenceCriterion = std::nullopt,
@@ -94,7 +94,7 @@ class Algorithm {
             const std::optional<ConvergenceForced>& ConvergenceForced = std::nullopt);
 
   //! Type ("Dafault" or "Basic_Scheme")
-  std::string type = "Default";
+  std::string type;
 
   //! convergence criterion (<1.e-3)
   Value<double> convergenceCriterion{"Convergence_Criterion"};
@@ -145,7 +145,7 @@ class Diffusion {
 
 class SmallPerturbations {
  public:
-  SmallPerturbations() = default;
+  SmallPerturbations() : SmallPerturbations{true} {};
   SmallPerturbations(bool value) : value{value} {};
   SmallPerturbations(bool value, const std::string& displacementGradient)
       : value{value}, displacementGradient{displacementGradient} {};
@@ -160,7 +160,7 @@ class SmallPerturbations {
   void xmlWriteInner(std::ostream& stream) const {}
 
   //! Toggle non symmetrized displacement gradients (="nsysm" or ommited)
-  std::string displacementGradient;
+  std::string displacementGradient = "";
 
   bool value;
 };

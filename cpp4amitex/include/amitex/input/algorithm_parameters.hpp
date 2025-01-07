@@ -13,7 +13,7 @@ namespace amitex {
 //! Group of all algorithm parameters
 class AlgorithmParameters {
  public:
-  AlgorithmParameters() = default;
+  AlgorithmParameters() : AlgorithmParameters{Algorithm{}} {};
   AlgorithmParameters(const Algorithm& algorithm,
                       const std::optional<Mechanics>& mechanics = std::nullopt,
                       const std::optional<Diffusion>& diffusion = std::nullopt)
@@ -21,7 +21,7 @@ class AlgorithmParameters {
   Algorithm algorithm;
   std::optional<Diffusion> diffusion;
   std::optional<Mechanics> mechanics;
-  std::optional<AlgorithmLaminate> algorithmLaminate;
+  std::optional<AlgorithmLaminate> algorithmLaminate = std::nullopt;
   const char* xmlTag() const { return "Algorithm_Parameters"; }
   bool xmlHasBody() const { return true; }
   void xmlWriteAttributes(std::ostream& stream) const {}

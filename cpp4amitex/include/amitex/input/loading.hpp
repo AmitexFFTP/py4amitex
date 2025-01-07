@@ -226,8 +226,8 @@ class Loading {
     MechanicDriving driving = MechanicDriving::Strain;
     Evolution evolution = Evolution::Constant;
     double value = 0.0;
-    std::optional<double> dirstress;
-    std::string tag;
+    std::optional<double> dirstress = std::nullopt;
+    std::string tag = "";
   };
 
   class DiffusionDriver {
@@ -244,7 +244,7 @@ class Loading {
     DiffusionDriving driving = DiffusionDriving::Gradient;
     Evolution evolution = Evolution::Constant;
     double value = 0.0;
-    std::string tag;
+    std::string tag = "";
   };
 
   class DirStress_ {
@@ -299,7 +299,7 @@ class Loading {
     bool xmlHasBody() const { return false; }
     void xmlWriteAttributes(std::ostream& stream) const;
     void xmlWriteInner(std::ostream& stream) const {}
-    Evolution evolution;
+    Evolution evolution{};
     double value = 0;
   };
   class Param {
@@ -309,41 +309,41 @@ class Loading {
     bool xmlHasBody() const { return false; }
     void xmlWriteAttributes(std::ostream& stream) const;
     void xmlWriteInner(std::ostream& stream) const {}
-    size_t index;
-    Evolution evolution;
+    size_t index = 0;
+    Evolution evolution{};
     double value = 0;
   };
   class OutputNumber {
    public:
-    OutputNumber(const char* tag) : tag_{tag} {}
-    OutputNumber(int number) : number{number} {};
-    const char* xmlTag() const { return tag_; }
+    OutputNumber(const std::string& tag) : tag_{tag} {}
+    OutputNumber(const std::string& tag, int number) : tag_{tag}, number{number} {};
+    const char* xmlTag() const { return tag_.c_str(); }
     bool xmlHasBody() const { return false; }
     void xmlWriteAttributes(std::ostream& stream) const;
     void xmlWriteInner(std::ostream& stream) const {}
     int number = -1;
 
    private:
-    const char* tag_;
+    std::string tag_;
   };
 
   using TimeList = List<double>;
   using OutputVtkList = List<int>;
 
   int id = -1;
-  DirStress_ dirstress_;
-  TimeDiscretisation tdisc;
+  DirStress_ dirstress_{};
+  TimeDiscretisation tdisc{};
   bool userTimeList = false;
   TimeList tlist{"Time_List"};
-  std::vector<DiffusionDriver> diffu_drivers;
-  std::vector<MechanicsDriver> meca_drivers;
+  std::vector<DiffusionDriver> diffu_drivers = {};
+  std::vector<MechanicsDriver> meca_drivers = {};
   OutputVtkList outputVtkList{"Output_vtkList"};
-  std::optional<Temperature> temperature;
-  std::vector<Param> params;
+  std::optional<Temperature> temperature = std::nullopt;
+  std::vector<Param> params = {};
   OutputNumber outputCell{"Output_cell"};
   OutputNumber outputZone{"Output_zone"};
-  std::vector<UserInterruption> userItpts;
-  std::vector<GradGradU> gradGradUDrivers;
+  std::vector<UserInterruption> userItpts = {};
+  std::vector<GradGradU> gradGradUDrivers = {};
 };
 };  // namespace amitex
 

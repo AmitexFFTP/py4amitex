@@ -38,10 +38,10 @@ class InitLoadExt {
     const char* xmlTag() const { return "Param"; }
     void xmlWriteAttributes(std::ostream& stream) const;
     void xmlWriteInner(std::ostream& stream) const {};
-    size_t index;
+    size_t index = 0;
     double value = 0;
   };
-  std::vector<Param> params;
+  std::vector<Param> params = {};
 };
 
 }  // namespace amitex
