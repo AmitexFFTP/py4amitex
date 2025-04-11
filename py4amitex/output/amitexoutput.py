@@ -362,7 +362,11 @@ class AmitexOutput:
         # get all matId with vtk outputs
         matIDlist = []
         complist = []
-        for incr in self.reader.vtk_files:
+        if increments_list is None:
+            increments_list = list(self.reader.vtk_files.keys())
+        if 0 in increments_list:
+            increments_list.remove(0)
+        for incr in increments_list:
             for Id in self.reader.vtk_files[incr]['varInt']:
                 if Id not in matIDlist:
                     matIDlist.append(Id)

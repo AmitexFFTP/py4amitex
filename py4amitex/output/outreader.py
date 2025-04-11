@@ -229,8 +229,10 @@ class OutReader:
         # get list of time increments to load
         I = self._get_vtk_incr_to_read(increments_list)
         # if field is not concentration -> remove potential 0 increment
-        if field_type not in ['concentration']:
-            I.remove(0)
+        if (field_type not in ['concentration']) and (0 in I):
+            # I.remove(0)
+            if 0 in I:
+                I.remove(0)
         # check if field_type is available
         if field_type not in self.vtk_files[I[0]]:
             msg = (f"'{field_type}' not in available data. Available vtk fields"
