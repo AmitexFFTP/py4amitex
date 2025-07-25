@@ -79,7 +79,7 @@ void MaterialBuilder::addVoxelAux(Materials& materials, GridLinPoint lpos,
             InterfaceGeometry{.normal = normal, .tangent = getTangent(normal), .surface = 1.0});
       }
     }
-    composites.at(ic).addVoxel(lpos, volfracs, geoms);
+    composites.at(ic).addVoxel(lpos, volfracs, geoms, zoneIds);
   }
 }
 

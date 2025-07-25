@@ -111,34 +111,8 @@ static void genCompositeZone(Composite& mat, const Materials& materials, const s
                              std::optional<Interphase>& interphase) {
   size_t nphases = mat.numberPhases();
   for (size_t i = 0; i < nphases; i++) {
-    const auto& matPos = mat.positions();
-    const Material& pureMat = materials.material(mat.materialIndices()[i]);
-    std::vector<std::size_t> coveredZones;  // zones fully covered by a composite
-    std::vector<size_t> zones(matPos.size());
-    // Good default ?
-    std::fill(zones.begin(), zones.end(), 1);
-
-    // Construct dictionary  position -> index of 'zones'
-    auto [pmin, pmax] = std::minmax_element(matPos.begin(), matPos.end());
-    std::vector<long long> indexPos(*pmax - *pmin + 1);
-    // -1 for non-existent index
-    std::fill(indexPos.begin(), indexPos.end(), -1);
-    for (size_t p = 0; p < matPos.size(); p++) {
-      indexPos[matPos[p] - *pmin] = p;
-    }
-    size_t izone = 1;
-    for (const auto& zone : pureMat.zones()) {
-      size_t coveredPos = 0;
-      for (auto lpos : zone.linearPositions()) {
-        if (lpos >= *pmin && lpos <= *pmax) {
-          auto index = indexPos.at(lpos - *pmin);
-          if (index >= 0) {
-            zones.at(index) = izone;
-          }
-        }
-      }
-      izone++;
-    }
+    std::vector<size_t> zones(mat.zone(i).size());
+    for (size_t p = 0; p < zones.size(); p++) zones[p] = mat.zone(i)[p] + 1;
     writeBIN(dir + "/zone" + std::to_string(i + 1) + ".bin", zones);
   }
 }

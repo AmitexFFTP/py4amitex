@@ -51,7 +51,8 @@ VtkHeader readVTK(const std::filesystem::path& path, std::vector<T>& data);
 //! \param[out] data data vector (in VTK voxel order)
 //! \return type of data in filed
 //! \throws std::runtime_error on input error or file not
-std::string readBin(const std::filesystem::path& path, std::vector<double>& data);
+template <typename T>
+std::string readBin(const std::filesystem::path& path, std::vector<T>& data);
 
 }  // namespace amitex
 

@@ -269,8 +269,24 @@ VtkHeader readVTK<double>(const std::filesystem::path& path, std::vector<double>
   return readVTKImpl<double>(path, data);
 }
 
+template <>
 std::string readBin(const std::filesystem::path& path, std::vector<double>& data) {
   return readBinImpl<double>(path, data);
+}
+
+template <>
+std::string readBin(const std::filesystem::path& path, std::vector<int>& data) {
+  return readBinImpl<int>(path, data);
+}
+
+template <>
+std::string readBin(const std::filesystem::path& path, std::vector<long>& data) {
+  return readBinImpl<long>(path, data);
+}
+
+template <>
+std::string readBin(const std::filesystem::path& path, std::vector<long long>& data) {
+  return readBinImpl<long long>(path, data);
 }
 
 }  // namespace amitex
