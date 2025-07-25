@@ -32,8 +32,7 @@ class CoeffComposite : public BasicCoeff {
 //! Definition of a "pure" material
 class Material {
  public:
-  Material() = default;
-  Material(int id) : id{id} {}
+  static Ptr<Material> create() { return makePtr<Material>(Material{}); }
 
   const char* xmlTag() const { return "Material"; }
   bool xmlHasBody() const {
@@ -192,16 +191,13 @@ class Material {
   //! \param zone voxel grid coordinates
   //! \param coeffs mechanics coefficients
   //! \param coeffKs diffusion coefficients
-  void addZone(const Zone& zone, const std::vector<double>& coeffs = {},
-               const std::vector<double>& coeffKs = {},
-               const std::vector<double>& coeffComposites = {});
-  void addZone(Zone&& zone, const std::vector<double>& coeffs = {},
+  void addZone(Ptr<Zone> zone, const std::vector<double>& coeffs = {},
                const std::vector<double>& coeffKs = {},
                const std::vector<double>& coeffComposites = {});
 
   //! \return zone list
-  const std::vector<Zone>& zones() const { return zones_; }
-  std::vector<Zone>& zones() { return zones_; }
+  const std::vector<Ptr<Zone>>& zones() const { return zones_; }
+  std::vector<Ptr<Zone>>& zones() { return zones_; }
 
   //! \return number an internal variables
   size_t numberIntVars() { return intvars_.size(); }
@@ -229,6 +225,7 @@ class Material {
   bool interphase = false;
 
  private:
+  Material() = default;
   int id = -1;
   size_t nbZones = 0;
   std::string law = "", lib = "", lawK = "", libK = "";
@@ -236,7 +233,7 @@ class Material {
   std::vector<Coeff> coeffs = {};
   std::vector<CoeffK> coeffKs = {};
   std::vector<CoeffComposite> coeffComposites = {};
-  std::vector<Zone> zones_ = {};
+  std::vector<Ptr<Zone>> zones_ = {};
   std::vector<IntVar> intvars_ = {};
 };
 

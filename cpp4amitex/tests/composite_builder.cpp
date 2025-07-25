@@ -20,7 +20,7 @@ void compositeSpheres(bool useBuildAPI) {
   Grid grid{N, DL};
   std::string law = "laminate";
 
-  Materials materials;
+  auto materials = Materials::create();
 
   {
     std::vector<std::tuple<VoxelSpec, Vector3D>> voxels;
@@ -41,58 +41,59 @@ void compositeSpheres(bool useBuildAPI) {
       if (useBuildAPI) {
         voxels.push_back({spec, normal});
       } else {
-        matBuilder.addVoxel(materials, grid.linearize(p), spec, normal);
+        matBuilder.addVoxel(*materials, grid.linearize(p), spec, normal);
       }
     }
     if (useBuildAPI) {
       EXPECT_EQ(voxels.size(), grid.totalSize());
-      buildMaterials(materials, N, voxels, IndexOrdering::Fortran);
+      buildMaterials(*materials, N, voxels, IndexOrdering::Fortran);
     }
   }
 
   std::vector<std::vector<double>> coeffs = {{1.0, 2.0}, {2.0, 3.0}};
 
-  for (size_t i = 0; i < materials.numberMaterials(); i++) {
-    std::cout << materials.material(i).numberZones() << "\n";
-    for (const auto& zone : materials.material(i).zones()) {
-      std::cout << "Mat " << i << " #zones = " << zone.numberVoxels() << "\n";
+  for (size_t i = 0; i < materials->numberMaterials(); i++) {
+    std::cout << materials->material(i)->numberZones() << "\n";
+    for (const auto& zone : materials->material(i)->zones()) {
+      std::cout << "Mat " << i << " #zones = " << zone->numberVoxels() << "\n";
     }
-    materials.material(i).setLaw("elasiso");
-    materials.material(i).setCoeffs(coeffs[i]);
-    materials.material(i).setCoeffComposites(coeffs[i]);
+    materials->material(i)->setLaw("elasiso");
+    materials->material(i)->setCoeffs(coeffs[i]);
+    materials->material(i)->setCoeffComposites(coeffs[i]);
   }
 
-  for (size_t i = 0; i < materials.numberComposites(); i++) {
-    materials.composite(i).setLaw(law);
-    std::cout << "Composite " << i << " #vox=" << materials.composite(i).positions().size() << '\n';
+  for (size_t i = 0; i < materials->numberComposites(); i++) {
+    materials->composite(i)->setLaw(law);
+    std::cout << "Composite " << i << " #vox=" << materials->composite(i)->positions().size()
+              << '\n';
   }
 
-  materials.referenceMaterial =
-      ReferenceMaterial{0.5 * (coeffs[0][0] + coeffs[1][0]), 0.5 * (coeffs[0][1] + coeffs[1][1])};
+  materials->referenceMaterial = ReferenceMaterial::create(0.5 * (coeffs[0][0] + coeffs[1][0]),
+                                                           0.5 * (coeffs[0][1] + coeffs[1][1]));
 
-  Algorithm algo{"Basic_Scheme", true};
-  algo.convergenceAcceleration = true;
-  Mechanics meca;
-  meca.filter = "Default";
-  meca.smallPerturbations = true;
-  AlgorithmParameters algoPara{algo, meca};
+  auto algo = Algorithm::create("Basic_Scheme", true);
+  algo->convergenceAcceleration = true;
+  auto meca = Mechanics::createDefault();
+  meca->filter = "Default";
+  meca->smallPerturbations = true;
+  auto algoPara = AlgorithmParameters::create(algo, meca);
 
-  Loading load;
-  load.setTimeDiscretizationUser({1e-3, 2e-3, 1.e-2});
+  auto load = Loading::create();
+  load->setTimeDiscretizationUser({1e-3, 2e-3, 1.e-2});
   for (int i = 0; i < 3; i++) {
     for (int j = i; j < 3; j++)
-      load.setEvolution({i, j}, MechanicDriving::Stress, Evolution::Linear, 0.0);
+      load->setEvolution({i, j}, MechanicDriving::Stress, Evolution::Linear, 0.0);
   }
-  load.setEvolution(Component::XX, MechanicDriving::Strain, Evolution::Linear, 0.01);
-  LoadingOutput lo;
-  lo.add(std::move(load));
+  load->setEvolution(Component::XX, MechanicDriving::Strain, Evolution::Linear, 0.01);
+  auto lo = LoadingOutput::create();
+  lo->add(load);
 
-  Input input{grid, std::move(algoPara), std::move(materials), std::move(lo)};
-  input.resultsDir = "testresults/simple_spheres_composites";
-  input.generateFiles();
+  auto input = Input::create(grid, algoPara, materials, lo);
+  input->resultsDir = "testresults/simple_spheres_composites";
+  input->generateFiles();
 
   std::filesystem::path refDir = "ref-amxdir/simple_spheres_composites";
-  std::filesystem::path dir = input.resultsDir;
+  std::filesystem::path dir = input->resultsDir;
   EXPECT_TRUE(compareXMLFiles(dir / "materials.xml", refDir / "materials.xml"));
   EXPECT_TRUE(compareXMLFiles(dir / "algorithm.xml", refDir / "algorithm.xml"));
   EXPECT_TRUE(compareXMLFiles(dir / "loading.xml", refDir / "loading.xml"));
@@ -116,13 +117,13 @@ void compositeSpheres(bool useBuildAPI) {
                                 refDir / "composites" / "rep_1_2" / "N12y.bin", 1.e-8));
   EXPECT_TRUE(compareBinWithRef(dir / "composites" / "rep_1_2" / "N12z.bin",
                                 refDir / "composites" / "rep_1_2" / "N12z.bin", 1.e-8));
-  for (size_t i = 0; i < input.materials.composite(0).tangents().at(0).size(); i++) {
-    for (size_t j = 0; j < input.materials.composite(0).tangents().at(0).at(i).size(); j++) {
+  for (size_t i = 0; i < input->materials->composite(0)->tangents().at(0).size(); i++) {
+    for (size_t j = 0; j < input->materials->composite(0)->tangents().at(0).at(i).size(); j++) {
       Vector3D T, N;
       for (size_t k = 0; k < 3; k++)
-        T[k] = input.materials.composite(0).tangents().at(k).at(i).at(j);
+        T[k] = input->materials->composite(0)->tangents().at(k).at(i).at(j);
       for (size_t k = 0; k < 3; k++)
-        N[k] = input.materials.composite(0).normals().at(k).at(i).at(j);
+        N[k] = input->materials->composite(0)->normals().at(k).at(i).at(j);
       double prod2 = 0.0;
       for (size_t k = 0; k < 3; k++) prod2 += T[k] * N[k];
       EXPECT_NEAR(prod2, 0.0, 1.e-8);

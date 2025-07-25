@@ -38,8 +38,7 @@ Algorithm::Algorithm(const std::string& type,
                      std::optional<double> convergenceCriterionSmacro,
                      std::optional<double> convergenceCriterionCompatibility,
                      std::optional<int> nitermin, std::optional<int> niterminACV,
-                     const std::optional<std::string>& initialize,
-                     const std::optional<Substepping>& substepping,
+                     const std::optional<std::string>& initialize, Ptr<Substepping> substepping,
                      const std::optional<ConvergenceForced>& convergenceForced)
     : type{type},
       convergenceAcceleration{convergenceAcceleration},
@@ -63,7 +62,7 @@ void Algorithm::xmlWriteInner(std::ostream& stream) const {
   if (nitermin.value) writeXML(stream, nitermin);
   if (niterminACV.value) writeXML(stream, niterminACV);
   if (initialize.value) writeXML(stream, initialize);
-  if (substepping) writeXML(stream, substepping.value());
+  if (substepping) writeXML(stream, *substepping);
   if (convergenceForced) writeXML(stream, convergenceForced.value());
 }
 

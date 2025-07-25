@@ -54,13 +54,13 @@ void MaterialBuilder::addVoxelAux(Materials& materials, GridLinPoint lpos,
   for (size_t i = 0; i < phaseIds.size(); i++) {
     auto pid = phaseIds[i];
     auto zoneId = zoneIds[i];
-    std::vector<Zone>& zones = materials.material(pid).zones();
+    std::vector<Ptr<Zone>>& zones = materials.material(pid)->zones();
     if (zoneId >= zones.size()) {
       for (size_t iz = zones.size(); iz <= zoneId; iz++) {
-        zones.push_back(Zone{{0, 0, 0}});
+        zones.push_back(Zone::create({0, 0, 0}));
       }
     }
-    zones.at(zoneId).add(lpos);
+    zones.at(zoneId)->add(lpos);
   }
   MaterialComposite& composites = materials.composites;
   if (phaseIds.size() > 1) {
@@ -68,7 +68,7 @@ void MaterialBuilder::addVoxelAux(Materials& materials, GridLinPoint lpos,
     if (it == compos.end()) {
       auto [it2, ok] = compos.insert({phaseIds, composites.numberMaterials()});
       if (!ok) throw InputError{std::string{__func__} + " map could not insert"};
-      composites.add(Composite{phaseIds});
+      composites.add(Composite::create(phaseIds));
       it = it2;
     }
     size_t ic = it->second;
@@ -79,7 +79,7 @@ void MaterialBuilder::addVoxelAux(Materials& materials, GridLinPoint lpos,
             InterfaceGeometry{.normal = normal, .tangent = getTangent(normal), .surface = 1.0});
       }
     }
-    composites.at(ic).addVoxel(lpos, volfracs, geoms, zoneIds);
+    composites.at(ic)->addVoxel(lpos, volfracs, geoms, zoneIds);
   }
 }
 

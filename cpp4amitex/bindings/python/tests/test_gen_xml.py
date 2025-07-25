@@ -36,16 +36,16 @@ def compareXMLWithRef(obj, refFilePath):
 
 
 def test_XML_AlgoDefault():
-    algo = Algorithm()
+    algo = Algorithm.createDefault()
     algo.type = "Basic_Scheme"
     algo.convergenceAcceleration = False
     algo.convergenceAcceleration.value = True
 
-    meca = Mechanics()
+    meca = Mechanics.createDefault()
     meca.filter = "Default"
     meca.smallPerturbations = True
 
-    param_algo = AlgorithmParameters()
+    param_algo = AlgorithmParameters(Algorithm.createDefault())
     param_algo.algorithm = algo
     param_algo.mechanics = meca
 
@@ -62,15 +62,15 @@ def test_XML_AlgoDefault_Declarative():
 
 
 def test_XML_AlgoNoAc():
-    algo = Algorithm()
+    algo = Algorithm.createDefault()
     algo.type = "Basic_Scheme"
     algo.convergenceAcceleration = False
 
-    meca = Mechanics()
+    meca = Mechanics.createDefault()
     meca.filter = "Default"
     meca.smallPerturbations = True
 
-    param_algo = AlgorithmParameters()
+    param_algo = AlgorithmParameters(Algorithm.createDefault())
     param_algo.algorithm = algo
     param_algo.mechanics = meca
 
@@ -647,13 +647,13 @@ def test_XML_MatBeton():
 
 
 def test_XML_ThermMerope0():
-    algo = Algorithm()
+    algo = Algorithm.createDefault()
     algo.type = "Basic_Scheme"
     algo.convergenceAcceleration = True
     algo.nitermax = 3000
-    param_algo = AlgorithmParameters()
+    param_algo = AlgorithmParameters(Algorithm.createDefault())
     param_algo.algorithm = algo
-    diffu = Diffusion()
+    diffu = Diffusion.createDefault()
     diffu.filter = "Default"
     diffu.stationary = True
     param_algo.diffusion = diffu

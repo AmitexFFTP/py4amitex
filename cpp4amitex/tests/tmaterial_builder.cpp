@@ -14,23 +14,25 @@ TEST(MaterialBuilder, FromVTKBilayer) {
   std::filesystem::path refDir = "ref-amxdir/bilayer";
   std::filesystem::path dir = "testresults/addzoneandlaunchbilayer";
 
-  Input input;
-  input.resultsDir = dir;
   VtkHeader header;
-  input.grid =
-      buildMaterialsFromVtk(input.materials, refDir / "materialIds.vtk", refDir / "zoneIds.vtk");
+  auto materials = Materials::create();
+  auto grid = buildMaterialsFromVtk(*materials, refDir / "materialIds.vtk", refDir / "zoneIds.vtk");
+  auto input = Input::create(grid, AlgorithmParameters::create(Algorithm::createDefault()),
+                             materials, LoadingOutput::create());
+  input->resultsDir = dir;
+
   for (size_t m = 0; m < 2; m++) {
-    input.materials.material(m).setLaw("elasiso");
-    input.materials.material(m).setNumberCoeff(2);
+    input->materials->material(m)->setLaw("elasiso");
+    input->materials->material(m)->setNumberCoeff(2);
     for (size_t j = 0; j < 2; j++) {
       std::stringstream fname;
       fname << "Coeff" << m + 1 << '_' << j + 1 << ".bin";
-      input.materials.material(m).setCoeffZoneFromBin(j, refDir / fname.str());
+      input->materials->material(m)->setCoeffZoneFromBin(j, refDir / fname.str());
     }
   }
-  input.materials.referenceMaterial = ReferenceMaterial{250e6, 250e6};
+  input->materials->referenceMaterial = ReferenceMaterial::create(250e6, 250e6);
 
-  input.generateFiles();
+  input->generateFiles();
 
   EXPECT_TRUE(compareXMLFiles(dir / "materials.xml", refDir / "materials.xml"));
 
@@ -47,27 +49,27 @@ TEST(MaterialBuilder, FromVTKBilayer) {
 }
 
 TEST(MaterialBuilder, FromVTKMat) {
-  Materials materials;
-  auto grid = buildMaterialsFromVtk(materials, "data/arlequin_N3_r1.vtk");
-  EXPECT_EQ(materials.numberMaterials(), 27);
+  auto materials = Materials::create();
+  auto grid = buildMaterialsFromVtk(*materials, "data/arlequin_N3_r1.vtk");
+  EXPECT_EQ(materials->numberMaterials(), 27);
   for (int m = 0; m < 27; m++) {
-    auto& mat = materials.material(m);
+    Material& mat = *materials->material(m);
     EXPECT_EQ(mat.numberZones(), 1);
-    EXPECT_EQ(mat.zones().at(0).numberVoxels(), 1);
-    auto lpos = mat.zones().at(0).linearPositions().at(0);
+    EXPECT_EQ(mat.zones().at(0)->numberVoxels(), 1);
+    auto lpos = mat.zones().at(0)->linearPositions().at(0);
     EXPECT_EQ(lpos, m);
   }
 }
 
 TEST(MaterialBuilder, FromVTKZone) {
-  Materials materials;
-  auto grid = buildMaterialsFromVtk(materials, "", "data/arlequin_N3_r1.vtk");
-  EXPECT_EQ(materials.numberMaterials(), 1);
-  auto& mat = materials.material(0);
+  auto materials = Materials::create();
+  auto grid = buildMaterialsFromVtk(*materials, "", "data/arlequin_N3_r1.vtk");
+  EXPECT_EQ(materials->numberMaterials(), 1);
+  Material& mat = *materials->material(0);
   EXPECT_EQ(mat.numberZones(), 27);
   for (int z = 0; z < 27; z++) {
-    EXPECT_EQ(mat.zones().at(z).numberVoxels(), 1);
-    auto lpos = mat.zones().at(z).linearPositions().at(0);
+    EXPECT_EQ(mat.zones().at(z)->numberVoxels(), 1);
+    auto lpos = mat.zones().at(z)->linearPositions().at(0);
     EXPECT_EQ(lpos, z);
   }
 }

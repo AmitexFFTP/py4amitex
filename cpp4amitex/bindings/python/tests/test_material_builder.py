@@ -4,6 +4,7 @@ from py4amitex.input import (
     Materials,
     Input,
     ReferenceMaterial,
+    Algorithm,
     AlgorithmParameters,
     LoadingOutput,
 )
@@ -52,7 +53,9 @@ def test_bilayer():
         for z in range(2):
             mat.setCoeffZoneFromBin(z, f"{refDir}/Coeff{m+1}_{z+1}.bin")
 
-    input = Input(grid, AlgorithmParameters(), materials, LoadingOutput())
+    input = Input(
+        grid, AlgorithmParameters(Algorithm.createDefault()), materials, LoadingOutput()
+    )
     input.resultsDir = dir
 
     input.generateFiles()

@@ -1,7 +1,10 @@
 from py4amitex.input import (
     Input,
     Grid,
+    AlgorithmParameters,
+    Algorithm,
     Diffusion,
+    LoadingOutput,
     Loading,
     ReferenceMaterialD,
     Materials,
@@ -18,11 +21,16 @@ def mat2zone2Prepare(nbMat: int) -> None:
     assert 2 >= nbMat >= 1
     grid = Grid([32, 32, 32], [3125, 3125, 3125])
     kappas = [0.6, 429.0]
-    input = Input()
+    input = Input(
+        grid,
+        AlgorithmParameters(Algorithm.createDefault()),
+        Materials(),
+        LoadingOutput(),
+    )
     input.grid = grid
     input.resultsDir = f"testresults/addzoneandlaunchthermal_{nbMat}"
 
-    diffu = Diffusion()
+    diffu = Diffusion.createDefault()
     diffu.filter = "Default"
     diffu.stationary = True
     input.algorithmParameters.diffusion = diffu

@@ -2,6 +2,7 @@
 #define _AMITEX_ALGORITHM_COMPOSITE_HEADER_
 
 #include "amitex/input/algorithm.hpp"
+#include "amitex/input/common.hpp"
 #include "amitex/private/input_element.hpp"
 #include "amitex/private/value_element.hpp"
 
@@ -12,7 +13,7 @@ namespace amitex {
 //! Special algorithm parameters for simulations with composite law (laminate, reuss, …)
 class AlgorithmLaminate {
  public:
-  AlgorithmLaminate() = default;
+  static Ptr<AlgorithmLaminate> create() { return makePtr<AlgorithmLaminate>(AlgorithmLaminate{}); }
   const char* xmlTag() const { return "Algorithm_laminate"; }
   bool xmlHasBody() const { return true; }
   void xmlWriteAttributes(std::ostream& stream) const {}
@@ -26,6 +27,9 @@ class AlgorithmLaminate {
   Value<std::string> initializationType{"Initialisation_type"};
   //! Number of substeps for laminate law
   Value<int> nIncrements{"N_increments"};
+
+ private:
+  AlgorithmLaminate() = default;
 };
 
 }  // namespace amitex
