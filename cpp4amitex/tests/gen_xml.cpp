@@ -642,3 +642,40 @@ TEST(XML, ThermMerop0) {
   loading.add(std::move(load));
   EXPECT_TRUE(compareXMLWithRef(loading, "loading-0.xml"));
 }
+
+TEST(XML, CharFluageRestart) {
+  LoadingOutput lo;
+
+  Output output;
+  output.vtkStressStrain = VtkStressStrain{1, 1};
+  output.addZone(Output::Zone{1});
+  lo.output = output;
+
+  Loading loading;
+  loading.setTimeDiscretizationUser({32832});
+  loading.setOutputZone(1);
+
+  loading.setLinearEvolution(Component::XX, MechanicDriving::Strain, 0.01);
+  for (int i = 0; i < 3; i++) {
+    for (int j = i; j < 3; j++) {
+      if (i != 0 || j != 0) {
+        loading.setLinearEvolution({i, j}, MechanicDriving::Stress, 0.);
+      }
+    }
+  }
+  lo.add(loading);
+
+  Loading loading2;
+  loading2.setTimeDiscretizationUser({someTimes.begin(), someTimes.end()});
+  loading2.setRestart(10);
+  loading2.setOutputVtkList({31});
+  loading2.setOutputZone(30);
+  for (int i = 0; i < 3; i++) {
+    for (int j = i; j < 3; j++) {
+      loading2.setConstantEvolution({i, j}, MechanicDriving::Stress);
+    }
+  }
+  lo.add(loading2);
+
+  EXPECT_TRUE(compareXMLWithRef(lo, "char_fluage_restart.xml"));
+}

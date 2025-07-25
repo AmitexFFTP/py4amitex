@@ -291,7 +291,8 @@ void defineInputMod(py::module_& m) {
       .def("addUserInterruptValue", &Loading::addUserInterruptValue,
            DOC(amitex, Loading, addUserInterruptValue))
       .def("setUserInterruptValues", &Loading::setUserInterruptValues,
-           DOC(amitex, Loading, setUserInterruptValues));
+           DOC(amitex, Loading, setUserInterruptValues))
+      .def("setRestart", &Loading::setRestart, "every"_a, DOC(amitex, Loading, setRestart));
 
   py::class_<VtkStressStrain>(m, "VtkStressStrain", DOC(amitex, VtkStressStrain))
       .def(py::init<int, int>(), "stress"_a = 0, "strain"_a = 0);
