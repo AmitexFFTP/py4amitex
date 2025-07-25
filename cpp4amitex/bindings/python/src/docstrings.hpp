@@ -436,6 +436,10 @@ Parameter ``ibegin``:
 Parameter ``iend``:
     end of the rane in grid coordinates (*exclusive*))doc";
 
+static const char *__doc_amitex_Field_Field_5 = R"doc()doc";
+
+static const char *__doc_amitex_Field_Field_6 = R"doc()doc";
+
 static const char *__doc_amitex_Field_at = R"doc(get data at grid point with bound checking)doc";
 
 static const char *__doc_amitex_Field_at_2 = R"doc()doc";
@@ -487,6 +491,10 @@ Parameter ``p``:
     grid coordinates)doc";
 
 static const char *__doc_amitex_Field_operator_array_2 = R"doc()doc";
+
+static const char *__doc_amitex_Field_operator_assign = R"doc()doc";
+
+static const char *__doc_amitex_Field_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_amitex_Field_operator_call = R"doc(get data at grid point with optional bound checking)doc";
 
@@ -956,6 +964,22 @@ static const char *__doc_amitex_Loading_Param_xmlWriteAttributes = R"doc()doc";
 
 static const char *__doc_amitex_Loading_Param_xmlWriteInner = R"doc()doc";
 
+static const char *__doc_amitex_Loading_Restart = R"doc()doc";
+
+static const char *__doc_amitex_Loading_Restart_Restart = R"doc()doc";
+
+static const char *__doc_amitex_Loading_Restart_Restart_2 = R"doc()doc";
+
+static const char *__doc_amitex_Loading_Restart_every = R"doc()doc";
+
+static const char *__doc_amitex_Loading_Restart_xmlHasBody = R"doc()doc";
+
+static const char *__doc_amitex_Loading_Restart_xmlTag = R"doc()doc";
+
+static const char *__doc_amitex_Loading_Restart_xmlWriteAttributes = R"doc()doc";
+
+static const char *__doc_amitex_Loading_Restart_xmlWriteInner = R"doc()doc";
+
 static const char *__doc_amitex_Loading_Temperature = R"doc()doc";
 
 static const char *__doc_amitex_Loading_Temperature_Temperature = R"doc()doc";
@@ -1011,6 +1035,8 @@ static const char *__doc_amitex_Loading_outputVtkList = R"doc()doc";
 static const char *__doc_amitex_Loading_outputZone = R"doc()doc";
 
 static const char *__doc_amitex_Loading_params = R"doc()doc";
+
+static const char *__doc_amitex_Loading_restart = R"doc()doc";
 
 static const char *__doc_amitex_Loading_setConstantEvolution =
 R"doc(set a diffusion constant loading for one component
@@ -1120,6 +1146,12 @@ Parameter ``evolution``:
 
 value for linear evolution)doc";
 
+static const char *__doc_amitex_Loading_setRestart =
+R"doc(Save restart files every `every` increments
+
+Parameter ``every``:
+    period of saving)doc";
+
 static const char *__doc_amitex_Loading_setTemperatureEvolution =
 R"doc(set a the evolution of the temperature
 
@@ -1218,6 +1250,8 @@ static const char *__doc_amitex_MaterialBuilder_minVolFrac = R"doc()doc";
 static const char *__doc_amitex_MaterialComposite = R"doc(Define all composite materials)doc";
 
 static const char *__doc_amitex_MaterialComposite_CoeffComposite = R"doc()doc";
+
+static const char *__doc_amitex_MaterialComposite_CoeffComposite_CoeffComposite = R"doc()doc";
 
 static const char *__doc_amitex_MaterialComposite_CoeffComposite_directory = R"doc()doc";
 
@@ -1628,6 +1662,8 @@ static const char *__doc_amitex_Mechanics_xmlWriteAttributes = R"doc()doc";
 static const char *__doc_amitex_Mechanics_xmlWriteInner = R"doc()doc";
 
 static const char *__doc_amitex_Output = R"doc(Output parametrization)doc";
+
+static const char *__doc_amitex_Output_Output = R"doc()doc";
 
 static const char *__doc_amitex_Output_VtkIntVarList = R"doc()doc";
 

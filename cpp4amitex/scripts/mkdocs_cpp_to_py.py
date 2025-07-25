@@ -4,6 +4,8 @@
 
 # pip3 install pybind11_mkdoc
 
+# if default libclang is not enough set env-var LIBCLANG_PATH=/path/to/libclang.so
+
 from pybind11_mkdoc.mkdoc_lib import mkdoc
 from pathlib import Path
 

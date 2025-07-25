@@ -211,6 +211,10 @@ class Loading {
     for (auto value : values) addUserInterruptValue(value);
   }
 
+  //!  Save restart files every `every` increments
+  //!  \param every period of saving
+  void setRestart(int every);
+
  private:
   class MechanicsDriver {
    public:
@@ -326,6 +330,16 @@ class Loading {
    private:
     std::string tag_;
   };
+  class Restart {
+   public:
+    Restart() {}
+    Restart(int every) : every{every} {}
+    const char* xmlTag() const { return "Restart"; }
+    bool xmlHasBody() const { return false; }
+    void xmlWriteAttributes(std::ostream& stream) const;
+    void xmlWriteInner(std::ostream& stream) const {}
+    int every = 0;
+  };
 
   using TimeList = List<double>;
   using OutputVtkList = List<int>;
@@ -344,6 +358,7 @@ class Loading {
   OutputNumber outputZone{"Output_zone"};
   std::vector<UserInterruption> userItpts = {};
   std::vector<GradGradU> gradGradUDrivers = {};
+  std::optional<Restart> restart;
 };
 };  // namespace amitex
 

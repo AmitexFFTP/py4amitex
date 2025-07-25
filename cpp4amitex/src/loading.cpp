@@ -24,6 +24,7 @@ void Loading::xmlWriteAttributes(std::ostream& stream) const {
 void Loading::xmlWriteInner(std::ostream& stream) const {
   writeXML(stream, tdisc);
   if (userTimeList) writeXML(stream, tlist);
+  if (restart) writeXML(stream, restart.value());
   if (outputVtkList.numberValues() > 0) writeXML(stream, outputVtkList);
   for (const auto& driver : diffu_drivers) {
     writeXML(stream, driver);
@@ -164,6 +165,12 @@ void Loading::TimeDiscretisation::xmlWriteAttributes(std::ostream& stream) const
 
 void Loading::OutputNumber::xmlWriteAttributes(std::ostream& stream) const {
   writeXMLAttributes(stream, "Number", number);
+}
+
+void Loading::setRestart(int every) { restart = Restart{every}; }
+
+void Loading::Restart::xmlWriteAttributes(std::ostream& stream) const {
+  writeXMLAttributes(stream, "Every", every);
 }
 
 }  // namespace amitex
