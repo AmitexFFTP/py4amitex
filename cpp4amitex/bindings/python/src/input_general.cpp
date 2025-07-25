@@ -414,10 +414,10 @@ void defineInputMod(py::module_& m) {
            DOC(amitex, Composite, Composite))
       .def("addVoxel",
            static_cast<void (Composite::*)(GridLinPoint, const std::vector<double>&,
-                                           const std::vector<InterfaceGeometry>&)>(
-               &Composite::addVoxel),
+                                           const std::vector<InterfaceGeometry>&,
+                                           const std::vector<size_t>&)>(&Composite::addVoxel),
            "position"_a, "phi"_a, "geom"_a = std::vector<InterfaceGeometry>{},
-           DOC(amitex, Composite, addVoxel))
+           "zones"_a = std::vector<size_t>{}, DOC(amitex, Composite, addVoxel))
       .def("setLaw", static_cast<void (Composite::*)(const std::string&)>(&Composite::setLaw),
            DOC(amitex, Composite, setLaw))
       .def_property("law", nullptr, &Composite::setLaw)

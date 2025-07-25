@@ -136,3 +136,46 @@ TEST(Composite, InterphaseFromMat2) {
   EXPECT_STREQ(toXMLString(input.materials.interphase.value()).c_str(),
                R"(<Interphase><Interphase_material numM="2" Nzones="1"/></Interphase>)");
 }
+
+TEST(Composite, ZonesPerPhase) {
+  Grid grid{{2, 1, 1}, {1., 1., 1.}};
+
+  Material mat0;
+  mat0.setLaw("elasiso");
+  mat0.setNumberCoeffComposite(2);
+  mat0.setCoeffCompositeZone(0, {1., 2.});
+  mat0.setCoeffCompositeZone(1, {1.1, 2.2});
+
+  Materials materials;
+  materials.add(std::move(mat0));
+
+  auto mat1pos = grid.linearize({0, 1, 0});
+  auto mat2pos = grid.linearize({2, 0, 0});
+
+  MaterialBuilder bd;
+
+  for (auto p : grid.allPoints()) {
+    auto lpos = grid.linearize(p);
+    VoxelSpec spec;
+    if (lpos == 0) {
+      spec = VoxelSpec({{0, 0.1, 0}, {0, 0.9, 1}});
+    } else
+      spec = VoxelSpec({{0, 1.}});
+    bd.addVoxel(materials, lpos, spec);
+  }
+  materials.composite(0).setLaw("reuss");
+
+  Input input{grid, AlgorithmParameters{Algorithm{"Basic_Scheme", true}}, std::move(materials),
+              LoadingOutput{}};
+
+  input.resultsDir = "testresults/zonesperphase";
+  input.generateFiles();
+  std::vector<long long> zones;
+  for (int m = 0; m < 2; m++) {
+    std::ostringstream oss;
+    oss << "testresults/zonesperphase/composites/rep_1_1/zone" << (m + 1) << ".bin";
+    readBin(oss.str(), zones);
+    ASSERT_EQ(zones.size(), 1);
+    EXPECT_EQ(zones[0], m + 1);
+  }
+}
