@@ -13,34 +13,39 @@ namespace amitex {
 //! Reference material for mechanics
 class ReferenceMaterial {
  public:
-  ReferenceMaterial(double lambda0, double mu0) : lambda0{lambda0}, mu0{mu0} {}
+  static Ptr<ReferenceMaterial> create(double lambda0, double mu0) {
+    return makePtr<ReferenceMaterial>(ReferenceMaterial{lambda0, mu0});
+  }
   const char* xmlTag() const { return "Reference_Material"; }
   bool xmlHasBody() const { return false; }
   void xmlWriteAttributes(std::ostream& stream) const;
   void xmlWriteInner(std::ostream& stream) const {}
 
  private:
+  ReferenceMaterial(double lambda0, double mu0) : lambda0{lambda0}, mu0{mu0} {}
   double lambda0, mu0;
 };
 
 //! Reference material for diffusion
 class ReferenceMaterialD {
  public:
-  ReferenceMaterialD(double K0) : K0{K0} {}
+  static Ptr<ReferenceMaterialD> create(double K0) {
+    return makePtr<ReferenceMaterialD>(ReferenceMaterialD{K0});
+  }
   const char* xmlTag() const { return "Reference_MaterialD"; }
   bool xmlHasBody() const { return false; }
   void xmlWriteAttributes(std::ostream& stream) const;
   void xmlWriteInner(std::ostream& stream) const {}
 
  private:
+  ReferenceMaterialD(double K0) : K0{K0} {}
   double K0;
 };
 
 //! Definition of all materials
 class Materials {
  public:
-  Materials()
-      : materials{}, referenceMaterial{}, referenceMaterialD{}, composites{}, interphase{} {};
+  static Ptr<Materials> create() { return makePtr<Materials>(Materials{}); }
   const char* xmlTag() const { return "Materials"; }
   bool xmlHasBody() const;
   void xmlWriteAttributes(std::ostream& stream) const {}
@@ -49,38 +54,27 @@ class Materials {
   size_t numberMaterials() const { return materials.size(); }
   //! Set the number of materials (can substract materials or add empty materials )
   //! \param num desired number of materials
-  void setNumberMaterials(size_t num) { materials.resize(num); }
+  void setNumberMaterials(size_t num);
   //! Add a material
-  void add(const Material& material) {
+  void add(Ptr<Material> material) {
     materials.push_back(material);
     setLastId();
   }
-  void add(Material&& material) {
-    materials.push_back(std::move(material));
-    setLastId();
-  }
   //! Get a material
   //! \param id material index
-  Material& material(size_t id) { return materials.at(id); }
-  const Material& material(size_t id) const { return materials.at(id); }
+  Ptr<Material> material(size_t id) const { return materials.at(id); }
   //! Get a material
   //! \param id material index
-  Material& at(size_t id) { return materials.at(id); }
-  const Material& at(size_t id) const { return materials.at(id); }
+  Ptr<Material> at(size_t id) const { return materials.at(id); }
 
   //! Get the number composite of materials
   size_t numberComposites() const { return composites.numberMaterials(); }
   //! Add a composite material
-  void add(const Composite& composite) {
+  void add(Ptr<Composite> composite) {
     composites.add(composite);
     setLastId();
   }
-  void add(Composite&& composite) {
-    composites.add(std::move(composite));
-    setLastId();
-  }
-  Composite& composite(int id) { return composites.at(id); }
-  const Composite& composite(int id) const { return composites.at(id); }
+  Ptr<Composite> composite(int id) const { return composites.at(id); }
 
   auto begin() { return materials.begin(); }
   auto end() { return materials.end(); }
@@ -88,9 +82,9 @@ class Materials {
   const auto end() const { return materials.end(); }
 
   //! reference material (mechanics)
-  std::optional<ReferenceMaterial> referenceMaterial;
+  Ptr<ReferenceMaterial> referenceMaterial = nullptr;
   //! reference material (diffusion)
-  std::optional<ReferenceMaterialD> referenceMaterialD;
+  Ptr<ReferenceMaterialD> referenceMaterialD = nullptr;
   //! Composite materials
   MaterialComposite composites;
   //! Interphase materials
@@ -98,8 +92,14 @@ class Materials {
   std::optional<Interphase> interphase;
 
  private:
-  void setLastId() { materials[materials.size() - 1].setIndex(materials.size() - 1); }
-  std::vector<Material> materials;
+  Materials()
+      : materials{},
+        referenceMaterial{nullptr},
+        referenceMaterialD{nullptr},
+        composites{},
+        interphase{std::nullopt} {};
+  void setLastId() { materials[materials.size() - 1]->setIndex(materials.size() - 1); }
+  std::vector<Ptr<Material>> materials;
 };
 
 }  // namespace amitex

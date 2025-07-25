@@ -30,7 +30,7 @@ py4amitex_*.egg-info
 
 /build*/
 /_install*
-
 testresults
+/cpp4amitex/examples/merope/build*/
 
 .pytest_cache

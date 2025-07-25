@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "amitex/input/common.hpp"
+
 #include "amitex/private/input_element.hpp"
 #include "amitex/private/value_element.hpp"
 
@@ -17,7 +19,7 @@ namespace amitex {
 //! in the loadings.
 class InitLoadExt {
  public:
-  InitLoadExt() = default;
+  static Ptr<InitLoadExt> create() { return makePtr<InitLoadExt>(InitLoadExt{}); }
   const char* xmlTag() const { return "InitLoadExt"; }
   bool xmlHasBody() const { return true; }
   void xmlWriteAttributes(std::ostream& stream) const {}
@@ -31,6 +33,7 @@ class InitLoadExt {
   Value<double> temperature{"T"};
 
  private:
+  InitLoadExt() = default;
   class Param {
    public:
     Param() = default;

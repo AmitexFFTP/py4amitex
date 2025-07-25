@@ -12,12 +12,12 @@
 #include "amitex/input.hpp"
 #include "amitex/simulation.hpp"
 
-amitex::Material makeMaterialDiffusion(
+amitex::Ptr<amitex::Material> makeMaterialDiffusion(
     std::array<size_t, 3> N, const merope::vox::voxellizer::GridRepresentation<3>& voxelation,
     const std::pair<std::string, std::string>& law) {
-  amitex::Material material;
-  material.setLawK(law.first, law.second);
-  material.setNumberCoeffK(1);
+  auto material = amitex::Material::create();
+  material->setLawK(law.first, law.second);
+  material->setNumberCoeffK(1);
   const auto& coeffs = voxelation.get<merope::vox::composite::Pure<double>>();
 
   std::map<double, std::vector<std::array<size_t, 3>>> uniqueCoeffs;
@@ -31,24 +31,19 @@ amitex::Material makeMaterialDiffusion(
     }
   }
   for (const auto& [coeff, pos] : uniqueCoeffs) {
-    amitex::Zone zone{N, pos};
-    material.addZone(zone, {}, {coeff});
+    auto zone = amitex::Zone::create(N, pos);
+    material->addZone(zone, {}, {coeff});
   }
-  std::cout << "#zones = " << material.numberZones() << std::endl;
+  std::cout << "#zones = " << material->numberZones() << '\n';
   return material;
 }
 
-amitex::AlgorithmParameters defaultDiffusionAlgorithm() {
+amitex::Ptr<amitex::AlgorithmParameters> defaultDiffusionAlgorithm() {
   using namespace amitex;
-  AlgorithmParameters algo_params;
-  Algorithm algorithm;
-  algorithm.convergenceAcceleration = true;
-  algorithm.nitermax = 3000;
-  Diffusion diffusion;
-  diffusion.filter = "Default";
-  diffusion.stationary = true;
-  algo_params.algorithm = algorithm;
-  algo_params.diffusion = diffusion;
+  auto algorithm = Algorithm::create("Default", true);
+  auto diffusion = Diffusion::create("Default", true);
+  auto algo_params = AlgorithmParameters::create(algorithm);
+  algo_params->diffusion = diffusion;
   return algo_params;
 }
 
@@ -76,27 +71,26 @@ int main() {
   grid.apply_homogRule(homogenization::Rule::Voigt);
   // grid.proceed({n, n, n});
 
-  amitex::Input input;
-  input.resultsDir = "amitex_merope_spheres_with_build_mat";
-  input.grid = amitex::Grid{{n, n, n}, {dx, dx, dx}};
+  auto loading = amitex::Loading::create();
+  loading->setTimeDiscretizationLinear(1, 1.);
+  loading->setLinearEvolution(Component::X, DiffusionDriving::Gradient, 1.);
+  loading->setLinearEvolution(Component::Y, DiffusionDriving::Gradient, 0.);
+  loading->setLinearEvolution(Component::Z, DiffusionDriving::Gradient, 0.);
+  auto loadingOutput = amitex::LoadingOutput::create();
+  loadingOutput->add(loading);
 
-  input.algorithmParameters = defaultDiffusionAlgorithm();
+  auto material = makeMaterialDiffusion(N, grid, {"Fourier_iso"s, ""s});
+  auto materials = amitex::Materials::create();
+  materials->add(material);
+  materials->referenceMaterialD = amitex::ReferenceMaterialD::create(3.);
 
-  amitex::Loading loading;
-  loading.setTimeDiscretizationLinear(1, 1.);
-  loading.setLinearEvolution(Component::X, DiffusionDriving::Gradient, 1.);
-  loading.setLinearEvolution(Component::Y, DiffusionDriving::Gradient, 0.);
-  loading.setLinearEvolution(Component::Z, DiffusionDriving::Gradient, 0.);
-  input.loadingOutput.add(loading);
+  auto input = amitex::Input::create(amitex::Grid{{n, n, n}, {dx, dx, dx}},
+                                     defaultDiffusionAlgorithm(), materials, loadingOutput);
+  input->resultsDir = "amitex_merope_spheres_with_build_mat";
 
-  input.materials.referenceMaterialD = amitex::ReferenceMaterialD{3.};
+  amitex::runSimulationExternal(*input, 2);
 
-  amitex::Material material = makeMaterialDiffusion(N, grid, {"Fourier_iso"s, ""s});
-  input.materials.add(material);
-
-  amitex::runSimulationExternal(input, 2);
-
-  amitex::Extract ext{input.outputPrefix()};
+  amitex::Extract ext{input->outputPrefix()};
   auto flux = ext.averageDiffusionFlux(0);
   auto grad = ext.averageDiffusionGradient(0);
   std::cout << "Flux\tGradient\n";

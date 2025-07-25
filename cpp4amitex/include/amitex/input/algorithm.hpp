@@ -4,6 +4,8 @@
 #include <optional>
 #include <variant>
 
+#include "amitex/input/common.hpp"
+
 #include "amitex/private/input_element.hpp"
 #include "amitex/private/type_element.hpp"
 #include "amitex/private/value_element.hpp"
@@ -61,7 +63,7 @@ class ConvergenceForced {
 //! Substepping
 class Substepping {
  public:
-  Substepping() = default;
+  static Ptr<Substepping> create() { return makePtr<Substepping>(Substepping{}); }
   const char* xmlTag() const { return "Substepping"; }
   bool xmlHasBody() const { return false; }
   void xmlWriteAttributes(std::ostream& stream) const;
@@ -75,23 +77,32 @@ class Substepping {
   int nsub = 1;
   //! maximum number of impricated substeppings
   int depth = 1;
+
+ private:
+  Substepping() = default;
 };
 
 //! Main algorithm parameters
 class Algorithm {
  public:
-  Algorithm() : Algorithm{"Default", true} {};
-  Algorithm(const std::string& type,
-            const std::variant<bool, ConvergenceAcceleration>& convergenceAcceleration,
-            std::optional<double> convergenceCriterion = std::nullopt,
-            std::optional<int> nitermax = std::nullopt,
-            std::optional<double> convergenceCriterionSmacro = std::nullopt,
-            std::optional<double> convergenceCriterionCompatibility = std::nullopt,
-            std::optional<int> nitermin = std::nullopt,
-            std::optional<int> niterminACV = std::nullopt,
-            const std::optional<std::string>& initialize = std::nullopt,
-            const std::optional<Substepping>& substepping = std::nullopt,
-            const std::optional<ConvergenceForced>& ConvergenceForced = std::nullopt);
+  static Ptr<Algorithm> create(
+      const std::string& type,
+      const std::variant<bool, ConvergenceAcceleration>& convergenceAcceleration,
+      std::optional<double> convergenceCriterion = std::nullopt,
+      std::optional<int> nitermax = std::nullopt,
+      std::optional<double> convergenceCriterionSmacro = std::nullopt,
+      std::optional<double> convergenceCriterionCompatibility = std::nullopt,
+      std::optional<int> nitermin = std::nullopt, std::optional<int> niterminACV = std::nullopt,
+      const std::optional<std::string>& initialize = std::nullopt,
+      Ptr<Substepping> substepping = nullptr,
+      const std::optional<ConvergenceForced>& ConvergenceForced = std::nullopt) {
+    return makePtr<Algorithm>(Algorithm{type, convergenceAcceleration,
+
+                                        convergenceCriterion, nitermax, convergenceCriterionSmacro,
+                                        convergenceCriterionCompatibility, nitermin, niterminACV,
+                                        initialize, substepping, ConvergenceForced});
+  }
+  static Ptr<Algorithm> createDefault() { return makePtr<Algorithm>(Algorithm{}); }
 
   //! Type ("Dafault" or "Basic_Scheme")
   std::string type;
@@ -115,7 +126,7 @@ class Algorithm {
   Value<std::string> initialize{"Initialize"};
 
   //! substepping
-  std::optional<Substepping> substepping;
+  Ptr<Substepping> substepping = nullptr;
 
   //! Force convergence
   std::optional<ConvergenceForced> convergenceForced;
@@ -124,13 +135,28 @@ class Algorithm {
   bool xmlHasBody() const { return true; }
   void xmlWriteInner(std::ostream& stream) const;
   void xmlWriteAttributes(std::ostream& stream) const { writeXMLAttributes(stream, "Type", type); }
+
+ private:
+  Algorithm() : Algorithm{"Default", true} {};
+  Algorithm(const std::string& type,
+            const std::variant<bool, ConvergenceAcceleration>& convergenceAcceleration,
+            std::optional<double> convergenceCriterion = std::nullopt,
+            std::optional<int> nitermax = std::nullopt,
+            std::optional<double> convergenceCriterionSmacro = std::nullopt,
+            std::optional<double> convergenceCriterionCompatibility = std::nullopt,
+            std::optional<int> nitermin = std::nullopt,
+            std::optional<int> niterminACV = std::nullopt,
+            const std::optional<std::string>& initialize = std::nullopt,
+            Ptr<Substepping> substepping = nullptr,
+            const std::optional<ConvergenceForced>& ConvergenceForced = std::nullopt);
 };
 
 class Diffusion {
  public:
-  Diffusion() = default;
-  Diffusion(const std::string& filter, bool stationary)
-      : filter{"Filter", filter}, stationary{"Stationary", stationary} {}
+  static Ptr<Diffusion> create(const std::string& filter, bool stationary) {
+    return makePtr<Diffusion>(Diffusion{filter, stationary});
+  }
+  static Ptr<Diffusion> createDefault() { return makePtr<Diffusion>(Diffusion{}); }
   Type filter{"Filter"};
   Value<bool> stationary{"Stationary", true};
 
@@ -141,6 +167,11 @@ class Diffusion {
     writeXML(stream, filter);
     writeXML(stream, stationary);
   }
+
+ private:
+  Diffusion() = default;
+  Diffusion(const std::string& filter, bool stationary)
+      : filter{"Filter", filter}, stationary{"Stationary", stationary} {}
 };
 
 class SmallPerturbations {
@@ -167,8 +198,12 @@ class SmallPerturbations {
 
 class Mechanics {
  public:
-  Mechanics() = default;
-  Mechanics(const std::string& filter, std::variant<SmallPerturbations, bool> smallPerturbations);
+  static Ptr<Mechanics> create(const std::string& filter,
+                               std::variant<SmallPerturbations, bool> smallPerturbations) {
+    return makePtr<Mechanics>(Mechanics{filter, smallPerturbations});
+  }
+  static Ptr<Mechanics> createDefault() { return makePtr<Mechanics>(Mechanics{}); }
+
   Type filter{"Filter"};
 
   SmallPerturbations smallPerturbations = true;
@@ -179,6 +214,10 @@ class Mechanics {
   bool xmlHasBody() const { return true; }
   void xmlWriteAttributes(std::ostream& stream) const {}
   void xmlWriteInner(std::ostream& stream) const;
+
+ private:
+  Mechanics() = default;
+  Mechanics(const std::string& filter, std::variant<SmallPerturbations, bool> smallPerturbations);
 };
 
 }  // namespace amitex

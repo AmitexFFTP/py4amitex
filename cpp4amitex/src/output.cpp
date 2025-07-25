@@ -13,8 +13,8 @@ void VtkFluxDGradD::xmlWriteAttributes(std::ostream& stream) const {
 }
 
 void Output::xmlWriteInner(std::ostream& stream) const {
-  if (vtkStressStrain) writeXML(stream, vtkStressStrain.value());
-  if (vtkFluxDGradD) writeXML(stream, vtkFluxDGradD.value());
+  if (vtkStressStrain) writeXML(stream, *vtkStressStrain);
+  if (vtkFluxDGradD) writeXML(stream, *vtkFluxDGradD);
   for (const auto& zone : zones) writeXML(stream, zone);
   for (const auto& ivarList : intVarList) writeXML(stream, ivarList);
 }

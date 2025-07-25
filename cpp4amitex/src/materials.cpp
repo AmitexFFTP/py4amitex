@@ -11,6 +11,13 @@ void ReferenceMaterialD::xmlWriteAttributes(std::ostream& stream) const {
   writeXMLAttributes(stream, "K0", K0);
 }
 
+void Materials::setNumberMaterials(size_t num) {
+  materials.resize(num);
+  for (auto& mat : materials) {
+    if (!mat) mat = Material::create();
+  }
+}
+
 bool Materials::xmlHasBody() const {
   size_t nb = materials.size();
   if (referenceMaterial) nb += 1;
@@ -20,10 +27,10 @@ bool Materials::xmlHasBody() const {
 }
 
 void Materials::xmlWriteInner(std::ostream& stream) const {
-  if (referenceMaterial) writeXML(stream, referenceMaterial.value());
-  if (referenceMaterialD) writeXML(stream, referenceMaterialD.value());
-  for (const auto& mat : materials) {
-    writeXML(stream, mat);
+  if (referenceMaterial) writeXML(stream, *referenceMaterial);
+  if (referenceMaterialD) writeXML(stream, *referenceMaterialD);
+  for (auto mat : materials) {
+    if (mat) writeXML(stream, *mat);
   }
   if (composites.numberMaterials() > 0) writeXML(stream, composites);
   if (interphase) writeXML(stream, interphase.value());

@@ -4,6 +4,7 @@
 #include <ostream>
 #include <vector>
 
+#include "amitex/input/common.hpp"
 #include "amitex/input/zone.hpp"
 
 #include "amitex/private/input_element.hpp"
@@ -28,8 +29,12 @@ class Composite {
 
   //! \param materialIndices indices of pure materials (as defined for Materials) of each phase
   //! \param law averaging law
-  Composite(const std::vector<size_t>& materialIndices, const std::string& law = "");
+  static Ptr<Composite> create(const std::vector<size_t>& materialIndices,
+                               const std::string& law = "") {
+    return makePtr<Composite>(Composite{materialIndices, law});
+  }
 
+ public:
   //! add a voxel to the material
   //! \param position linearized position
   //! \param phi volume fractions of each phase
@@ -72,6 +77,8 @@ class Composite {
   const std::vector<std::vector<double>>& surfaces() const { return S_; };
 
  private:
+  Composite(const std::vector<size_t>& materialIndices, const std::string& law = "");
+
   std::vector<size_t> phaseIndices_;
   std::vector<GridLinPoint> pos_;
   std::vector<std::vector<double>> volfracs_;
@@ -98,13 +105,15 @@ class MaterialComposite {
   //! Get number of defined composite materials
   size_t numberMaterials() const { return materials_.size(); }
   //! Add a composite material
-  void add(Composite&& composite) { materials_.push_back(std::move(composite)); }
-  void add(const Composite& composite) { materials_.push_back(composite); }
+  void add(Ptr<Composite> composite) { materials_.push_back(composite); }
+  void add(Composite&& composite) {
+    materials_.push_back(makePtr<Composite>(std::move(composite)));
+  }
+  // void add(const Composite& composite) { materials_.push_back(makePtr<Composite>(composite)); }
 
   //! Get a composite material
   //! \param index of the composite material
-  const Composite& at(size_t index) const { return materials_.at(index); }
-  Composite& at(size_t index) { return materials_.at(index); }
+  Ptr<Composite> at(size_t index) const { return materials_.at(index); }
 
  private:
   class CoeffComposite {
@@ -117,7 +126,7 @@ class MaterialComposite {
     std::string directory;
   };
   CoeffComposite coeffComposite;
-  std::vector<Composite> materials_;
+  std::vector<Ptr<Composite>> materials_;
 };
 
 }  // namespace amitex

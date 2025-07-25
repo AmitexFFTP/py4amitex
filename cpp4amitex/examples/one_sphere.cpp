@@ -16,51 +16,49 @@ int main() {
 
   Grid grid{nx, dx};
 
-  Materials materials;
-  materials.referenceMaterialD = ReferenceMaterialD(214.8);
-  Zone zone0{grid.dims()}, zone1{grid.dims()};
+  auto materials = Materials::create();
+  materials->referenceMaterialD = ReferenceMaterialD::create(214.8);
+  auto zone0 = Zone::create(grid.dims()), zone1 = Zone::create(grid.dims());
   GridPoint center = {NX / 2, NY / 2, NZ / 2};
   for (auto p : grid.allPoints()) {
     if (grid.distance(p, center) < R) {
-      zone1.add(p);
+      zone1->add(p);
     } else {
-      zone0.add(p);
+      zone0->add(p);
     }
   }
 
-  Material mat;
-  mat.setLawK("Fourier_iso_polarization");
-  mat.setNumberCoeffK(4);
+  Ptr<Material> mat = Material::create();
+  mat->setLawK("Fourier_iso_polarization");
+  mat->setNumberCoeffK(4);
 
-  mat.addZone(std::move(zone0), {}, {kappas[0], 0.0, 0.0, -kappas[0]});
-  mat.addZone(std::move(zone1), {}, {kappas[1], 0.0, 0.0, -kappas[1]});
+  mat->addZone(zone0, {}, {kappas[0], 0.0, 0.0, -kappas[0]});
+  mat->addZone(zone1, {}, {kappas[1], 0.0, 0.0, -kappas[1]});
 
-  materials.add(std::move(mat));
+  materials->add(mat);
 
-  Algorithm algo{"Basic_Scheme", true};
-  algo.convergenceCriterion = 1.e-4;
-  algo.nitermax = 3000;
+  auto algo = Algorithm::create("Basic_Scheme", true);
+  algo->convergenceCriterion = 1.e-4;
+  algo->nitermax = 3000;
 
-  Diffusion diffu;
-  diffu.filter = "Default";
-  diffu.stationary = true;
-  AlgorithmParameters algoParams{algo};
-  algoParams.diffusion = diffu;
+  auto diffu = Diffusion::create("Default", true);
+  auto algoParams = AlgorithmParameters::create(algo);
+  algoParams->diffusion = diffu;
 
-  LoadingOutput loading;
-  Loading load;
-  load.setTimeDiscretizationLinear(1, 1.0);
+  auto loading = LoadingOutput::create();
+  auto load = Loading::create();
+  load->setTimeDiscretizationLinear(1, 1.0);
   for (int i = 0; i < 3; i++) {
-    load.setEvolution(i, DiffusionDriving::Gradient, Evolution::Linear, 0.0);
+    load->setEvolution(i, DiffusionDriving::Gradient, Evolution::Linear, 0.0);
   }
-  loading.add(std::move(load));
+  loading->add(load);
 
-  Input input{grid, std::move(algoParams), std::move(materials), std::move(loading)};
-  input.resultsDir = "amitex_dir_one_sphere";
+  auto input = Input::create(grid, algoParams, materials, loading);
+  input->resultsDir = "amitex_dir_one_sphere";
 
-  runSimulationExternal(input);
+  runSimulationExternal(*input);
 
-  Extract ext{input.outputPrefix()};
+  Extract ext{input->outputPrefix()};
   auto flux = ext.averageDiffusionFlux(0);
   auto gradT = ext.averageDiffusionGradient(0);
   std::cout << "Flux\tGradient\n";

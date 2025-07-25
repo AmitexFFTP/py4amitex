@@ -18,12 +18,12 @@ using namespace amitex_tests;
 //! Define a simulation with 2 materials and 1 mat/zone or
 //! \param nbMat 1 or 2
 static void addZoneAndLaunchThermal(size_t nbMat) {
-  Input input = mat2zone2Prepare(nbMat);
-  input.generateFiles();
+  auto input = mat2zone2Prepare(nbMat);
+  input->generateFiles();
 
   std::filesystem::path refDir =
       std::string{"ref-amxdir/addzoneandlaunchthermal_"} + std::to_string(nbMat);
-  std::filesystem::path dir = input.resultsDir;
+  std::filesystem::path dir = input->resultsDir;
 
   EXPECT_TRUE(compareXMLFiles(dir / "materials.xml", refDir / "materials.xml"));
   EXPECT_TRUE(compareXMLFiles(dir / "algorithm.xml", refDir / "algorithm.xml"));

@@ -50,6 +50,7 @@ enum DirStress { Cauchy, PK1 };
 //! (partial) loading
 class Loading {
  public:
+  static Ptr<Loading> create() { return makePtr<Loading>(Loading{}); }
   const char* xmlTag() const { return "Loading"; }
   bool xmlHasBody() const { return true; }
   void xmlWriteAttributes(std::ostream& stream) const;
@@ -216,6 +217,8 @@ class Loading {
   void setRestart(int every);
 
  private:
+  Loading() = default;
+
   class MechanicsDriver {
    public:
     MechanicsDriver(AxisIndexPair component) : component{component} {

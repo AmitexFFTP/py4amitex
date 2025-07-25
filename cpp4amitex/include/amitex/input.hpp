@@ -20,29 +20,16 @@ namespace amitex {
 //! Regroup all AMITEX input parameters
 class Input {
  public:
-  Grid grid;                                  //!< Grid defining the unit cell and number of voxels
-  AlgorithmParameters algorithmParameters;    //!< see \ref AlgorithmParameters
-  Materials materials;                        //!< see \ref Materials
-  LoadingOutput loadingOutput;                //!< see \ref LoadingOutput
-  std::string resultsDir = "amitex_results";  //!< Where generated and AMITEX output will be
+  Grid grid;  //!< Grid defining the unit cell and number of voxels
+  Ptr<AlgorithmParameters> algorithmParameters;  //!< see \ref AlgorithmParameters
+  Ptr<Materials> materials;                      //!< see \ref Materials
+  Ptr<LoadingOutput> loadingOutput;              //!< see \ref LoadingOutput
+  std::string resultsDir = "amitex_results";     //!< Where generated and AMITEX output will be
 
-  Input() : Input{Grid{}} {};
-  Input(Grid&& grid)
-      : Input{std::move(grid), AlgorithmParameters{}, Materials{}, LoadingOutput{}} {}
-  Input(const Grid& grid) : Input{grid, AlgorithmParameters{}, Materials{}, LoadingOutput{}} {}
-  Input(const Grid& grid, AlgorithmParameters&& algorithmParameters, Materials&& materials,
-        LoadingOutput&& loadingOutput)
-      : grid{grid},
-        algorithmParameters{std::move(algorithmParameters)},
-        materials{std::move(materials)},
-        loadingOutput{std::move(loadingOutput)} {}
-  Input(const Grid& grid, const AlgorithmParameters& algorithmParameters,
-        const Materials& materials, const LoadingOutput& loadingOutput)
-      : grid{grid},
-        algorithmParameters{algorithmParameters},
-        materials{materials},
-        loadingOutput{loadingOutput} {}
-
+  static Ptr<Input> create(const Grid& grid, Ptr<AlgorithmParameters> algorithmParameters,
+                           Ptr<Materials> materials, Ptr<LoadingOutput> loadingOutput) {
+    return makePtr<Input>(Input{grid, algorithmParameters, materials, loadingOutput});
+  }
   //! Generate all input files (XML, VTK, BIN) in \ref resultsDir
   void generateFiles();
 
@@ -58,6 +45,14 @@ class Input {
   std::string zoneIdsPath() const { return resultsDir + "/zoneIds.vtk"; }
   //! Prefix to output files
   std::string outputPrefix() const { return resultsDir + "/output/output"; }
+
+ private:
+  Input(const Grid& grid, Ptr<AlgorithmParameters> algorithmParameters, Ptr<Materials> materials,
+        Ptr<LoadingOutput> loadingOutput)
+      : grid{grid},
+        algorithmParameters{algorithmParameters},
+        materials{materials},
+        loadingOutput{loadingOutput} {}
 };
 
 }  // namespace amitex

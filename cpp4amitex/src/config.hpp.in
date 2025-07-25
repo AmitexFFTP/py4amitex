@@ -3,4 +3,6 @@
 
 #cmakedefine AMITEX_DRIVER_API
 
+#define AMITEX_VERSION "@AMITEX_VERSION@"
+
 #endif
