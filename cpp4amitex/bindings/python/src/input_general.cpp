@@ -189,7 +189,7 @@ void defineInputMod(py::module_& m) {
   py::class_<AlgorithmParameters, Ptr<AlgorithmParameters>>(m, "AlgorithmParameters",
                                                             DOC(amitex, AlgorithmParameters))
       .def(py::init(&AlgorithmParameters::create), "algorithm"_a, "mechanics"_a = nullptr,
-           "diffusion"_a = nullptr, DOC(amitex, AlgorithmParameters, AlgorithmParameters, 2))
+           "diffusion"_a = nullptr, DOC(amitex, AlgorithmParameters, AlgorithmParameters))
       .def_readwrite("algorithm", &AlgorithmParameters::algorithm,
                      DOC(amitex, AlgorithmParameters, algorithm))
       .def_readwrite("mechanics", &AlgorithmParameters::mechanics,
@@ -491,8 +491,14 @@ void defineInputMod(py::module_& m) {
       .def_readwrite("materials", &Input::materials, DOC(amitex, Input, materials))
       .def_readwrite("resultsDir", &Input::resultsDir, DOC(amitex, Input, resultsDir))
       .def("outputPrefix", &Input::outputPrefix, DOC(amitex, Input, outputPrefix))
-      .def("generateFiles", &Input::generateFiles, DOC(amitex, Input, generateFiles));
-
+      .def("generateFiles", &Input::generateFiles, DOC(amitex, Input, generateFiles))
+      .def("generateAlgorithm", &Input::generateAlgorithm, DOC(amitex, Input, generateAlgorithm))
+      .def("generateMaterials", &Input::generateMaterials, DOC(amitex, Input, generateMaterials))
+      .def("generateLoadingOutput", &Input::generateLoadingOutput,
+           DOC(amitex, Input, generateLoadingOutput))
+      .def("generateMaterialVTK", &Input::generateMaterialVTK,
+           DOC(amitex, Input, generateMaterialVTK))
+      .def("generateZoneVTK", &Input::generateZoneVTK, DOC(amitex, Input, generateZoneVTK));
   m.attr("__version__") = AMITEX_VERSION;
 }
 
