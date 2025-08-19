@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -14,11 +15,18 @@ namespace amitex {
 
 static std::string getLastLine(const std::string& path);
 
-std::string getSimulationShellCommand(const Input& input, int numberProcs) {
+std::string getSimulationShellCommandFromFiles(const std::filesystem::path& algorithmPath,
+                                               const std::filesystem::path& materialsPath,
+                                               const std::filesystem::path& loadingPath,
+                                               const std::filesystem::path& materialIdsPath,
+                                               const std::filesystem::path& zoneIdsPath,
+                                               const std::filesystem::path& outputPrefix,
+                                               int numberProcs) {
   std::string cmd = "amitex_fftp";
-  std::vector<std::string> args = {"-nm", input.materialIdsPath(), "-nz", input.zoneIdsPath(),
-                                   "-a",  input.algorithmPath(),   "-m",  input.materialsPath(),
-                                   "-c",  input.loadingPath(),     "-s",  input.outputPrefix()};
+  std::vector<std::string> args = {"-nm", materialIdsPath, "-nz", zoneIdsPath, "-a", algorithmPath,
+
+                                   "-m",  materialsPath,   "-c",  loadingPath, "-s", outputPrefix};
+
   for (const auto& arg : args) cmd += ' ' + arg;
   if (numberProcs == 0) {
     cmd = "mpirun " + cmd;
@@ -28,14 +36,32 @@ std::string getSimulationShellCommand(const Input& input, int numberProcs) {
   return cmd;
 }
 
-void runSimulationExternal(Input& input, int numberProcs) {
-  if (numberProcs < 0) throw AmitexError{"number of processes must be >= 0", 1};
-  input.generateFiles();
+std::string getSimulationShellCommand(const Input& input, int numberProcs) {
+  return getSimulationShellCommandFromFiles(input.algorithmPath(), input.materialsPath(),
+                                            input.loadingPath(), input.materialIdsPath(),
+                                            input.zoneIdsPath(), input.outputPrefix(), numberProcs);
+}
 
-  std::string cmd = getSimulationShellCommand(input, numberProcs);
+void runSimulationFromFiles(const std::filesystem::path& algorithmPath,
+                            const std::filesystem::path& materialsPath,
+                            const std::filesystem::path& loadingPath,
+                            const std::filesystem::path& materialIdsPath,
+                            const std::filesystem::path& zoneIdsPath,
+                            const std::filesystem::path& outputPrefix, int numberProcs) {
+  if (numberProcs < 0) throw AmitexError{"number of processes must be >= 0", 1};
+  std::string cmd =
+      getSimulationShellCommandFromFiles(algorithmPath, materialsPath, loadingPath, materialIdsPath,
+                                         zoneIdsPath, outputPrefix, numberProcs);
   std::cerr << "LAUNCH AMITEX: " << cmd << std::endl;
   int exc = std::system(cmd.c_str());
-  if (exc != 0) throw AmitexError{"simulation failed, see " + input.outputPrefix() + ".log", exc};
+  if (exc != 0) throw AmitexError{"simulation failed, see " + outputPrefix.string() + ".log", exc};
+}
+
+void runSimulationExternal(Input& input, int numberProcs) {
+  input.generateFiles();
+  runSimulationFromFiles(input.algorithmPath(), input.materialsPath(), input.loadingPath(),
+                         input.materialIdsPath(), input.zoneIdsPath(), input.outputPrefix(),
+                         numberProcs);
 }
 
 #if 0

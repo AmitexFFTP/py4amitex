@@ -14,7 +14,7 @@
 
 namespace amitex {
 
-//! Initialize input files and launch simulation by executing `amitex_fftp`
+//! \brief Initialize input files and launch simulation by executing `amitex_fftp`
 //! \param input input used by the simulation
 //! \param numberProcs number of MPI processes used
 //! \throw AmitexError when the simulation does no exit normally
@@ -27,6 +27,37 @@ void runSimulationExternal(Input& input, int numberProcs = 0);
 //! \param input input used by the simulation
 //! \param numberProcs number of MPI processes used
 std::string getSimulationShellCommand(const Input& input, int numberProcs = 0);
+
+//! \brief shell command to run `amitex_fftp` (with mpirun)
+//! \param algorithmPath path to the XML file containing algorithm parameters
+//! \param materialsPath path to the XML file containing materials
+//! \param loadingPath path to the XML file containing loading and output
+//! \param materialIdsPath path to the VTK file containing material IDs
+//! \param zoneIdsPath path to the VTK file containing zone IDs
+//! \param outputPrefix prefix of AMITEX output paths
+//! \param numberProcs requested number of MPI processes (omited if equal to 0)
+std::string getSimulationShellCommandFromFiles(const std::filesystem::path& algorithmPath,
+                                               const std::filesystem::path& materialsPath,
+                                               const std::filesystem::path& loadingPath,
+                                               const std::filesystem::path& materialIdsPath,
+                                               const std::filesystem::path& zoneIdsPath,
+                                               const std::filesystem::path& outputPrefix,
+                                               int numberProcs = 0);
+
+//! @brief simulation by executing `amitex_fftp` with the files as input
+//! \param algorithmPath path to the XML file containing algorithm parameters
+//! \param materialsPath path to the XML file containing materials
+//! \param loadingPath path to the XML file containing loading and output
+//! \param materialIdsPath path to the VTK file containing material IDs
+//! \param zoneIdsPath path to the VTK file containing zone IDs
+//! \param outputPrefix prefix of AMITEX output paths
+//! \param numberProcs requested number of MPI processes (omited if equal to 0)
+void runSimulationFromFiles(const std::filesystem::path& algorithmPath,
+                            const std::filesystem::path& materialsPath,
+                            const std::filesystem::path& loadingPath,
+                            const std::filesystem::path& materialIdsPath,
+                            const std::filesystem::path& zoneIdsPath,
+                            const std::filesystem::path& outputPrefix, int numberProcs = 0);
 
 #ifdef AMITEX_DRIVER_API
 //! Run a simulation with the amitex library

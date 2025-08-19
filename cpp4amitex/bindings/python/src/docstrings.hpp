@@ -33,6 +33,8 @@ static const char *__doc_amitex_AlgorithmLaminate_convergenceAcceleration = R"do
 
 static const char *__doc_amitex_AlgorithmLaminate_convergenceCriterion = R"doc(Convergence criterion (>1e-4 and >1e-1))doc";
 
+static const char *__doc_amitex_AlgorithmLaminate_create = R"doc()doc";
+
 static const char *__doc_amitex_AlgorithmLaminate_initializationType = R"doc(Initialization type (Proportionnal, Linear, Default (=Linear))doc";
 
 static const char *__doc_amitex_AlgorithmLaminate_nIncrements = R"doc(Number of substeps for laminate law)doc";
@@ -49,11 +51,11 @@ static const char *__doc_amitex_AlgorithmParameters = R"doc(Group of all algorit
 
 static const char *__doc_amitex_AlgorithmParameters_AlgorithmParameters = R"doc()doc";
 
-static const char *__doc_amitex_AlgorithmParameters_AlgorithmParameters_2 = R"doc()doc";
-
 static const char *__doc_amitex_AlgorithmParameters_algorithm = R"doc()doc";
 
 static const char *__doc_amitex_AlgorithmParameters_algorithmLaminate = R"doc()doc";
+
+static const char *__doc_amitex_AlgorithmParameters_create = R"doc()doc";
 
 static const char *__doc_amitex_AlgorithmParameters_diffusion = R"doc()doc";
 
@@ -80,6 +82,10 @@ static const char *__doc_amitex_Algorithm_convergenceCriterionCompatibility = R"
 static const char *__doc_amitex_Algorithm_convergenceCriterionSmacro = R"doc(Convergence criterion for macroscropic applied stress default value is the one used for convergenceCriterion)doc";
 
 static const char *__doc_amitex_Algorithm_convergenceForced = R"doc(Force convergence)doc";
+
+static const char *__doc_amitex_Algorithm_create = R"doc()doc";
+
+static const char *__doc_amitex_Algorithm_createDefault = R"doc()doc";
 
 static const char *__doc_amitex_Algorithm_initialize = R"doc(Pre-step initialization ("default" or "previous"))doc";
 
@@ -179,12 +185,7 @@ static const char *__doc_amitex_Component = R"doc(Loading axis pair and axis **n
 
 static const char *__doc_amitex_Composite = R"doc(Composite material **note**: the coefficients are set in the pure material (for ex Material::setCoeffComposite))doc";
 
-static const char *__doc_amitex_Composite_Composite =
-R"doc(Parameter ``materialIndices``:
-    indices of pure materials (as defined for Materials) of each phase
-
-Parameter ``law``:
-    averaging law)doc";
+static const char *__doc_amitex_Composite_Composite = R"doc()doc";
 
 static const char *__doc_amitex_Composite_N = R"doc()doc";
 
@@ -212,6 +213,13 @@ Parameter ``phi``:
 
 Parameter ``geom``:
     interface geometry for each couple of phases (order i<j: 00 01 …))doc";
+
+static const char *__doc_amitex_Composite_create =
+R"doc(Parameter ``materialIndices``:
+    indices of pure materials (as defined for Materials) of each phase
+
+Parameter ``law``:
+    averaging law)doc";
 
 static const char *__doc_amitex_Composite_law = R"doc(Get composite law)doc";
 
@@ -246,6 +254,16 @@ Parameter ``index``:
     phase index)doc";
 
 static const char *__doc_amitex_Composite_volumeFractions_2 = R"doc()doc";
+
+static const char *__doc_amitex_Composite_zone =
+R"doc(Get the zones index of a phase
+
+Parameter ``index``:
+    phase index)doc";
+
+static const char *__doc_amitex_Composite_zone_2 = R"doc()doc";
+
+static const char *__doc_amitex_Composite_zones = R"doc()doc";
 
 static const char *__doc_amitex_ConvergenceAcceleration = R"doc(Convergence accelaration setting(s))doc";
 
@@ -308,6 +326,10 @@ static const char *__doc_amitex_DiffusionDriving_Gradient = R"doc()doc";
 static const char *__doc_amitex_Diffusion_Diffusion = R"doc()doc";
 
 static const char *__doc_amitex_Diffusion_Diffusion_2 = R"doc()doc";
+
+static const char *__doc_amitex_Diffusion_create = R"doc()doc";
+
+static const char *__doc_amitex_Diffusion_createDefault = R"doc()doc";
 
 static const char *__doc_amitex_Diffusion_filter = R"doc()doc";
 
@@ -636,6 +658,8 @@ static const char *__doc_amitex_InitLoadExt_Param_xmlWriteAttributes = R"doc()do
 
 static const char *__doc_amitex_InitLoadExt_Param_xmlWriteInner = R"doc()doc";
 
+static const char *__doc_amitex_InitLoadExt_create = R"doc()doc";
+
 static const char *__doc_amitex_InitLoadExt_params = R"doc()doc";
 
 static const char *__doc_amitex_InitLoadExt_setParam =
@@ -668,19 +692,53 @@ static const char *__doc_amitex_InputError_what = R"doc()doc";
 
 static const char *__doc_amitex_Input_Input = R"doc()doc";
 
-static const char *__doc_amitex_Input_Input_2 = R"doc()doc";
-
-static const char *__doc_amitex_Input_Input_3 = R"doc()doc";
-
-static const char *__doc_amitex_Input_Input_4 = R"doc()doc";
-
-static const char *__doc_amitex_Input_Input_5 = R"doc()doc";
-
 static const char *__doc_amitex_Input_algorithmParameters = R"doc(see AlgorithmParameters)doc";
 
 static const char *__doc_amitex_Input_algorithmPath = R"doc(Path to XML defining algorithm parameters)doc";
 
+static const char *__doc_amitex_Input_create = R"doc()doc";
+
+static const char *__doc_amitex_Input_generateAlgorithm = R"doc(Generate Algorithm Parameters XML file)doc";
+
+static const char *__doc_amitex_Input_generateCommandFile =
+R"doc(Generate AMITEX 'commands' file
+
+Parameter ``path``:
+    path to generated file
+
+Parameter ``algorithmPath``:
+    path to the XML file containing algorithm parameters
+
+Parameter ``materialsPath``:
+    path to the XML file containing materials
+
+Parameter ``loadingPath``:
+    path to the XML file containing loading and output
+
+Parameter ``materialIdsPath``:
+    path to the VTK file containing material IDs
+
+Parameter ``zoneIdsPath``:
+    path to the VTK file containing zone IDs
+
+Parameter ``outputPrefix``:
+    prefix of AMITEX output paths)doc";
+
 static const char *__doc_amitex_Input_generateFiles = R"doc(Generate all input files (XML, VTK, BIN) in resultsDir)doc";
+
+static const char *__doc_amitex_Input_generateLoadingOutput = R"doc(Generate Loading&Output XML file)doc";
+
+static const char *__doc_amitex_Input_generateMaterialVTK = R"doc(Generate Material IDs VTK file)doc";
+
+static const char *__doc_amitex_Input_generateMaterials =
+R"doc(Generate Algorithm Parameters XML file
+
+Parameter ``path``:
+    $Parameter ``coeffDirectory``:
+
+directory where coefficients/intvars/composite data will be stored)doc";
+
+static const char *__doc_amitex_Input_generateZoneVTK = R"doc(Generate Zone IDs VTK file)doc";
 
 static const char *__doc_amitex_Input_grid = R"doc(Grid defining the unit cell and number of voxels)doc";
 
@@ -826,7 +884,7 @@ static const char *__doc_amitex_LoadingOutput_LoadingOutput = R"doc()doc";
 
 static const char *__doc_amitex_LoadingOutput_add = R"doc(Append a partial loading)doc";
 
-static const char *__doc_amitex_LoadingOutput_add_2 = R"doc()doc";
+static const char *__doc_amitex_LoadingOutput_create = R"doc()doc";
 
 static const char *__doc_amitex_LoadingOutput_initLoadExt = R"doc(Initialization of the temperature and the external parameters)doc";
 
@@ -903,6 +961,8 @@ static const char *__doc_amitex_Loading_GradGradU_xmlTag = R"doc()doc";
 static const char *__doc_amitex_Loading_GradGradU_xmlWriteAttributes = R"doc()doc";
 
 static const char *__doc_amitex_Loading_GradGradU_xmlWriteInner = R"doc()doc";
+
+static const char *__doc_amitex_Loading_Loading = R"doc()doc";
 
 static const char *__doc_amitex_Loading_MechanicsDriver = R"doc()doc";
 
@@ -1017,6 +1077,8 @@ static const char *__doc_amitex_Loading_TimeDiscretisation_xmlWriteAttributes = 
 static const char *__doc_amitex_Loading_TimeDiscretisation_xmlWriteInner = R"doc()doc";
 
 static const char *__doc_amitex_Loading_addUserInterruptValue = R"doc(Add a value for user-defined interuptions)doc";
+
+static const char *__doc_amitex_Loading_create = R"doc()doc";
 
 static const char *__doc_amitex_Loading_diffu_drivers = R"doc()doc";
 
@@ -1275,8 +1337,6 @@ R"doc(Get a composite material
 Parameter ``index``:
     of the composite material)doc";
 
-static const char *__doc_amitex_MaterialComposite_at_2 = R"doc()doc";
-
 static const char *__doc_amitex_MaterialComposite_coeffComposite = R"doc()doc";
 
 static const char *__doc_amitex_MaterialComposite_materials = R"doc()doc";
@@ -1294,8 +1354,6 @@ static const char *__doc_amitex_MaterialComposite_xmlWriteAttributes = R"doc()do
 static const char *__doc_amitex_MaterialComposite_xmlWriteInner = R"doc()doc";
 
 static const char *__doc_amitex_Material_Material = R"doc()doc";
-
-static const char *__doc_amitex_Material_Material_2 = R"doc()doc";
 
 static const char *__doc_amitex_Material_addIntVar =
 R"doc(Add an internal variable
@@ -1318,8 +1376,6 @@ Parameter ``coeffs``:
 
 Parameter ``coeffKs``:
     diffusion coefficients)doc";
-
-static const char *__doc_amitex_Material_addZone_2 = R"doc()doc";
 
 static const char *__doc_amitex_Material_coeff =
 R"doc(Returns:
@@ -1353,6 +1409,8 @@ static const char *__doc_amitex_Material_coeffK_2 = R"doc()doc";
 static const char *__doc_amitex_Material_coeffKs = R"doc()doc";
 
 static const char *__doc_amitex_Material_coeffs = R"doc()doc";
+
+static const char *__doc_amitex_Material_create = R"doc()doc";
 
 static const char *__doc_amitex_Material_id = R"doc()doc";
 
@@ -1571,11 +1629,7 @@ static const char *__doc_amitex_Materials_Materials = R"doc()doc";
 
 static const char *__doc_amitex_Materials_add = R"doc(Add a material)doc";
 
-static const char *__doc_amitex_Materials_add_2 = R"doc()doc";
-
-static const char *__doc_amitex_Materials_add_3 = R"doc(Add a composite material)doc";
-
-static const char *__doc_amitex_Materials_add_4 = R"doc()doc";
+static const char *__doc_amitex_Materials_add_2 = R"doc(Add a composite material)doc";
 
 static const char *__doc_amitex_Materials_at =
 R"doc(Get a material
@@ -1583,17 +1637,15 @@ R"doc(Get a material
 Parameter ``id``:
     material index)doc";
 
-static const char *__doc_amitex_Materials_at_2 = R"doc()doc";
-
 static const char *__doc_amitex_Materials_begin = R"doc()doc";
 
 static const char *__doc_amitex_Materials_begin_2 = R"doc()doc";
 
 static const char *__doc_amitex_Materials_composite = R"doc()doc";
 
-static const char *__doc_amitex_Materials_composite_2 = R"doc()doc";
-
 static const char *__doc_amitex_Materials_composites = R"doc(Composite materials)doc";
+
+static const char *__doc_amitex_Materials_create = R"doc()doc";
 
 static const char *__doc_amitex_Materials_end = R"doc()doc";
 
@@ -1606,8 +1658,6 @@ R"doc(Get a material
 
 Parameter ``id``:
     material index)doc";
-
-static const char *__doc_amitex_Materials_material_2 = R"doc()doc";
 
 static const char *__doc_amitex_Materials_materials = R"doc()doc";
 
@@ -1648,6 +1698,10 @@ static const char *__doc_amitex_Mechanics_C0Sym = R"doc()doc";
 static const char *__doc_amitex_Mechanics_Mechanics = R"doc()doc";
 
 static const char *__doc_amitex_Mechanics_Mechanics_2 = R"doc()doc";
+
+static const char *__doc_amitex_Mechanics_create = R"doc()doc";
+
+static const char *__doc_amitex_Mechanics_createDefault = R"doc()doc";
 
 static const char *__doc_amitex_Mechanics_filter = R"doc()doc";
 
@@ -1714,6 +1768,8 @@ Parameter ``numM``:
 Parameter ``intVarList``:
     list of internal variable indices)doc";
 
+static const char *__doc_amitex_Output_create = R"doc()doc";
+
 static const char *__doc_amitex_Output_intVarList = R"doc()doc";
 
 static const char *__doc_amitex_Output_setVtkFluxDGradD = R"doc(Control output of diffusion flux and gradient)doc";
@@ -1742,6 +1798,8 @@ static const char *__doc_amitex_ReferenceMaterialD_K0 = R"doc()doc";
 
 static const char *__doc_amitex_ReferenceMaterialD_ReferenceMaterialD = R"doc()doc";
 
+static const char *__doc_amitex_ReferenceMaterialD_create = R"doc()doc";
+
 static const char *__doc_amitex_ReferenceMaterialD_xmlHasBody = R"doc()doc";
 
 static const char *__doc_amitex_ReferenceMaterialD_xmlTag = R"doc()doc";
@@ -1751,6 +1809,8 @@ static const char *__doc_amitex_ReferenceMaterialD_xmlWriteAttributes = R"doc()d
 static const char *__doc_amitex_ReferenceMaterialD_xmlWriteInner = R"doc()doc";
 
 static const char *__doc_amitex_ReferenceMaterial_ReferenceMaterial = R"doc()doc";
+
+static const char *__doc_amitex_ReferenceMaterial_create = R"doc()doc";
 
 static const char *__doc_amitex_ReferenceMaterial_lambda0 = R"doc()doc";
 
@@ -1791,6 +1851,8 @@ static const char *__doc_amitex_SmallPerturbations_xmlWriteInner = R"doc()doc";
 static const char *__doc_amitex_Substepping = R"doc(Substepping)doc";
 
 static const char *__doc_amitex_Substepping_Substepping = R"doc()doc";
+
+static const char *__doc_amitex_Substepping_create = R"doc()doc";
 
 static const char *__doc_amitex_Substepping_depth = R"doc(maximum number of impricated substeppings)doc";
 
@@ -1890,7 +1952,7 @@ static const char *__doc_amitex_VtkFluxDGradD = R"doc(Control output of diffusio
 
 static const char *__doc_amitex_VtkFluxDGradD_VtkFluxDGradD = R"doc()doc";
 
-static const char *__doc_amitex_VtkFluxDGradD_VtkFluxDGradD_2 = R"doc()doc";
+static const char *__doc_amitex_VtkFluxDGradD_create = R"doc()doc";
 
 static const char *__doc_amitex_VtkFluxDGradD_fluxd = R"doc(Output flux to VTK file(s) (0 or 1))doc";
 
@@ -1920,7 +1982,7 @@ static const char *__doc_amitex_VtkStressStrain = R"doc(Control output of stress
 
 static const char *__doc_amitex_VtkStressStrain_VtkStressStrain = R"doc()doc";
 
-static const char *__doc_amitex_VtkStressStrain_VtkStressStrain_2 = R"doc()doc";
+static const char *__doc_amitex_VtkStressStrain_create = R"doc()doc";
 
 static const char *__doc_amitex_VtkStressStrain_strain = R"doc(Output strain to VTK file(s) (0 or 1))doc";
 
@@ -1936,29 +1998,9 @@ static const char *__doc_amitex_VtkStressStrain_xmlWriteInner = R"doc()doc";
 
 static const char *__doc_amitex_Zone = R"doc(Zone, that is a list of voxel positions)doc";
 
-static const char *__doc_amitex_Zone_Zone =
-R"doc(Parameter ``position``:
-    list of grid coordinates
+static const char *__doc_amitex_Zone_Zone = R"doc()doc";
 
-Parameter ``gridDims``:
-    grid dimensions)doc";
-
-static const char *__doc_amitex_Zone_Zone_2 =
-R"doc(Parameter ``gridDims``:
-    grid dimensions
-
-Parameter ``position``:
-    in grid coordinates)doc";
-
-static const char *__doc_amitex_Zone_Zone_3 =
-R"doc(Parameter ``gridDims``:
-    grid dimensions
-
-Parameter ``begin``:
-    iterator on GridPoint
-
-Parameter ``end``:
-    iterator on GridPoint)doc";
+static const char *__doc_amitex_Zone_Zone_2 = R"doc()doc";
 
 static const char *__doc_amitex_Zone_add =
 R"doc(add a voxel to a zone
@@ -1971,6 +2013,27 @@ R"doc(add a voxel to a zone
 
 Parameter ``position``:
     voxel grid linearized position)doc";
+
+static const char *__doc_amitex_Zone_create =
+R"doc(Parameter ``gridDims``:
+    grid dimensions)doc";
+
+static const char *__doc_amitex_Zone_create_2 =
+R"doc(Parameter ``gridDims``:
+    grid dimensions
+
+Parameter ``position``:
+    in grid coordinates)doc";
+
+static const char *__doc_amitex_Zone_create_3 =
+R"doc(Parameter ``gridDims``:
+    grid dimensions
+
+Parameter ``begin``:
+    iterator on GridPoint
+
+Parameter ``end``:
+    iterator on GridPoint)doc";
 
 static const char *__doc_amitex_Zone_dims = R"doc()doc";
 
@@ -2036,6 +2099,30 @@ Parameter ``input``:
 Parameter ``numberProcs``:
     number of MPI processes used)doc";
 
+static const char *__doc_amitex_getSimulationShellCommandFromFiles =
+R"doc(shell command to run `amitex_fftp` (with mpirun)
+
+Parameter ``algorithmPath``:
+    path to the XML file containing algorithm parameters
+
+Parameter ``materialsPath``:
+    path to the XML file containing materials
+
+Parameter ``loadingPath``:
+    path to the XML file containing loading and output
+
+Parameter ``materialIdsPath``:
+    path to the VTK file containing material IDs
+
+Parameter ``zoneIdsPath``:
+    path to the VTK file containing zone IDs
+
+Parameter ``outputPrefix``:
+    prefix of AMITEX output paths
+
+Parameter ``numberProcs``:
+    requested number of MPI processes (omited if equal to 0))doc";
+
 static const char *__doc_amitex_linearize =
 R"doc(Convert to a linearized position
 
@@ -2047,6 +2134,8 @@ Parameter ``dims``:
 
 Returns:
     linear position (leading dimension is Z, then Y, X))doc";
+
+static const char *__doc_amitex_makePtr = R"doc()doc";
 
 static const char *__doc_amitex_readBin =
 R"doc(Read BIN file
@@ -2091,6 +2180,30 @@ Throws:
     AmitexError when the simulation does no exit normally
 
 When `numberProcs` is 0, the number of available MPI processes is used (exact behavior depends on the MPI environment))doc";
+
+static const char *__doc_amitex_runSimulationFromFiles =
+R"doc(simulation by executing `amitex_fftp` with the files as input
+
+Parameter ``algorithmPath``:
+    path to the XML file containing algorithm parameters
+
+Parameter ``materialsPath``:
+    path to the XML file containing materials
+
+Parameter ``loadingPath``:
+    path to the XML file containing loading and output
+
+Parameter ``materialIdsPath``:
+    path to the VTK file containing material IDs
+
+Parameter ``zoneIdsPath``:
+    path to the VTK file containing zone IDs
+
+Parameter ``outputPrefix``:
+    prefix of AMITEX output paths
+
+Parameter ``numberProcs``:
+    requested number of MPI processes (omited if equal to 0))doc";
 
 static const char *__doc_amitex_unnamed_class_at_include_amitex_component_hpp_18_7 = R"doc()doc";
 

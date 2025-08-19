@@ -1,6 +1,7 @@
 #ifndef _AMITEX_INPUT_HEADER_
 #define _AMITEX_INPUT_HEADER_
 
+#include <filesystem>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -45,6 +46,35 @@ class Input {
   std::string zoneIdsPath() const { return resultsDir + "/zoneIds.vtk"; }
   //! Prefix to output files
   std::string outputPrefix() const { return resultsDir + "/output/output"; }
+
+  //! Generate Algorithm Parameters XML file
+  void generateAlgorithm(const std::filesystem::path& path);
+  //! Generate Algorithm Parameters XML file
+  //! \param path
+  //! \param coeffDirectory directory where coefficients/intvars/composite data will be stored
+  void generateMaterials(const std::filesystem::path& path,
+                         const std::filesystem::path& coeffDirectory);
+  //! Generate Loading&Output XML file
+  void generateLoadingOutput(const std::filesystem::path& path);
+  //! Generate Material IDs VTK file
+  void generateMaterialVTK(const std::filesystem::path& path);
+  //! Generate Zone IDs VTK file
+  void generateZoneVTK(const std::filesystem::path& path);
+  //! Generate AMITEX 'commands' file
+  //! \param path path to generated file
+  //! \param algorithmPath path to the XML file containing algorithm parameters
+  //! \param materialsPath path to the XML file containing materials
+  //! \param loadingPath path to the XML file containing loading and output
+  //! \param materialIdsPath path to the VTK file containing material IDs
+  //! \param zoneIdsPath path to the VTK file containing zone IDs
+  //! \param outputPrefix prefix of AMITEX output paths
+  void generateCommandFile(const std::filesystem::path& path,
+                           const std::filesystem::path& algorithmPath,
+                           const std::filesystem::path& materialsPath,
+                           const std::filesystem::path& loadingPath,
+                           const std::filesystem::path& materialIdsPath,
+                           const std::filesystem::path& zoneIdsPath,
+                           const std::filesystem::path& outputPrefix);
 
  private:
   Input(const Grid& grid, Ptr<AlgorithmParameters> algorithmParameters, Ptr<Materials> materials,
