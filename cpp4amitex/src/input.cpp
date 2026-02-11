@@ -267,12 +267,12 @@ void Input::generateCommandFile(const std::filesystem::path& path,
   std::ofstream cmds{path};
 
   cmds << "&CMD\n";
-  cmds << "fic_numM=\"" << materialIdsPath << "\"\n";
-  cmds << "fic_numZ=\"" << zoneIdsPath << "\"\n";
-  cmds << "fic_mat=\"" << materialsPath << "\"\n";
-  cmds << "fic_char=\"" << loadingPath << "\"\n";
-  cmds << "fic_algo=\"" << algorithmPath << "\"\n";
-  cmds << "fic_vtk=\"" << outputPrefix << "\"\n";
+  cmds << "fic_numM=\"" << materialIdsPath.c_str() << "\"\n";
+  cmds << "fic_numZ=\"" << zoneIdsPath.c_str() << "\"\n";
+  cmds << "fic_mat=\"" << materialsPath.c_str() << "\"\n";
+  cmds << "fic_char=\"" << loadingPath.c_str() << "\"\n";
+  cmds << "fic_algo=\"" << algorithmPath.c_str() << "\"\n";
+  cmds << "fic_vtk=\"" << outputPrefix.c_str() << "\"\n";
   cmds << "/\n";
 }
 

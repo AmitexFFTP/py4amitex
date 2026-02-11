@@ -39,4 +39,29 @@ bool compareBinWithRef(const std::string& path, const std::string& ref, double t
   return compareVectors(data, refdata, tol);
 }
 
+bool compareFileWithRef(const std::string& path, const std::string& ref) {
+  std::ifstream file(path);
+  std::ifstream refFile(ref);
+
+  if (!file.is_open()) {
+    throw amitex::InputError("cannot open file " + path);
+  }
+  if (!refFile.is_open()) {
+    throw amitex::InputError("cannot open file " + path);
+  }
+  std::string line, refLine;
+  while (std::getline(file, line) && std::getline(refFile, refLine)) {
+    if (line != refLine) {
+      return false;
+    }
+  }
+
+  // Check if both files have the same number of lines
+  if (!file.eof() || !refFile.eof()) {
+    return false;
+  }
+
+  return true;
+}
+
 }  // namespace amitex_tests

@@ -1,0 +1,8 @@
+&CMD
+fic_numM="testresults/elaiso_eigs/materialIds.vtk"
+fic_numZ="testresults/elaiso_eigs/zoneIds.vtk"
+fic_mat="testresults/elaiso_eigs/materials.xml"
+fic_char="testresults/elaiso_eigs/loading.xml"
+fic_algo="testresults/elaiso_eigs/algorithm.xml"
+fic_vtk="testresults/elaiso_eigs/output/output"
+/

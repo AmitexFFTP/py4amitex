@@ -34,3 +34,4 @@ testresults
 /cpp4amitex/examples/merope/build*/
 
 .pytest_cache
+.cache

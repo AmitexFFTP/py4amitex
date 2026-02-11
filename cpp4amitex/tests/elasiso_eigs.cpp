@@ -57,4 +57,6 @@ TEST(IntVar, ElasIsoEigs) {
   EXPECT_TRUE(compareXMLFiles(dir / "loading.xml", refDir / "loading.xml"));
 
   EXPECT_TRUE(compareVtkWithRef(dir / "intvar_1_1.vtk", refDir / "intvar_1_1.vtk", 1.e-8));
+
+  EXPECT_TRUE(compareFileWithRef(dir / "commands.in", refDir / "commands.in"));
 }

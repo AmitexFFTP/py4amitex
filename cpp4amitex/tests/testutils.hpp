@@ -49,6 +49,8 @@ std::string toXMLString(const T& obj) {
 bool compareVtkWithRef(const std::string& path, const std::string& ref, double tol);
 bool compareBinWithRef(const std::string& path, const std::string& ref, double tol);
 
+bool compareFileWithRef(const std::string& path, const std::string& ref);
+
 //! default floating-point precision for comparison
 constexpr double eps = 1.0e-6;
 
