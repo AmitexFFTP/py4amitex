@@ -84,13 +84,6 @@ workflow:
   extends:
     - .build_general
 
-rocky8:
-  image: rockylinux:8
-  variables:
-    COMPILER: GNU
-  extends:
-    - .build_rhel_like
-
 # rocky8-intel:
 #   image: rockylinux:8
 #   variables:
