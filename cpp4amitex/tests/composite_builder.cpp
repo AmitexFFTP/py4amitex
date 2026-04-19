@@ -94,6 +94,12 @@ void compositeSpheres(bool useBuildAPI) {
 
   std::filesystem::path refDir = "ref-amxdir/simple_spheres_composites";
   std::filesystem::path dir = input->resultsDir;
+
+  // materialIds.vtk for 1 material is no longer generated
+  // input->generateMaterialVTK(dir / "materialIds.vtk");
+  //  zoneIds.vtk for 1 zone is no longer generated
+  input->generateZoneVTK(dir / "zoneIds.vtk");
+
   EXPECT_TRUE(compareXMLFiles(dir / "materials.xml", refDir / "materials.xml"));
   EXPECT_TRUE(compareXMLFiles(dir / "algorithm.xml", refDir / "algorithm.xml"));
   EXPECT_TRUE(compareXMLFiles(dir / "loading.xml", refDir / "loading.xml"));

@@ -19,11 +19,16 @@ using namespace amitex_tests;
 //! \param nbMat 1 or 2
 static void addZoneAndLaunchThermal(size_t nbMat) {
   auto input = mat2zone2Prepare(nbMat);
-  input->generateFiles();
 
   std::filesystem::path refDir =
       std::string{"ref-amxdir/addzoneandlaunchthermal_"} + std::to_string(nbMat);
   std::filesystem::path dir = input->resultsDir;
+
+  input->generateFiles();
+  // materialIds.vtk for 1 material is no longer generated
+  input->generateMaterialVTK(dir / "materialIds.vtk");
+  //  zoneIds.vtk for 1 zone is no longer generated
+  input->generateZoneVTK(dir / "zoneIds.vtk");
 
   EXPECT_TRUE(compareXMLFiles(dir / "materials.xml", refDir / "materials.xml"));
   EXPECT_TRUE(compareXMLFiles(dir / "algorithm.xml", refDir / "algorithm.xml"));

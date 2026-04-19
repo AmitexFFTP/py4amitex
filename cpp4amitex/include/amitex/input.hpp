@@ -18,6 +18,14 @@
 
 namespace amitex {
 
+// Type of VTK generation for Materials/Zones
+enum class VtkGeneration {
+  Generic,          // Ids VTK are generated
+  OneMaterial,      // only Zones VTK is generated
+  OneZone,          // only Zones VTK is generated
+  OneZonePerVoxel,  // No VTK is generated
+};
+
 //! Regroup all AMITEX input parameters
 class Input {
  public:
@@ -40,10 +48,10 @@ class Input {
   std::string loadingPath() const { return resultsDir + "/loading.xml"; }
   //! Path to XML file defining materials
   std::string materialsPath() const { return resultsDir + "/materials.xml"; }
-  //! Path to VTK file defining material placement
-  std::string materialIdsPath() const { return resultsDir + "/materialIds.vtk"; }
-  //! Path to VTK file defining zones
-  std::string zoneIdsPath() const { return resultsDir + "/zoneIds.vtk"; }
+  //! Path to VTK file defining material placement (empty if not generated)
+  std::string materialIdsPath() const;
+  //! Path to VTK file defining zones  (empty if not generated)
+  std::string zoneIdsPath() const;
   //! Prefix to output files
   std::string outputPrefix() const { return resultsDir + "/output/output"; }
 
@@ -75,6 +83,9 @@ class Input {
                            const std::filesystem::path& materialIdsPath,
                            const std::filesystem::path& zoneIdsPath,
                            const std::filesystem::path& outputPrefix);
+
+  //! Determine types of Ids VTKs to generate
+  VtkGeneration getVtkGeneration() const;
 
  private:
   Input(const Grid& grid, Ptr<AlgorithmParameters> algorithmParameters, Ptr<Materials> materials,
