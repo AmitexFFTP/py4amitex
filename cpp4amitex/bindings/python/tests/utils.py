@@ -108,3 +108,11 @@ def compareXMLFiles(path, refpath):
     with open(refpath, "r", encoding="utf-8") as file:
         refStr = file.read()
     return compareXML(xmlStr, refStr)
+
+
+def compareTextFiles(path, refpath):
+    with open(path, "r", encoding="utf-8") as file:
+        str = file.read()
+    with open(refpath, "r", encoding="utf-8") as file:
+        refStr = file.read()
+    return str == refStr

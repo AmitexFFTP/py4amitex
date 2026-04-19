@@ -6,7 +6,7 @@ pip install .
 ## Developping and testing
 
 ```
-cmake -S. -Bbuild -DCMAKE_INSTALL_DIR=YOUR_INSTALL_DIR
+cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=YOUR_INSTALL_DIR
 cmake --build build -j4
 cmake --install build
 ```

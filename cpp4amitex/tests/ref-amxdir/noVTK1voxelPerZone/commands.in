@@ -1,0 +1,14 @@
+&CMD
+fic_numM=""
+fic_numZ=""
+fic_mat="testresults/noVTK1voxelPerZone/materials.xml"
+fic_char="testresults/noVTK1voxelPerZone/loading.xml"
+fic_algo="testresults/noVTK1voxelPerZone/algorithm.xml"
+fic_vtk="testresults/noVTK1voxelPerZone/output/output"
+nx=4
+ny=8
+nz=16
+dx=0.25
+dy=0.125
+dz=0.0625
+/

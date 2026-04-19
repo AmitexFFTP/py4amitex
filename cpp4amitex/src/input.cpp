@@ -50,10 +50,22 @@ static void generateComposite(Materials& materials, const std::string& path);
 
 void Input::generateFiles() {
   std::filesystem::create_directories(resultsDir + "/output");
+  switch (getVtkGeneration()) {
+    case VtkGeneration::Generic:
+      generateMaterialVTK(materialIdsPath());
+      generateZoneVTK(zoneIdsPath());
+      break;
+    case VtkGeneration::OneMaterial:
+      generateZoneVTK(zoneIdsPath());
+      break;
+    case VtkGeneration::OneZone:
+      generateMaterialVTK(materialIdsPath());
+      break;
+    case VtkGeneration::OneZonePerVoxel:
+      break;
+  }
   generateAlgorithm(algorithmPath());
   generateLoadingOutput(loadingPath());
-  generateMaterialVTK(materialIdsPath());
-  generateZoneVTK(zoneIdsPath());
   generateMaterials(materialsPath(), resultsDir);
   generateCommandFile(resultsDir + "/commands.in", algorithmPath(), materialsPath(), loadingPath(),
                       materialIdsPath(), zoneIdsPath(), outputPrefix());
@@ -273,7 +285,63 @@ void Input::generateCommandFile(const std::filesystem::path& path,
   cmds << "fic_char=\"" << loadingPath.c_str() << "\"\n";
   cmds << "fic_algo=\"" << algorithmPath.c_str() << "\"\n";
   cmds << "fic_vtk=\"" << outputPrefix.c_str() << "\"\n";
+  if (materialIdsPath.empty() && zoneIdsPath.empty()) {
+    cmds << "nx=" << grid.dims()[0] << "\n";
+    cmds << "ny=" << grid.dims()[1] << "\n";
+    cmds << "nz=" << grid.dims()[2] << "\n";
+    cmds << "dx=" << grid.voxelLengths()[0] << "\n";
+    cmds << "dy=" << grid.voxelLengths()[1] << "\n";
+    cmds << "dz=" << grid.voxelLengths()[2] << "\n";
+  }
   cmds << "/\n";
+}
+
+std::string Input::materialIdsPath() const {
+  if (getVtkGeneration() == VtkGeneration::OneMaterial ||
+      getVtkGeneration() == VtkGeneration::OneZonePerVoxel) {
+    return "";
+  } else {
+    return resultsDir + "/materialIds.vtk";
+  }
+}
+
+std::string Input::zoneIdsPath() const {
+  if ((getVtkGeneration() == VtkGeneration::OneZone ||
+       getVtkGeneration() == VtkGeneration::OneZonePerVoxel)) {
+    return "";
+  } else {
+    return resultsDir + "/zoneIds.vtk";
+  }
+}
+
+VtkGeneration Input::getVtkGeneration() const {
+  VtkGeneration vtkGeneration;
+  bool oneMat = materials->numberMaterials() == 1;
+
+  bool oneZone = true;
+  for (size_t m = 0; m < materials->numberMaterials(); m++) {
+    if (materials->at(m)->numberZones() != 1) {
+      oneZone = false;
+      break;
+    }
+  }
+  bool oneZonePerVoxel = false;
+  if (oneMat) {
+    if (materials->at(0)->numberZones() == grid.totalSize()) {
+      oneZonePerVoxel = true;
+    }
+  }
+
+  if (oneZonePerVoxel) {
+    vtkGeneration = VtkGeneration::OneZonePerVoxel;
+  } else if (oneMat) {
+    vtkGeneration = VtkGeneration::OneMaterial;
+  } else if (oneZone) {
+    vtkGeneration = VtkGeneration::OneZone;
+  } else {
+    vtkGeneration = VtkGeneration::Generic;
+  }
+  return vtkGeneration;
 }
 
 }  // namespace amitex
