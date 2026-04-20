@@ -60,7 +60,7 @@ class Grid {
       bool operator==(const Iterator& it) const { return !(*this != it); }
       const GridPoint& operator*() const { return current; }
 
-     private:
+     protected:
       GridPoint current;
       GridSize dims;
     };
@@ -83,13 +83,8 @@ class Grid {
     AllLinPoints(const GridSize& dims) : dims{dims} {}
     class Iterator : public AllPoints::Iterator {
      public:
-      Iterator(const GridPoint& first, const GridSize& dims)
-          : AllPoints::Iterator{first, dims}, current{{0, 0, 0}}, dims{{0, 0, 0}} {}
+      Iterator(const GridPoint& first, const GridSize& dims) : AllPoints::Iterator{first, dims} {}
       GridLinPoint operator*() const { return amitex::linearize(current, dims); }
-
-     private:
-      GridPoint current;
-      GridSize dims;
     };
     Iterator begin() const { return Iterator{{0, 0, 0}, dims}; }
     Iterator end() const { return Iterator{{0, 0, dims[2]}, dims}; }

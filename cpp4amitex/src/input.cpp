@@ -315,7 +315,10 @@ std::string Input::zoneIdsPath() const {
 }
 
 VtkGeneration Input::getVtkGeneration() const {
-  VtkGeneration vtkGeneration;
+  if (vtkGeneration.has_value()) {
+    return vtkGeneration.value();
+  }
+  // VtkGeneration vtkGeneration;
   bool oneMat = materials->numberMaterials() == 1;
 
   bool oneZone = true;
@@ -328,7 +331,18 @@ VtkGeneration Input::getVtkGeneration() const {
   bool oneZonePerVoxel = false;
   if (oneMat) {
     if (materials->at(0)->numberZones() == grid.totalSize()) {
+      // One needs to check if the zones are correctly ordered (ie sequentially in the VTK)
+      const auto& mat = materials->at(0);
+      size_t idx = 0;
       oneZonePerVoxel = true;
+      for (auto p : grid.allLinPoints()) {
+        if (mat->zones().at(idx)->numberVoxels() != 1 ||
+            mat->zones().at(idx)->linearPositions()[0] != p) {
+          oneZonePerVoxel = false;
+          break;
+        }
+        idx += 1;
+      }
     }
   }
 
@@ -341,7 +355,7 @@ VtkGeneration Input::getVtkGeneration() const {
   } else {
     vtkGeneration = VtkGeneration::Generic;
   }
-  return vtkGeneration;
+  return vtkGeneration.value();
 }
 
 }  // namespace amitex

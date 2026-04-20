@@ -21,11 +21,11 @@ void defineSimulationMod(pybind11::module_& m) {
   m.def("getSimulationShellCommand", &getSimulationShellCommand, "input"_a, "numberProcs"_a = 0,
         DOC(amitex, getSimulationShellCommand));
   m.def("runSimulationFromFiles", &runSimulationFromFiles, "algorithmPath"_a, "materialsPath"_a,
-        "loadingPath"_a, "materialIdsPath"_a, "zoneIdsPath"_a, "outputPrefix"_a,
+        "loadingPath"_a, "materialIdsPath"_a, "zoneIdsPath"_a, "outputPrefix"_a, "grid"_a,
         "numberProcs"_a = 0, DOC(amitex, runSimulationFromFiles));
   m.def("getSimulationShellCommandFromFiles", &getSimulationShellCommandFromFiles,
         "algorithmPath"_a, "materialsPath"_a, "loadingPath"_a, "materialIdsPath"_a, "zoneIdsPath"_a,
-        "outputPrefix"_a, "numberProcs"_a = 0, DOC(amitex, runSimulationFromFiles));
+        "outputPrefix"_a, "grid"_a, "numberProcs"_a = 0, DOC(amitex, runSimulationFromFiles));
 }
 
 }  // namespace amitex_python

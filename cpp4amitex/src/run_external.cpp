@@ -16,11 +16,13 @@ namespace amitex {
 
 static std::string getLastLine(const std::string& path);
 
-static std::string getSimulationShellCommandFromFilesAux(
-    const std::filesystem::path& algorithmPath, const std::filesystem::path& materialsPath,
-    const std::filesystem::path& loadingPath, const std::filesystem::path& materialIdsPath,
-    const std::filesystem::path& zoneIdsPath, const std::filesystem::path& outputPrefix,
-    const Grid& grid, int numberProcs) {
+std::string getSimulationShellCommandFromFiles(const std::filesystem::path& algorithmPath,
+                                               const std::filesystem::path& materialsPath,
+                                               const std::filesystem::path& loadingPath,
+                                               const std::filesystem::path& materialIdsPath,
+                                               const std::filesystem::path& zoneIdsPath,
+                                               const std::filesystem::path& outputPrefix,
+                                               const Grid& grid, int numberProcs) {
   std::string cmd = "amitex_fftp";
   std::vector<std::string> args;
   if (!materialIdsPath.empty()) {
@@ -64,21 +66,8 @@ static std::string getSimulationShellCommandFromFilesAux(
   return cmd;
 }
 
-std::string getSimulationShellCommandFromFiles(const std::filesystem::path& algorithmPath,
-                                               const std::filesystem::path& materialsPath,
-                                               const std::filesystem::path& loadingPath,
-                                               const std::filesystem::path& materialIdsPath,
-                                               const std::filesystem::path& zoneIdsPath,
-                                               const std::filesystem::path& outputPrefix,
-                                               int numberProcs) {
-  Grid grid;
-  return getSimulationShellCommandFromFilesAux(algorithmPath, materialsPath, loadingPath,
-                                               materialIdsPath, zoneIdsPath, outputPrefix, grid,
-                                               numberProcs);
-}
-
 std::string getSimulationShellCommand(const Input& input, int numberProcs) {
-  return getSimulationShellCommandFromFilesAux(
+  return getSimulationShellCommandFromFiles(
       input.algorithmPath(), input.materialsPath(), input.loadingPath(), input.materialIdsPath(),
       input.zoneIdsPath(), input.outputPrefix(), input.grid, numberProcs);
 }
@@ -88,11 +77,12 @@ void runSimulationFromFiles(const std::filesystem::path& algorithmPath,
                             const std::filesystem::path& loadingPath,
                             const std::filesystem::path& materialIdsPath,
                             const std::filesystem::path& zoneIdsPath,
-                            const std::filesystem::path& outputPrefix, int numberProcs) {
+                            const std::filesystem::path& outputPrefix, const Grid& grid,
+                            int numberProcs) {
   if (numberProcs < 0) throw AmitexError{"number of processes must be >= 0", 1};
   std::string cmd =
       getSimulationShellCommandFromFiles(algorithmPath, materialsPath, loadingPath, materialIdsPath,
-                                         zoneIdsPath, outputPrefix, numberProcs);
+                                         zoneIdsPath, outputPrefix, grid, numberProcs);
   std::cerr << "LAUNCH AMITEX: " << cmd << std::endl;
   int exc = std::system(cmd.c_str());
   if (exc != 0) throw AmitexError{"simulation failed, see " + outputPrefix.string() + ".log", exc};
@@ -102,7 +92,7 @@ void runSimulationExternal(Input& input, int numberProcs) {
   input.generateFiles();
   runSimulationFromFiles(input.algorithmPath(), input.materialsPath(), input.loadingPath(),
                          input.materialIdsPath(), input.zoneIdsPath(), input.outputPrefix(),
-                         numberProcs);
+                         input.grid, numberProcs);
 }
 
 #if 0
