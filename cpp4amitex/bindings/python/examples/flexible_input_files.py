@@ -74,5 +74,11 @@ input.generateMaterialVTK("matId.vtk")
 input.generateZoneVTK("zoneId.vtk")
 # Run amitex_fftp
 runSimulationFromFiles(
-    "algo.xml", "mat.xml", "loading.xml", "matId.vtk", "zoneId.vtk", "output"
+    "algo.xml",
+    "mat.xml",
+    "loading.xml",
+    "matId.vtk",
+    "zoneId.vtk",
+    "output",
+    input.grid,
 )

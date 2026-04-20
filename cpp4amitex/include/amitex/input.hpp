@@ -94,6 +94,8 @@ class Input {
         algorithmParameters{algorithmParameters},
         materials{materials},
         loadingOutput{loadingOutput} {}
+
+  mutable std::optional<VtkGeneration> vtkGeneration = std::nullopt;
 };
 
 }  // namespace amitex

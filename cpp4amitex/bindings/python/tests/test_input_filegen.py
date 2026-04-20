@@ -34,7 +34,13 @@ def test_flexible_input_paths() -> None:
     input.generateZoneVTK(f"zoneId.vtk")
     assert (
         getSimulationShellCommandFromFiles(
-            "algo.xml", "mat.xml", "char.xml", "matId.vtk", "zoneId.vtk", "output"
+            "algo.xml",
+            "mat.xml",
+            "char.xml",
+            "matId.vtk",
+            "zoneId.vtk",
+            "output",
+            input.grid,
         )
         == f"mpirun amitex_fftp -nm matId.vtk -nz zoneId.vtk -a algo.xml -m mat.xml -c char.xml -s output"
     )

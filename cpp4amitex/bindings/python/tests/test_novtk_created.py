@@ -56,9 +56,7 @@ def makeLoadings():
 
 
 def makeVoxels1ZonePerVoxel(grid):
-    voxels = []
-    for izone, p in enumerate(grid.allPoints()):
-        voxels.append(VoxelSpec([(0, 1.0, izone)]))
+    voxels = [VoxelSpec([(0, 1.0, izone)]) for izone in range(grid.totalSize())]
     return voxels
 
 
@@ -77,11 +75,11 @@ def makeVoxels1Zone(grid):
 
 
 # Materials
-def makeMaterials(grid, voxels):
+def makeMaterials(grid, voxels, ordering=IndexOrdering.Fortran):
     materials = Materials()
     materials.referenceMaterialD = ReferenceMaterialD(2.0)
 
-    buildMaterials(materials, grid.dims(), voxels)
+    buildMaterials(materials, grid.dims(), voxels, ordering)
 
     for m in range(materials.numberMaterials()):
         mat = materials.material(m)
@@ -111,6 +109,30 @@ def test_1voxelPerZone():
     assert not Path(f"{input.resultsDir}/zoneIds.vtk").exists()
 
     refDir = testsdir / "ref-amxdir" / "noVTK1voxelPerZone"
+    dir = Path(input.resultsDir)
+    assert compareTextFiles(dir / "commands.in", refDir / "commands.in")
+
+
+def test_1voxelPerZoneWrongOrder():
+    algorithmParameters = makeAlgoParams()
+    loadingOutput = makeLoadings()
+    grid_amitex = Grid(GRID_DIMS, [L[i] / GRID_DIMS[i] for i in range(3)])
+    materials = makeMaterials(
+        grid_amitex,
+        makeVoxels1ZonePerVoxel(grid_amitex),
+        ordering=IndexOrdering.C,
+    )
+    input = Input(grid_amitex, algorithmParameters, materials, loadingOutput)
+    input.resultsDir = "testresults/noVTK1voxelPerZoneWrongOrder"
+    input.generateFiles()
+    assert (
+        getSimulationShellCommand(input, 16)
+        == f"mpirun -n 16 amitex_fftp -nz {input.resultsDir}/zoneIds.vtk -a {input.resultsDir}/algorithm.xml -m {input.resultsDir}/materials.xml -c {input.resultsDir}/loading.xml -s {input.outputPrefix()}"
+    )
+    assert not Path(f"{input.resultsDir}/materialIds.vtk").exists()
+    assert Path(f"{input.resultsDir}/zoneIds.vtk").exists()
+
+    refDir = testsdir / "ref-amxdir" / "noVTK1voxelPerZoneWrongOrder"
     dir = Path(input.resultsDir)
     assert compareTextFiles(dir / "commands.in", refDir / "commands.in")
 
