@@ -5,20 +5,31 @@ A simple mechanical example.
 
 ## Import
 
-Let us start by importing the basic input classes
+Let us start by importing the needed input classes
 
 ```py
-from amitex.input import (
+from py4amitex.input import (
     Input,
     Grid,
-    AlgorithmParameters,
     Materials,
-    LoadingOutput
+    AlgorithmParameters,
+    LoadingOutput,
+    Algorithm,
+    Mechanics,
+    Material,
+    Zone,
+    ReferenceMaterial,
+    Loading,
+    Component,
+    MechanicDriving,
+    Evolution,
+    Output
 )
 ```
 
-`Input` contains all parameters, `Grid` specify the grid dimensions, the last three correspond to
-the root nodes of AMITEX XML input files. 
+`Input` contains all parameters, `Grid` specify the grid dimensions, the next three 
+(`Materials`, `AlgorithmParameters`, `LoadingOutput`) correspond to the root nodes of 
+AMITEX XML input files. The other classes will be explained below.
 
 If not specified, all classes introduces below come from `amitex.input`.
 
