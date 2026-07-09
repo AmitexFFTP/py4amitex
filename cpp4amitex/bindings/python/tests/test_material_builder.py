@@ -1,18 +1,22 @@
-from pytest import raises, approx
-
 from py4amitex.input import (
-    Materials,
-    Input,
-    ReferenceMaterial,
     Algorithm,
     AlgorithmParameters,
+    Grid,
+    Input,
     LoadingOutput,
+    Materials,
+    ReferenceMaterial,
 )
-from py4amitex.input.materialbuilder import buildMaterialsFromVtk
+from py4amitex.input.materialbuilder import (
+    IndexOrdering,
+    MaterialBuilder,
+    VoxelSpec,
+    buildMaterialsFromVtk,
+)
+from pytest import approx, mark, raises
 
+from .testutils import compareBinWithRef, compareVtkWithRef
 from .utils import compareXMLFiles, testsdir
-
-from .testutils import compareVtkWithRef, compareBinWithRef
 
 
 def test_readvtklaminateNSB():
@@ -51,7 +55,7 @@ def test_bilayer():
         mat.setNumberCoeff(2)
 
         for z in range(2):
-            mat.setCoeffZoneFromBin(z, f"{refDir}/Coeff{m+1}_{z+1}.bin")
+            mat.setCoeffZoneFromBin(z, f"{refDir}/Coeff{m + 1}_{z + 1}.bin")
 
     input = Input(
         grid, AlgorithmParameters(Algorithm.createDefault()), materials, LoadingOutput()
@@ -67,5 +71,29 @@ def test_bilayer():
 
     for i in range(2):
         for j in range(2):
-            file = f"Coeff{i+1}_{j+1}.bin"
+            file = f"Coeff{i + 1}_{j + 1}.bin"
             assert compareBinWithRef(f"{dir}/{file}", f"{refDir}/{file}", 1.0e-8)
+
+
+@mark.parametrize(
+    "volFraction,expected", [(0.1, [0, 1, 2, 3]), (0.3, [0, 2]), (0.45, [0])]
+)
+def test_CompositeMinVolFractions(volFraction, expected):
+    N = [2, 2, 1]
+    DL = [10.0 / 32, 10.0 / 32, 10.0 / 32]
+    grid = Grid(N, DL)
+
+    voxels = [
+        VoxelSpec([[0, 0.5], [1, 0.5]]),
+        VoxelSpec([[0, 0.8], [1, 0.2]]),
+        VoxelSpec([[0, 0.6], [1, 0.4]]),
+        VoxelSpec([[0, 0.2], [1, 0.8]]),
+    ]
+
+    bd = MaterialBuilder(volFraction)
+    materials = Materials()
+    bd.buildMaterials(materials, grid.dims(), voxels, IndexOrdering.Fortran)
+
+    assert materials.numberMaterials() == 2
+    assert materials.numberComposites() == 1
+    assert materials.composite(0).positions() == expected
