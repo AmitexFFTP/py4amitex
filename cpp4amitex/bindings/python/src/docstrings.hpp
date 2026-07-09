@@ -41,6 +41,9 @@ static const char* __doc_amitex_AlgorithmLaminate_initializationType =
     R"doc(Initialization type (Proportionnal, Linear, Default (=Linear))doc";
 
 static const char* __doc_amitex_AlgorithmLaminate_nIncrements =
+    R"doc(Number of substeps for laminate law (deprecated, do nothing, see nMaxSubdivision))doc";
+
+static const char* __doc_amitex_AlgorithmLaminate_nMaxSubdivision =
     R"doc(Number of substeps for laminate law)doc";
 
 static const char* __doc_amitex_AlgorithmLaminate_xmlHasBody = R"doc()doc";

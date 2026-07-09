@@ -184,7 +184,8 @@ void defineInputMod(py::module_& m) {
           DOC(amitex, AlgorithmLaminate, convergenceAcceleration))
       .DEF_VALUE_PROPERTY(convergenceCriterion, double, AlgorithmLaminate)
       .DEF_VALUE_PROPERTY(nIncrements, int, AlgorithmLaminate)
-      .DEF_VALUE_PROPERTY(initializationType, std::string, AlgorithmLaminate);
+      .DEF_VALUE_PROPERTY(initializationType, std::string, AlgorithmLaminate)
+      .DEF_VALUE_PROPERTY(nMaxSubdivision, int, AlgorithmLaminate);
 
   py::class_<AlgorithmParameters, Ptr<AlgorithmParameters>>(m, "AlgorithmParameters",
                                                             DOC(amitex, AlgorithmParameters))

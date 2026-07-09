@@ -1,6 +1,6 @@
-from sys import version_info
-from pathlib import Path
 from difflib import unified_diff
+from pathlib import Path
+from sys import version_info
 from xml.etree.ElementTree import canonicalize, fromstring, tostring
 
 if version_info >= (3, 9):

@@ -9,6 +9,7 @@ void AlgorithmLaminate::xmlWriteInner(std::ostream& stream) const {
   writeXML(stream, convergenceAcceleration);
   if (initializationType.value) writeXML(stream, initializationType);
   if (nIncrements.value) writeXML(stream, nIncrements);
+  if (nMaxSubdivision.value) writeXML(stream, nMaxSubdivision);
 }
 
 }  // namespace amitex

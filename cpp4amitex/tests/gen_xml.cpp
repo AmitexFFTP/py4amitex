@@ -208,6 +208,7 @@ TEST(XML, AlgoDefaultVoxcomplaminate) {
   laminate->convergenceAcceleration = true;
   laminate->initializationType = "Linear";
   laminate->nIncrements = 1;
+  laminate->nMaxSubdivision = 5;
 
   auto param_algo = AlgorithmParameters::create(algo, meca);
   param_algo->algorithmLaminate = laminate;
