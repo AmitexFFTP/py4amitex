@@ -25,7 +25,9 @@ class AlgorithmLaminate {
   ConvergenceAcceleration convergenceAcceleration{};
   //! Initialization type (Proportionnal, Linear, Default (=Linear)
   Value<std::string> initializationType{"Initialisation_type"};
-  //! Number of substeps for laminate law
+  //! Number of substeps for laminate law 
+  Value<int> nMaxSubdivision{"Nmax_subdivision"};
+  //! Number of substeps for laminate law (deprecated, do nothing. see nMaxSubdivision)
   Value<int> nIncrements{"N_increments"};
 
  private:

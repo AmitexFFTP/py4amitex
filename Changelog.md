@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - More flexible input file generation (#2)
+- Use amitex cmd line to optimize gerneration of VTK id files (!18)
+- Support of Algorithm_laminate.Nmax_subdivision (!20)
+
 
 ## 1.1.0 - 2025-07-25
 

@@ -1,31 +1,29 @@
 import pytest
-
 from py4amitex.input import (
     Algorithm,
+    AlgorithmLaminate,
     AlgorithmParameters,
-    Mechanics,
-    Diffusion,
-    Output,
-    VtkStressStrain,
-    LoadingOutput,
-    Loading,
-    MechanicDriving,
-    DiffusionDriving,
-    Materials,
-    Material,
-    VtkFluxDGradD,
-    ReferenceMaterialD,
-    Evolution,
     Component,
     ConvergenceAcceleration,
     ConvergenceForced,
-    AlgorithmLaminate,
-    Substepping,
-    InitLoadExt,
+    Diffusion,
+    DiffusionDriving,
     DirStress,
+    Evolution,
+    InitLoadExt,
+    Loading,
+    LoadingOutput,
+    Material,
+    Materials,
+    MechanicDriving,
+    Mechanics,
+    Output,
     ReferenceMaterial,
+    ReferenceMaterialD,
+    Substepping,
+    VtkFluxDGradD,
+    VtkStressStrain,
 )
-
 
 from .utils import compareXML, testsdir
 
@@ -168,6 +166,7 @@ def test_XML_AlgoDefaultLaminate():
     algoLaminate.convergenceAcceleration = True
     algoLaminate.initializationType = "Linear"
     algoLaminate.nIncrements = 1
+    algoLaminate.nMaxSubdivision = 5
     param_algo = AlgorithmParameters(
         algorithm=Algorithm(type="Basic_Scheme", convergenceAcceleration=True),
         mechanics=Mechanics(filter="Default", smallPerturbations=True),
