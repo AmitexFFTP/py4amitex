@@ -22,6 +22,10 @@ void defineMaterialBuilderMod(pybind11::module_& m) {
            DOC(amitex, VoxelSpec, VoxelSpec, 2))
       .def_readwrite("phases", &VoxelSpec::phases, DOC(amitex, VoxelSpec, phases));
 
+  py::enum_<IndexOrdering>(m, "IndexOrdering", DOC(amitex, IndexOrdering))
+      .value("C", IndexOrdering::C)
+      .value("Fortran", IndexOrdering::Fortran);
+
   py::class_<MaterialBuilder>(m, "MaterialBuilder", DOC(amitex, MaterialBuilder))
       .def(py::init<>())
       .def(py::init<double>(), "minVolFrac"_a, DOC(amitex, MaterialBuilder, MaterialBuilder, 2))
@@ -34,13 +38,40 @@ void defineMaterialBuilderMod(pybind11::module_& m) {
            static_cast<void (MaterialBuilder::*)(Materials&, GridLinPoint, size_t, size_t)>(
                &MaterialBuilder::addVoxel),
            "materials"_a, "position"_a, "numMaterial"_a, "zone"_a = 0,
-           DOC(amitex, MaterialBuilder, addVoxel, 2));
+           DOC(amitex, MaterialBuilder, addVoxel, 2))
+      .def(
+          "buildMaterials",
+          static_cast<void (MaterialBuilder::*)(Materials&, GridSize, const std::vector<VoxelSpec>&,
+                                                IndexOrdering)>(&MaterialBuilder::buildMaterials),
+          "materials"_a, "dims"_a, "phases"_a, "ordering"_a = IndexOrdering::C,
+          DOC(amitex, buildMaterials))
+      .def("buildMaterials",
+           static_cast<void (MaterialBuilder::*)(
+               Materials&, GridSize, const std::vector<std::tuple<VoxelSpec, Vector3D>>&,
+               IndexOrdering)>(&MaterialBuilder::buildMaterials),
+           "materials"_a, "dims"_a, "phases"_a, "ordering"_a = IndexOrdering::C,
+           DOC(amitex, buildMaterials, 2))
+      .def(
+          "buildMaterials",
+          static_cast<void (MaterialBuilder::*)(Materials&, GridSize, const std::vector<ShortSpec>&,
+                                                IndexOrdering)>(&MaterialBuilder::buildMaterials),
+          "materials"_a, "dims"_a, "phases"_a, "ordering"_a = IndexOrdering::C,
+          DOC(amitex, buildMaterials, 3))
+      .def("buildMaterials",
+           static_cast<void (MaterialBuilder::*)(
+               Materials&, GridSize, const std::vector<std::tuple<ShortSpec, Vector3D>>&,
+               IndexOrdering)>(&MaterialBuilder::buildMaterials),
+           "materials"_a, "dims"_a, "phases"_a, "ordering"_a = IndexOrdering::C,
+           DOC(amitex, buildMaterials, 4))
+      .def(
+          "buildMaterials",
+          static_cast<void (MaterialBuilder::*)(Materials&, GridSize, const std::vector<PhaseType>&,
+                                                IndexOrdering)>(&MaterialBuilder::buildMaterials),
+          "materials"_a, "dims"_a, "phases"_a, "ordering"_a = IndexOrdering::C,
+          DOC(amitex, buildMaterials, 5));
 
   // void buildMaterials(Materials& materials, GridSize dims, const std::vector<ShortSpec>& phases,
   //                     IndexOrdering ordering = IndexOrdering::C);
-  py::enum_<IndexOrdering>(m, "IndexOrdering", DOC(amitex, IndexOrdering))
-      .value("C", IndexOrdering::C)
-      .value("Fortran", IndexOrdering::Fortran);
 
   m.def("buildMaterials",
         static_cast<void (*)(Materials&, GridSize, const std::vector<VoxelSpec>&, IndexOrdering)>(

@@ -10,6 +10,7 @@
 #include "amitex/config.hpp"
 #include "amitex/input.hpp"
 
+#include "amitex/input/common.hpp"
 #include "docstrings.hpp"
 
 namespace py = pybind11;
@@ -416,7 +417,10 @@ void defineInputMod(py::module_& m) {
            DOC(amitex, Composite, setLaw))
       .def_property("law", nullptr, &Composite::setLaw)
       .def("numberPhases", &Composite::numberPhases, DOC(amitex, Composite, numberPhases))
-      .def("materialIndices", &Composite::materialIndices, DOC(amitex, Composite, materialIndices));
+      .def("materialIndices", &Composite::materialIndices, DOC(amitex, Composite, materialIndices))
+      .def("positions",
+           static_cast<const std::vector<GridLinPoint>& (Composite::*)() const>(&Composite::positions),
+           DOC(amitex, Composite, positions));
 
   py::class_<ReferenceMaterial, Ptr<ReferenceMaterial>>(m, "ReferenceMaterial",
                                                         DOC(amitex, ReferenceMaterial))

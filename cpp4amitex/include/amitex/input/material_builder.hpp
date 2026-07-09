@@ -49,6 +49,14 @@
 
 namespace amitex {
 
+//! Order or elements in memory for multidimentional arrays represented by vector<>
+//! or, alternatively, order of linearized positions
+enum class IndexOrdering { C, Fortran };
+
+//! For Mérope interop
+using PhaseType = long;
+using ShortSpec = std::vector<std::tuple<PhaseType, double>>;
+
 //! Basic specification (index, volume fraction, zone) of a voxel (composite if more than one phase)
 class VoxelSpec {
  public:
@@ -89,6 +97,34 @@ class MaterialBuilder {
     this->addVoxel(materials, pos, VoxelSpec{{{numM, 1.0, zone}}});
   }
 
+  //! Build materials from a list of all voxels (ie indexed by their linearized positions)
+  //! \param phases array as field of voxel specs
+  //! \param ordering ordering of positions
+  void buildMaterials(Materials& materials, GridSize dims, const std::vector<VoxelSpec>& phases,
+                      IndexOrdering ordering = IndexOrdering::C);
+
+  //! Build materials from a list of all voxels (ie indexed by their linearized positions)
+  //! with normal information
+  //! \param phases array as tuple (voxel specs, normal)
+  //! \param ordering ordering of positions
+  void buildMaterials(Materials& materials, GridSize dims,
+                      const std::vector<std::tuple<VoxelSpec, Vector3D>>& phases,
+                      IndexOrdering ordering = IndexOrdering::C);
+
+  void buildMaterials(Materials& materials, GridSize dims, const std::vector<ShortSpec>& phases,
+                      IndexOrdering ordering = IndexOrdering::C);
+
+  //! With normals
+  void buildMaterials(Materials& materials, GridSize dims,
+                      const std::vector<std::tuple<ShortSpec, Vector3D>>& phases,
+                      IndexOrdering ordering = IndexOrdering::C);
+
+  //! Pure phase only
+  void buildMaterials(Materials& materials, GridSize dims, const std::vector<PhaseType>& phases,
+                      IndexOrdering ordering = IndexOrdering::C);
+
+  double getMinimumVolumeFraction() { return this->minVolFrac; }
+
  private:
   double minVolFrac = Composite::maxVolumeFraction;
   std::map<std::vector<size_t>, size_t> compos = {};
@@ -97,10 +133,6 @@ class MaterialBuilder {
                    const std::vector<double>& volfracs, const std::vector<size_t>& zone,
                    Vector3D normal);
 };
-
-//! Order or elements in memory for multidimentional arrays represented by vector<>
-//! or, alternatively, order of linearized positions
-enum class IndexOrdering { C, Fortran };
 
 //! Build materials from a list of all voxels (ie indexed by their linearized positions)
 //! \param phases array as field of voxel specs
@@ -115,10 +147,6 @@ void buildMaterials(Materials& materials, GridSize dims, const std::vector<Voxel
 void buildMaterials(Materials& materials, GridSize dims,
                     const std::vector<std::tuple<VoxelSpec, Vector3D>>& phases,
                     IndexOrdering ordering = IndexOrdering::C);
-
-//! For Mérope interop
-using PhaseType = long;
-using ShortSpec = std::vector<std::tuple<PhaseType, double>>;
 
 void buildMaterials(Materials& materials, GridSize dims, const std::vector<ShortSpec>& phases,
                     IndexOrdering ordering = IndexOrdering::C);

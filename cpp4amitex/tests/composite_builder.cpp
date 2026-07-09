@@ -6,7 +6,9 @@
 
 #include "amitex/extract.hpp"
 #include "amitex/input.hpp"
+#include "amitex/input/common.hpp"
 #include "amitex/input/material_builder.hpp"
+#include "amitex/input/materials.hpp"
 #include "amitex/simulation.hpp"
 
 #include "testutils.hpp"
@@ -146,4 +148,30 @@ void compositeSpheres(bool useBuildAPI) {
 TEST(Composite, SimpleSpheres) {
   compositeSpheres(true);
   compositeSpheres(false);
+}
+
+TEST(Composite, MinVolFractions) {
+    std::array<size_t, 3> N = {2, 2, 1};
+    std::array<double, 3> DL = {10.0 / 32, 10.0 / 32, 10.0 / 32};
+    Grid grid{N, DL};
+    std::string law = "reuss";
+    std::vector<VoxelSpec> voxels;
+    VoxelSpec spec;
+    voxels.push_back(VoxelSpec{{{0, 0.5}, {1, 0.5}}});
+    voxels.push_back(VoxelSpec{{{0, 0.8}, {1, 0.2}}});
+    voxels.push_back(VoxelSpec{{{0, 0.6}, {1, 0.4}}});
+    voxels.push_back(VoxelSpec{{{0, 0.2}, {1, 0.8}}});
+    
+    auto testWithVolfrac = [&](double vf, const std::vector<GridLinPoint> refs) {
+        MaterialBuilder bd(vf);
+        auto materials = Materials::create();
+        bd.buildMaterials(*materials, grid.dims(), voxels, IndexOrdering::Fortran);
+         ASSERT_EQ(materials->numberMaterials(), 2);
+         ASSERT_EQ(materials->numberComposites(), 1);
+         EXPECT_EQ(materials->composite(0)->positions(), refs);
+    };
+    // std::vector<GridLinPoint> refs = {0, 2};
+    testWithVolfrac(0.1, {0, 1, 2, 3});
+    testWithVolfrac(0.3, {0, 2});
+    testWithVolfrac(0.45, {0});
 }
