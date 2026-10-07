@@ -37,7 +37,7 @@ Changelog = "https://github.com/AmitexFFTP/py4amitex/blob/main/Changelog.md"
 
 
 [build-system]
-requires = ["scikit-build-core>=0.3.3"]
+requires = ["scikit-build-core>=0.3.3", "pybind11"]
 build-backend = "scikit_build_core.build"
 
 

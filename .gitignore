@@ -19,6 +19,7 @@ data_2_modified*
 .eggs
 .tox
 .venv
+venv
 *.egg
 *.py[cod]
 *.swp
