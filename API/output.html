@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Output extractor &#8212; py4amitex 1.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=fc837d61"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Input generator" href="input.html" />
+    <link rel="prev" title="API Documentation" href="../API.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-py4amitex.output.amitexoutput">
+<span id="output-extractor"></span><h1>Output extractor<a class="headerlink" href="#module-py4amitex.output.amitexoutput" title="Link to this heading">¶</a></h1>
+<p>P4A Module to load and interact with AMITEX simulation results.</p>
+<p>AmitexOutput class is the public API of the P4A package to interact with
+Amitex output data.</p>
+<p>&#64;author: amarano</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.output.amitexoutput.</span></span><span class="sig-name descname"><span class="pre">AmitexOutput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_basename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput" title="Link to this definition">¶</a></dt>
+<dd><p>Class to load, store and manipulate Amitex fftp simulation results.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.get_concentration_field">
+<span class="sig-name descname"><span class="pre">get_concentration_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">increment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.get_concentration_field" title="Link to this definition">¶</a></dt>
+<dd><p>Return the requested strain field component.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<p>increment : int, time increment associated to the requested field</p>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<p>a : (Nx, Ny, Nz) numpy array –&gt; concentration field</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.get_diffusionflux_field">
+<span class="sig-name descname"><span class="pre">get_diffusionflux_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.get_diffusionflux_field" title="Link to this definition">¶</a></dt>
+<dd><p>Return the requested strain field component.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>component : str, requested flux component. ex: ‘x’, ‘y’ or ‘z’
+increment : int, time increment associated to the requested field</p>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>a : (Nx, Ny, Nz) numpy array –&gt; flux field component</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.get_mean_values">
+<span class="sig-name descname"><span class="pre">get_mean_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zoneId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.get_mean_values" title="Link to this definition">¶</a></dt>
+<dd><p>Return time serie of the requested variable mean values.</p>
+<section id="id3">
+<h2>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>variable<span class="classifier">string</span></dt><dd><p>Name of the variable to retrieve.
+Accepted names are ‘strain’, ‘epsilon’, ‘grad_u’, ‘greenlagrange’,
+‘stress’, ‘boussinesq’, ‘time’, ‘niter’.
+For internal variables, use “varInt”
+For root mean square time series, use ‘X_rms’, with X one of the
+aformentionned accepted names.</p>
+</dd>
+<dt>matId<span class="classifier">int, optional</span></dt><dd><p>Id (numM) of the material. Use to request the mean over the
+material (.mstd) or a zone(.ztsd) of a variable.
+The default value is ‘None’, which return the mean over the unit
+cell.
+To load the mean over a material, specify ‘matId’ value, and set
+‘zoneId’ value tu ‘None’.</p>
+</dd>
+<dt>zoneId<span class="classifier">int, optional</span></dt><dd><p>Id (numM) of the material. Use to request the mean over the
+material (.mstd) or a zone(.ztsd) of a variable.
+The default value is ‘None’.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Returns<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>a<span class="classifier">(Nincr, Ncomp) numpy array</span></dt><dd><p>Time serie of requested variable values, with all components for
+tensorial variables.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.get_piola_stress_field">
+<span class="sig-name descname"><span class="pre">get_piola_stress_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.get_piola_stress_field" title="Link to this definition">¶</a></dt>
+<dd><p>Return the requested piola stress field component.</p>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<p>component : str, requested piola stress component. ex: ‘xx’, ‘yz’
+increment : int, time increment associated to the requested field</p>
+</section>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<p>a : (Nx, Ny, Nz) numpy array –&gt; piola stress field component</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.get_strain_field">
+<span class="sig-name descname"><span class="pre">get_strain_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.get_strain_field" title="Link to this definition">¶</a></dt>
+<dd><p>Return the requested strain field component.</p>
+<section id="id7">
+<h2>Parameters<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<p>component : str, requested strain component. ex: ‘xx’, ‘yz’
+increment : int, time increment associated to the requested field</p>
+</section>
+<section id="id8">
+<h2>Returns<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<p>a : (Nx, Ny, Nz) numpy array –&gt; strain field component</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.get_stress_field">
+<span class="sig-name descname"><span class="pre">get_stress_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.get_stress_field" title="Link to this definition">¶</a></dt>
+<dd><p>Return the requested stress field component.</p>
+<section id="id9">
+<h2>Parameters<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<p>component : str, requested stress component. ex: ‘xx’, ‘yz’
+increment : int, time increment associated to the requested field</p>
+</section>
+<section id="id10">
+<h2>Returns<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<p>a : (Nx, Ny, Nz) numpy array –&gt; stress field component</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.get_varInt_field">
+<span class="sig-name descname"><span class="pre">get_varInt_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">varInt_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.get_varInt_field" title="Link to this definition">¶</a></dt>
+<dd><p>Return the requested internal variable field.</p>
+<section id="id11">
+<h2>Parameters<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<p>varInt_idx : int, index of requested internal variable.
+increment  : int, time increment associated to the requested field</p>
+</section>
+<section id="id12">
+<h2>Returns<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<p>a : (Nx, Ny, Nz) numpy array –&gt; internal variable field</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.load_all_fields">
+<span class="sig-name descname"><span class="pre">load_all_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.load_all_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Load all available fields in output directory vtk files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.load_concentration_fields">
+<span class="sig-name descname"><span class="pre">load_concentration_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">increments_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.load_concentration_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Load concentration fields for requested increments.</p>
+<section id="id13">
+<h2>Parameters<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>increments_list<span class="classifier">list(str), optional</span></dt><dd><p>List of time increments to read. The default is None, which reads
+all time increment data for the requested field.</p>
+</dd>
+<dt>output_slice<span class="classifier">numpy array (3,2), optional</span></dt><dd><p>Specific slice of field data to return. The default is None.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.load_diffusionflux_fields">
+<span class="sig-name descname"><span class="pre">load_diffusionflux_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.load_diffusionflux_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Load flux fields for requested increments and components.</p>
+<section id="id14">
+<h2>Parameters<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>components_list<span class="classifier">list(str), optional</span></dt><dd><p>List of components of the flux field to read. Components can be indices
+or letters (like ‘0’ or ‘x’). The default is ‘all’.</p>
+</dd>
+<dt>increments_list<span class="classifier">list(str), optional</span></dt><dd><p>List of time increments to read. The default is None, which reads
+all time increment data for the requested field/components.</p>
+</dd>
+<dt>output_slice<span class="classifier">numpy array (3,2), optional</span></dt><dd><p>Specific slice of field data to return. The default is None.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.load_mean_values">
+<span class="sig-name descname"><span class="pre">load_mean_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.load_mean_values" title="Link to this definition">¶</a></dt>
+<dd><p>Load all data in available .std, mstd, zstd files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.load_strain_fields">
+<span class="sig-name descname"><span class="pre">load_strain_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.load_strain_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Load strain fields for requested increments and components.</p>
+<section id="id15">
+<h2>Parameters<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>components_list<span class="classifier">list(str), optional</span></dt><dd><p>List of components of the field to read. Components can be indices
+or letters (like ‘0’ or ‘xx’). The default is ‘all’.</p>
+</dd>
+<dt>increments_list<span class="classifier">list(str), optional</span></dt><dd><p>List of time increments to read. The default is None, which reads
+all time increment data for the requested field/components.</p>
+</dd>
+<dt>output_slice<span class="classifier">numpy array (3,2), optional</span></dt><dd><p>Specific slice of field data to return. The default is None.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.load_stress_fields">
+<span class="sig-name descname"><span class="pre">load_stress_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.load_stress_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Load stress fields for requested increments and components.</p>
+<section id="id16">
+<h2>Parameters<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>components_list<span class="classifier">list(str), optional</span></dt><dd><p>List of components of the field to read. Components can be indices
+or letters (like ‘0’ or ‘xx’). The default is ‘all’.</p>
+</dd>
+<dt>increments_list<span class="classifier">list(str), optional</span></dt><dd><p>List of time increments to read. The default is None, which reads
+all time increment data for the requested field/components.</p>
+</dd>
+<dt>output_slice<span class="classifier">numpy array (3,2), optional</span></dt><dd><p>Specific slice of field data to return. The default is None.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.load_varInt_fields">
+<span class="sig-name descname"><span class="pre">load_varInt_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.load_varInt_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Load strain fields for requested increments and components.</p>
+<section id="id17">
+<h2>Parameters<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>components_list<span class="classifier">list(str), optional</span></dt><dd><p>List of components of the field to read. Components can be indices
+or letters (like ‘0’ or ‘xx’). The default is ‘all’.</p>
+</dd>
+<dt>increments_list<span class="classifier">list(str), optional</span></dt><dd><p>List of time increments to read. The default is None, which reads
+all time increment data for the requested field/components.</p>
+</dd>
+<dt>output_slice<span class="classifier">numpy array (3,2), optional</span></dt><dd><p>Specific slice of field data to return. The default is None.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.print_available_data">
+<span class="sig-name descname"><span class="pre">print_available_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.print_available_data" title="Link to this definition">¶</a></dt>
+<dd><p>Print available AMITEX results in output directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.output.amitexoutput.AmitexOutput.set_output">
+<span class="sig-name descname"><span class="pre">set_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_basename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.output.amitexoutput.AmitexOutput.set_output" title="Link to this definition">¶</a></dt>
+<dd><p>Set names of output files from basename, update finite strain flag.</p>
+<section id="id18">
+<h2>Parameters<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>output_basename<span class="classifier">str, optional</span></dt><dd><p>basename of the output files to read (with or without extension).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/amitex.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">py4amitex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StepByStepExample.html">Step by step example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Output extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Input generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html">Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Developping.html">Developping</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../API.html">API Documentation</a><ul>
+      <li>Previous: <a href="../API.html" title="previous chapter">API Documentation</a></li>
+      <li>Next: <a href="input.html" title="next chapter">Input generator</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Aldo Marano.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../_sources/API/output.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Simulation &#8212; py4amitex 1.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=fc837d61"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developping" href="../Developping.html" />
+    <link rel="prev" title="Fields" href="field.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-py4amitex.simulation">
+<span id="simulation"></span><h1>Simulation<a class="headerlink" href="#module-py4amitex.simulation" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="py4amitex.simulation.runSimulationExternal">
+<span class="sig-prename descclassname"><span class="pre">py4amitex.simulation.</span></span><span class="sig-name descname"><span class="pre">runSimulationExternal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="input.html#py4amitex.input.Input" title="py4amitex.input.Input"><span class="pre">py4amitex.input.Input</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">numberProcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.simulation.runSimulationExternal" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize input files and launch simulation by executing <cite>amitex_fftp</cite></p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">input</span></code>:</dt><dd><p>input used by the simulation</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">numberProcs</span></code>:</dt><dd><p>number of MPI processes used</p>
+</dd>
+<dt>Throws:</dt><dd><p>AmitexError when the simulation does no exit normally</p>
+</dd>
+</dl>
+<p>When <cite>numberProcs</cite> is 0, the number of available MPI processes is used (exact behavior depends on the MPI environment)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py4amitex.simulation.getSimulationShellCommand">
+<span class="sig-prename descclassname"><span class="pre">py4amitex.simulation.</span></span><span class="sig-name descname"><span class="pre">getSimulationShellCommand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="input.html#py4amitex.input.Input" title="py4amitex.input.Input"><span class="pre">py4amitex.input.Input</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">numberProcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#py4amitex.simulation.getSimulationShellCommand" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns:</dt><dd><p>shell command to run <cite>amitex_fftp</cite> (with mpirun)</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">input</span></code>:</dt><dd><p>input used by the simulation</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">numberProcs</span></code>:</dt><dd><p>number of MPI processes used</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/amitex.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">py4amitex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StepByStepExample.html">Step by step example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="output.html">Output extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Input generator</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Developping.html">Developping</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../API.html">API Documentation</a><ul>
+      <li>Previous: <a href="field.html" title="previous chapter">Fields</a></li>
+      <li>Next: <a href="../Developping.html" title="next chapter">Developping</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Aldo Marano.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../_sources/API/simulation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

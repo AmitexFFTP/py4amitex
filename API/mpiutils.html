@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>MPI utilities &#8212; py4amitex 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developping" href="../Developping.html" />
+    <link rel="prev" title="Simulation" href="simulation.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="mpi-utilities">
+<h1>MPI utilities<a class="headerlink" href="#mpi-utilities" title="Link to this heading">¶</a></h1>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.mpiutils.broadcast" title="py4amitex.input.mpiutils.broadcast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">broadcast</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Overloaded function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#py4amitex.input.mpiutils.createInputFromBroadcast" title="py4amitex.input.mpiutils.createInputFromBroadcast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createInputFromBroadcast</span></code></a>(input[, origin, comm])</p></td>
+<td><p>create Input from an 'origin' rank</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="py4amitex.input.mpiutils.broadcast">
+<span class="sig-prename descclassname"><span class="pre">py4amitex.input.mpiutils.</span></span><span class="sig-name descname"><span class="pre">broadcast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.input.mpiutils.broadcast" title="Link to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>broadcast(input: py4amitex.cpp4amitex.input.Input, origin: int = 0, comm: object = None) -&gt; None</p></li>
+</ol>
+<p>Broadcasts input data from an ‘origin’ rank to other ranks</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">obj</span></code>:</dt><dd><p>Input class to broadcast</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">origin</span></code>:</dt><dd><p>rank number of origin (or root)</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">comm</span></code>:</dt><dd><p>communicator</p>
+</dd>
+<dt>Throws:</dt><dd><p>MPIError whenever an MPI call fails</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>broadcast(input: py4amitex.cpp4amitex.input.AlgorithmParameters, origin: int = 0, comm: object = None) -&gt; None</p></li>
+</ol>
+<p>Broadcasts input data from an ‘origin’ rank to other ranks</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">obj</span></code>:</dt><dd><p>Input class to broadcast</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">origin</span></code>:</dt><dd><p>rank number of origin (or root)</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">comm</span></code>:</dt><dd><p>communicator</p>
+</dd>
+<dt>Throws:</dt><dd><p>MPIError whenever an MPI call fails</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py4amitex.input.mpiutils.createInputFromBroadcast">
+<span class="sig-prename descclassname"><span class="pre">py4amitex.input.mpiutils.</span></span><span class="sig-name descname"><span class="pre">createInputFromBroadcast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="input.html#py4amitex.input.Input" title="py4amitex.cpp4amitex.input.Input"><span class="pre">py4amitex.cpp4amitex.input.Input</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="input.html#py4amitex.input.Input" title="py4amitex.cpp4amitex.input.Input"><span class="pre">py4amitex.cpp4amitex.input.Input</span></a></span></span><a class="headerlink" href="#py4amitex.input.mpiutils.createInputFromBroadcast" title="Link to this definition">¶</a></dt>
+<dd><p>create Input from an ‘origin’ rank</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">input</span></code>:</dt><dd><p>pointer to Input to broadcast (can be null outside of origin)</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">origin</span></code>:</dt><dd><p>rank number of origin (or root)</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">comm</span></code>:</dt><dd><p>communicator</p>
+</dd>
+<dt>Throws:</dt><dd><p>MPIError whenever an MPI call fails</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/amitex.png" alt="Logo of py4amitex"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">py4amitex</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StepByStepExample.html">Step by step example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="output.html">Output extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Input generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html">Simulation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">MPI utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Developping.html">Developping</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../API.html">API Documentation</a><ul>
+      <li>Previous: <a href="simulation.html" title="previous chapter">Simulation</a></li>
+      <li>Next: <a href="../Developping.html" title="next chapter">Developping</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Aldo Marano.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/API/mpiutils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

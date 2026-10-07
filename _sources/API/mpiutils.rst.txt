@@ -1,0 +1,14 @@
+MPI utilities
+=============
+
+.. currentmodule:: py4amitex.input.mpiutils
+
+.. autosummary::
+    .. :toctree: _generate
+
+    broadcast
+    createInputFromBroadcast
+
+.. autofunction:: broadcast
+
+.. autofunction:: createInputFromBroadcast

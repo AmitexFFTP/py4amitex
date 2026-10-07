@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Step by step example &#8212; py4amitex 1.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=fc837d61"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Documentation" href="API.html" />
+    <link rel="prev" title="Getting started" href="Getting_started.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="step-by-step-example">
+<h1>Step by step example<a class="headerlink" href="#step-by-step-example" title="Link to this heading">¶</a></h1>
+<p>A simple mechanical example.</p>
+<section id="import">
+<h2>Import<a class="headerlink" href="#import" title="Link to this heading">¶</a></h2>
+<p>Let us start by importing the needed input classes</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4amitex.input</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Input</span><span class="p">,</span>
+    <span class="n">Grid</span><span class="p">,</span>
+    <span class="n">Materials</span><span class="p">,</span>
+    <span class="n">AlgorithmParameters</span><span class="p">,</span>
+    <span class="n">LoadingOutput</span><span class="p">,</span>
+    <span class="n">Algorithm</span><span class="p">,</span>
+    <span class="n">Mechanics</span><span class="p">,</span>
+    <span class="n">Material</span><span class="p">,</span>
+    <span class="n">Zone</span><span class="p">,</span>
+    <span class="n">ReferenceMaterial</span><span class="p">,</span>
+    <span class="n">Loading</span><span class="p">,</span>
+    <span class="n">Component</span><span class="p">,</span>
+    <span class="n">MechanicDriving</span><span class="p">,</span>
+    <span class="n">Evolution</span><span class="p">,</span>
+    <span class="n">Output</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Input</span></code> contains all parameters, <code class="docutils literal notranslate"><span class="pre">Grid</span></code> specify the grid dimensions, the next three
+(<code class="docutils literal notranslate"><span class="pre">Materials</span></code>, <code class="docutils literal notranslate"><span class="pre">AlgorithmParameters</span></code>, <code class="docutils literal notranslate"><span class="pre">LoadingOutput</span></code>) correspond to the root nodes of
+AMITEX XML input files. The other classes will be explained below.</p>
+<p>If not specified, all classes introduces below come from <code class="docutils literal notranslate"><span class="pre">amitex.input</span></code>.</p>
+</section>
+<section id="grid">
+<h2>Grid<a class="headerlink" href="#grid" title="Link to this heading">¶</a></h2>
+<p>Let us make a cell of 32x32x32, with voxels of side 1</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">([</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="algorithm">
+<h2>Algorithm<a class="headerlink" href="#algorithm" title="Link to this heading">¶</a></h2>
+<p>The basic algorithm parameters are defined in “node” Algorithm (importable from amitex.input), we need to set up the algorithm type and the convergence acceleration.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm</span> <span class="o">=</span> <span class="n">Algorithm</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Basic_Scheme&quot;</span><span class="p">,</span> <span class="n">convergenceAcceleration</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Parameters can be set, for example to set the maximum number of iterations:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm</span><span class="o">.</span><span class="n">nitermax</span> <span class="o">=</span> <span class="mi">3000</span>
+</pre></div>
+</div>
+<p>Most parameters can be set in the constructor, like:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm</span> <span class="o">=</span> <span class="n">Algorithm</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Basic_Scheme&quot;</span><span class="p">,</span> <span class="n">convergenceAcceleration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nitermax</span><span class="o">=</span><span class="mi">3000</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To set up a mechanical resolution, we nee to specify the filter and small perturbations of the Mechanics node:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">mechanics</span> <span class="o">=</span> <span class="n">Mechanics</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="n">smallPerturbations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, we gather all algorithm parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">algorithmParameters</span> <span class="o">=</span> <span class="n">AlgorithmParameters</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">mechanics</span><span class="o">=</span><span class="n">mechanics</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, one could write</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">algorithmParameters</span> <span class="o">=</span> <span class="n">AlgorithmParameters</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span>
+<span class="n">algorithmParameters</span><span class="o">.</span><span class="n">mechanics</span> <span class="o">=</span> <span class="n">mechanics</span>
+</pre></div>
+</div>
+<p>The corresponding XML is</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;Algorithm_Parameters&gt;</span>
+<span class="w">        </span><span class="nt">&lt;Algorithm</span><span class="w"> </span><span class="na">Type=</span><span class="s">&quot;Basic_Scheme&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Convergence_Criterion</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;Default&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Convergence_Acceleration</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;True&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/Algorithm&gt;</span>
+<span class="w">        </span><span class="nt">&lt;Mechanics&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Filter</span><span class="w"> </span><span class="na">Type=</span><span class="s">&quot;Default&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Small_Perturbations</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;True&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/Mechanics&gt;</span>
+<span class="nt">&lt;/Algorithm_Parameters&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="materials">
+<h2>Materials<a class="headerlink" href="#materials" title="Link to this heading">¶</a></h2>
+<p>Fist we need to instantiate the <code class="docutils literal notranslate"><span class="pre">Materials</span></code> class regrouping all material specification.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">materials</span> <span class="o">=</span> <span class="n">Materials</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We have one isotropic elastic material</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">material</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+<span class="n">material</span><span class="o">.</span><span class="n">setLaw</span><span class="p">(</span><span class="s2">&quot;elasiso&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We need to set the 2 coefficients for this material:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">material</span><span class="o">.</span><span class="n">setCoeffs</span><span class="p">([</span><span class="mf">1.0e9</span><span class="p">,</span> <span class="mf">1.5e9</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>To place a material, one has to define its zones, which are no more than a list of positions.
+Here a zone is defined on the whole cell:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">zone</span> <span class="o">=</span> <span class="n">Zone</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">dims</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">grid</span><span class="o">.</span><span class="n">allPoints</span><span class="p">():</span>
+    <span class="n">zone</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A zone is initialized with the dimensions of the grid (we use here <code class="docutils literal notranslate"><span class="pre">grid.dims()</span></code> with <code class="docutils literal notranslate"><span class="pre">grid</span></code> defined above). <code class="docutils literal notranslate"><span class="pre">grid.allPoints()</span></code> iterates over all points in the cell, each point is added.</p>
+<p>A zone can be added to the material with</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">material</span><span class="o">.</span><span class="n">addZone</span><span class="p">(</span><span class="n">zone</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">addZone</span></code> accepts more parameters to associate coefficients to a zone, for example:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">material</span><span class="o">.</span><span class="n">addZone</span><span class="p">(</span><span class="n">zone</span><span class="p">,</span> <span class="n">coeffs</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0e9</span><span class="p">,</span> <span class="mf">1.5e9</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>We can now add the material to the list of materials:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">materials</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">material</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we need to set up the reference material:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">materials</span><span class="o">.</span><span class="n">referenceMaterial</span> <span class="o">=</span> <span class="n">ReferenceMaterial</span><span class="p">(</span><span class="mf">1.0e9</span><span class="p">,</span> <span class="mf">1.5e9</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The resulting XML is</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;Materials&gt;</span>
+<span class="w">        </span><span class="nt">&lt;Reference_Material</span><span class="w"> </span><span class="na">Lambda0=</span><span class="s">&quot;1e+09&quot;</span><span class="w"> </span><span class="na">Mu0=</span><span class="s">&quot;1.5e+09&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;Material</span><span class="w"> </span><span class="na">numM=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">Law=</span><span class="s">&quot;elasiso&quot;</span><span class="w"> </span><span class="na">Lib=</span><span class="s">&quot;&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Coeff</span><span class="w"> </span><span class="na">Index=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">Type=</span><span class="s">&quot;Constant&quot;</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;1e+09&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Coeff</span><span class="w"> </span><span class="na">Index=</span><span class="s">&quot;2&quot;</span><span class="w"> </span><span class="na">Type=</span><span class="s">&quot;Constant&quot;</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;1.5e+09&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/Material&gt;</span>
+<span class="nt">&lt;/Materials&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="loading-outputs">
+<h2>Loading &amp; Outputs<a class="headerlink" href="#loading-outputs" title="Link to this heading">¶</a></h2>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">loadingOutput</span> <span class="o">=</span> <span class="n">LoadingOutput</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="output">
+<h3>Output<a class="headerlink" href="#output" title="Link to this heading">¶</a></h3>
+<p>Le us just switch on stress and strain VTK outputs</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">output</span> <span class="o">=</span> <span class="n">Output</span><span class="p">()</span>
+<span class="n">output</span><span class="o">.</span><span class="n">setVtkStressStrain</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">loadingOutput</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>
+</pre></div>
+</div>
+</section>
+<section id="loading-s">
+<h3>Loading(s)<a class="headerlink" href="#loading-s" title="Link to this heading">¶</a></h3>
+<p>We will set up a loading ending at time 1.0 with 2 steps, with the ZZ component of the finite strain set to 0.01, and all other components will be relaxed</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">loading</span> <span class="o">=</span> <span class="n">Loading</span><span class="p">()</span>
+<span class="n">loading</span><span class="o">.</span><span class="n">setTimeDiscretizationLinear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The evolution of the strain component ZZ towards 0.01 can be set with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loading</span><span class="o">.</span><span class="n">setEvolution</span><span class="p">(</span><span class="n">Component</span><span class="o">.</span><span class="n">ZZ</span><span class="p">,</span> <span class="n">MechanicDriving</span><span class="o">.</span><span class="n">Strain</span><span class="p">,</span> <span class="n">Evolution</span><span class="o">.</span><span class="n">Linear</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Component contains values XX, YY, ZZ, XY… . These are tuples (I. J) where I or J are equal to 0,1,2, <code class="docutils literal notranslate"><span class="pre">XX</span> <span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">0)</span></code>,  <code class="docutils literal notranslate"><span class="pre">XX</span> <span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">1)</span></code> etc…
+MechanicDriving is an enum of values <code class="docutils literal notranslate"><span class="pre">Strain</span></code> and <code class="docutils literal notranslate"><span class="pre">Stress</span></code>, <code class="docutils literal notranslate"><span class="pre">Evolution</span></code> can be <code class="docutils literal notranslate"><span class="pre">Linear</span></code> or <code class="docutils literal notranslate"><span class="pre">Constant</span></code> (in the constant case, specifying a value as last parameter is not needed).
+This allow to set component from loops:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">Component</span><span class="o">.</span><span class="n">Z</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">!=</span> <span class="n">Component</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
+            <span class="n">loading</span><span class="o">.</span><span class="n">setEvolution</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">MechanicDriving</span><span class="o">.</span><span class="n">Stress</span><span class="p">,</span> <span class="n">Evolution</span><span class="o">.</span><span class="n">Linear</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here only (i,j) != ZZ and with j &gt;= i are considered, because we are in small perturbations (for more on this the reader is referred to the official AMITEX documentation).</p>
+<p>Then we add the loading to <code class="docutils literal notranslate"><span class="pre">loadingOutput</span></code>:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">loadingOutput</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">loading</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="corresponding-xml">
+<h3>Corresponding XML<a class="headerlink" href="#corresponding-xml" title="Link to this heading">¶</a></h3>
+<p>The resulting XML is</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;Loading_Output&gt;</span>
+<span class="w">        </span><span class="nt">&lt;Output&gt;</span>
+<span class="w">                </span><span class="nt">&lt;vtk_StressStrain</span><span class="w"> </span><span class="na">Strain=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">Stress=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/Output&gt;</span>
+<span class="w">        </span><span class="nt">&lt;Loading</span><span class="w"> </span><span class="na">Tag=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Time_Discretization</span><span class="w"> </span><span class="na">Discretization=</span><span class="s">&quot;Linear&quot;</span><span class="w"> </span><span class="na">Nincr=</span><span class="s">&quot;2&quot;</span><span class="w"> </span><span class="na">Tfinal=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;zz</span><span class="w"> </span><span class="na">Driving=</span><span class="s">&quot;Strain&quot;</span><span class="w"> </span><span class="na">Evolution=</span><span class="s">&quot;Linear&quot;</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;0.01&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;xx</span><span class="w"> </span><span class="na">Driving=</span><span class="s">&quot;Stress&quot;</span><span class="w"> </span><span class="na">Evolution=</span><span class="s">&quot;Linear&quot;</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;xy</span><span class="w"> </span><span class="na">Driving=</span><span class="s">&quot;Stress&quot;</span><span class="w"> </span><span class="na">Evolution=</span><span class="s">&quot;Linear&quot;</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;xz</span><span class="w"> </span><span class="na">Driving=</span><span class="s">&quot;Stress&quot;</span><span class="w"> </span><span class="na">Evolution=</span><span class="s">&quot;Linear&quot;</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;yy</span><span class="w"> </span><span class="na">Driving=</span><span class="s">&quot;Stress&quot;</span><span class="w"> </span><span class="na">Evolution=</span><span class="s">&quot;Linear&quot;</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;yz</span><span class="w"> </span><span class="na">Driving=</span><span class="s">&quot;Stress&quot;</span><span class="w"> </span><span class="na">Evolution=</span><span class="s">&quot;Linear&quot;</span><span class="w"> </span><span class="na">Value=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/Loading&gt;</span>
+<span class="nt">&lt;/Loading_Output&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="input">
+<h2>Input<a class="headerlink" href="#input" title="Link to this heading">¶</a></h2>
+<p>It is now time to gather all pieces of input parameters wih the <code class="docutils literal notranslate"><span class="pre">Input</span></code> class</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">algorithmParameters</span><span class="p">,</span> <span class="n">materials</span><span class="p">,</span> <span class="n">loadingOutput</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This library puts all generated files to a directory (by default “amitex_dir”), it can be set with:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span><span class="o">.</span><span class="n">resultsDir</span> <span class="o">=</span> <span class="s2">&quot;my_amitex_dir&quot;</span>
+</pre></div>
+</div>
+<p>Output files in a subdirectory <code class="docutils literal notranslate"><span class="pre">output</span></code> in this directory. Moreover all output filenames will
+have the prefix <code class="docutils literal notranslate"><span class="pre">output</span></code>. The total prefix can be queried with:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span><span class="o">.</span><span class="n">outputPrefix</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="run-simulation">
+<h2>Run simulation<a class="headerlink" href="#run-simulation" title="Link to this heading">¶</a></h2>
+<p>We can now run a simulation with AMITEX-FFTP</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">amitex.simulation</span> <span class="kn">import</span> <span class="n">runSimulationExternal</span>
+<span class="n">runSimulationExternal</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">numberProcs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will generate the necessary files and execute <code class="docutils literal notranslate"><span class="pre">amitex_fftp</span></code>.
+The second optional parameter sets the number of MPI processes used for <code class="docutils literal notranslate"><span class="pre">amitex_fftp</span></code>. By default it is set at 0, which (likely) means the number of cores on your machine will be used (<code class="docutils literal notranslate"><span class="pre">mpirun</span></code> is executed without <code class="docutils literal notranslate"><span class="pre">-n</span></code>.)</p>
+<section id="separate-generation-and-running-steps">
+<h3>Separate generation and running steps<a class="headerlink" href="#separate-generation-and-running-steps" title="Link to this heading">¶</a></h3>
+<p>One could decompose the steps by first generating the input files and then generate a script from
+the command that would be called by <code class="docutils literal notranslate"><span class="pre">runSimulationExternal</span></code>.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">amitex.simulation</span> <span class="kn">import</span> <span class="n">getSimulationShellCommand</span>
+<span class="nb">input</span><span class="o">.</span><span class="n">generateFiles</span><span class="p">()</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;run.sh&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#!/bin/sh</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">getSimulationShellCommand</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">numberProcs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="full-example">
+<h2>Full example<a class="headerlink" href="#full-example" title="Link to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4amitex.input</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Input</span><span class="p">,</span>
+    <span class="n">Grid</span><span class="p">,</span>
+    <span class="n">Algorithm</span><span class="p">,</span>
+    <span class="n">Mechanics</span><span class="p">,</span>
+    <span class="n">Material</span><span class="p">,</span>
+    <span class="n">Zone</span><span class="p">,</span>
+    <span class="n">ReferenceMaterial</span><span class="p">,</span>
+    <span class="n">Loading</span><span class="p">,</span>
+    <span class="n">Component</span><span class="p">,</span>
+    <span class="n">MechanicDriving</span><span class="p">,</span>
+    <span class="n">Evolution</span><span class="p">,</span>
+    <span class="n">AlgorithmParameters</span><span class="p">,</span>
+    <span class="n">Materials</span><span class="p">,</span>
+    <span class="n">LoadingOutput</span><span class="p">,</span>
+    <span class="n">Output</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">py4amitex.simulation</span> <span class="kn">import</span> <span class="n">runSimulationExternal</span>
+
+<span class="c1"># 32x32x32 grid of voxels of size 1.</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">([</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+<span class="c1"># Set algorithm parameters</span>
+<span class="n">algorithm</span> <span class="o">=</span> <span class="n">Algorithm</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Basic_Scheme&quot;</span><span class="p">,</span> <span class="n">convergenceAcceleration</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Define a mechanical resolution</span>
+<span class="n">mechanics</span> <span class="o">=</span> <span class="n">Mechanics</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="n">smallPerturbations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">algorithmParameters</span> <span class="o">=</span> <span class="n">AlgorithmParameters</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">mechanics</span><span class="o">=</span><span class="n">mechanics</span><span class="p">)</span>
+
+<span class="n">materials</span> <span class="o">=</span> <span class="n">Materials</span><span class="p">()</span>
+<span class="c1"># Define one elastic material</span>
+<span class="n">material</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+<span class="n">material</span><span class="o">.</span><span class="n">setLaw</span><span class="p">(</span><span class="s2">&quot;elasiso&quot;</span><span class="p">)</span>
+<span class="c1"># Lamé coefficients</span>
+<span class="n">material</span><span class="o">.</span><span class="n">setCoeffs</span><span class="p">([</span><span class="mf">1.0e9</span><span class="p">,</span> <span class="mf">1.5e9</span><span class="p">])</span>
+<span class="c1"># Define the material on all voxels of the unit cell</span>
+<span class="n">zone</span> <span class="o">=</span> <span class="n">Zone</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">dims</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">grid</span><span class="o">.</span><span class="n">allPoints</span><span class="p">():</span>
+    <span class="n">zone</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">material</span><span class="o">.</span><span class="n">addZone</span><span class="p">(</span><span class="n">zone</span><span class="p">)</span>
+<span class="n">materials</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">material</span><span class="p">)</span>
+<span class="c1"># Lamé coefficients of the reference material</span>
+<span class="n">materials</span><span class="o">.</span><span class="n">referenceMaterial</span> <span class="o">=</span> <span class="n">ReferenceMaterial</span><span class="p">(</span><span class="mf">1.0e9</span><span class="p">,</span> <span class="mf">1.5e9</span><span class="p">)</span>
+
+<span class="n">loadingOutput</span> <span class="o">=</span> <span class="n">LoadingOutput</span><span class="p">()</span>
+
+<span class="n">output</span> <span class="o">=</span> <span class="n">Output</span><span class="p">()</span>
+<span class="n">output</span><span class="o">.</span><span class="n">setVtkStressStrain</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">loadingOutput</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>
+
+<span class="c1"># Define one loading</span>
+<span class="n">loading</span> <span class="o">=</span> <span class="n">Loading</span><span class="p">()</span>
+<span class="c1"># time between 0 and 1., discretized in 2 steps;</span>
+<span class="n">loading</span><span class="o">.</span><span class="n">setTimeDiscretizationLinear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="c1"># Impose a strain along the zz plane, evolving to 0.01 until the final time</span>
+<span class="n">loading</span><span class="o">.</span><span class="n">setEvolution</span><span class="p">(</span><span class="n">Component</span><span class="o">.</span><span class="n">ZZ</span><span class="p">,</span> <span class="n">MechanicDriving</span><span class="o">.</span><span class="n">Strain</span><span class="p">,</span> <span class="n">Evolution</span><span class="o">.</span><span class="n">Linear</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="c1"># Relax other directions</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">Component</span><span class="o">.</span><span class="n">Z</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">!=</span> <span class="n">Component</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
+            <span class="n">loading</span><span class="o">.</span><span class="n">setEvolution</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">MechanicDriving</span><span class="o">.</span><span class="n">Stress</span><span class="p">,</span> <span class="n">Evolution</span><span class="o">.</span><span class="n">Linear</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">loadingOutput</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">loading</span><span class="p">)</span>
+
+<span class="c1"># Define all input categories</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">algorithmParameters</span><span class="p">,</span> <span class="n">materials</span><span class="p">,</span> <span class="n">loadingOutput</span><span class="p">)</span>
+<span class="c1"># Define output.std in &quot;amitex_dir&quot;</span>
+<span class="nb">input</span><span class="o">.</span><span class="n">resultsDir</span> <span class="o">=</span> <span class="s2">&quot;amitex_dir&quot;</span>
+
+<span class="c1"># Run amitex_fftp on two processes</span>
+<span class="n">runSimulationExternal</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">numberProcs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/amitex.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">py4amitex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Step by step example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#import">Import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grid">Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#algorithm">Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#materials">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-outputs">Loading &amp; Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input">Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-simulation">Run simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#full-example">Full example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Developping.html">Developping</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Getting_started.html" title="previous chapter">Getting started</a></li>
+      <li>Next: <a href="API.html" title="next chapter">API Documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Aldo Marano.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/StepByStepExample.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Materials &#8212; py4amitex 1.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=fc837d61"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Loadings &amp; outputs" href="loadings.html" />
+    <link rel="prev" title="Algorithm parameters" href="algorithm.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="materials">
+<h1>Materials<a class="headerlink" href="#materials" title="Link to this heading">¶</a></h1>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.Materials" title="py4amitex.input.Materials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Materials</span></code></a></p></td>
+<td><p>Definition of all materials</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material</span></code></a></p></td>
+<td><p>Definition of a &quot;pure&quot; material</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.Composite" title="py4amitex.input.Composite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Composite</span></code></a></p></td>
+<td><p>Composite material <strong>note</strong>: the coefficients are set in the pure material (for ex Material::setCoeffComposite)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#py4amitex.input.ReferenceMaterial" title="py4amitex.input.ReferenceMaterial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReferenceMaterial</span></code></a></p></td>
+<td><p>Reference material for mechanics</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.ReferenceMaterialD" title="py4amitex.input.ReferenceMaterialD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReferenceMaterialD</span></code></a></p></td>
+<td><p>Reference material for mechanics</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.Materials">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">Materials</span></span><a class="headerlink" href="#py4amitex.input.Materials" title="Link to this definition">¶</a></dt>
+<dd><p>Definition of all materials</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Materials.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.input.Materials.add" title="Link to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>add(self: py4amitex.input.Materials, arg0: py4amitex.input.Material) -&gt; None</p></li>
+</ol>
+<p>Add a material</p>
+<ol class="arabic simple" start="2">
+<li><p>add(self: py4amitex.input.Materials, arg0: py4amitex.input.Composite) -&gt; None</p></li>
+</ol>
+<p>Add a composite material</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Materials.composite">
+<span class="sig-name descname"><span class="pre">composite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Materials" title="py4amitex.input.Materials"><span class="pre">py4amitex.input.Materials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py4amitex.input.Composite" title="py4amitex.input.Composite"><span class="pre">py4amitex.input.Composite</span></a></span></span><a class="headerlink" href="#py4amitex.input.Materials.composite" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Materials.material">
+<span class="sig-name descname"><span class="pre">material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Materials" title="py4amitex.input.Materials"><span class="pre">py4amitex.input.Materials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></span><a class="headerlink" href="#py4amitex.input.Materials.material" title="Link to this definition">¶</a></dt>
+<dd><p>Get a material</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>material index</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Materials.numberComposites">
+<span class="sig-name descname"><span class="pre">numberComposites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Materials" title="py4amitex.input.Materials"><span class="pre">py4amitex.input.Materials</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#py4amitex.input.Materials.numberComposites" title="Link to this definition">¶</a></dt>
+<dd><p>Get the number composite of materials</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Materials.numberMaterials">
+<span class="sig-name descname"><span class="pre">numberMaterials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Materials" title="py4amitex.input.Materials"><span class="pre">py4amitex.input.Materials</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#py4amitex.input.Materials.numberMaterials" title="Link to this definition">¶</a></dt>
+<dd><p>Get the number of materials</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py4amitex.input.Materials.referenceMaterial">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">referenceMaterial</span></span><a class="headerlink" href="#py4amitex.input.Materials.referenceMaterial" title="Link to this definition">¶</a></dt>
+<dd><p>reference material (mechanics)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py4amitex.input.Materials.referenceMaterialD">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">referenceMaterialD</span></span><a class="headerlink" href="#py4amitex.input.Materials.referenceMaterialD" title="Link to this definition">¶</a></dt>
+<dd><p>reference material (diffusion)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Materials.toXML">
+<span class="sig-name descname"><span class="pre">toXML</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Materials" title="py4amitex.input.Materials"><span class="pre">py4amitex.input.Materials</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#py4amitex.input.Materials.toXML" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.Material">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">Material</span></span><a class="headerlink" href="#py4amitex.input.Material" title="Link to this definition">¶</a></dt>
+<dd><p>Definition of a “pure” material</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.addIntVar">
+<span class="sig-name descname"><span class="pre">addIntVar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.input.Material.addIntVar" title="Link to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>addIntVar(self: py4amitex.input.Material, arg0: float) -&gt; None</p></li>
+</ol>
+<p>Add an internal variable</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">field</span></code>:</dt><dd><p>initial values of varaible</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>addIntVar(self: py4amitex.input.Material, arg0: amitex::Field&lt;double&gt;) -&gt; None</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.addZone">
+<span class="sig-name descname"><span class="pre">addZone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="input.html#py4amitex.input.Zone" title="py4amitex.input.Zone"><span class="pre">py4amitex.input.Zone</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffKs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffComposites</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.addZone" title="Link to this definition">¶</a></dt>
+<dd><p>define a zone</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">zone</span></code>:</dt><dd><p>voxel grid coordinates</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coeffs</span></code>:</dt><dd><p>mechanics coefficients</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coeffKs</span></code>:</dt><dd><p>diffusion coefficients</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.numberCoeff">
+<span class="sig-name descname"><span class="pre">numberCoeff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#py4amitex.input.Material.numberCoeff" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns:</dt><dd><p>the number of mechanics coefficient</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.numberCoeffComposite">
+<span class="sig-name descname"><span class="pre">numberCoeffComposite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#py4amitex.input.Material.numberCoeffComposite" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns:</dt><dd><p>the number of diffusion coefficient (composite)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.numberCoeffK">
+<span class="sig-name descname"><span class="pre">numberCoeffK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#py4amitex.input.Material.numberCoeffK" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns:</dt><dd><p>the number of diffusion coefficient</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.numberIntVars">
+<span class="sig-name descname"><span class="pre">numberIntVars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#py4amitex.input.Material.numberIntVars" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns:</dt><dd><p>number an internal variables</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.numberZones">
+<span class="sig-name descname"><span class="pre">numberZones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#py4amitex.input.Material.numberZones" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns:</dt><dd><p>the number of zones</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeff">
+<span class="sig-name descname"><span class="pre">setCoeff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeff" title="Link to this definition">¶</a></dt>
+<dd><p>Set mechanics coefficient constant value</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>index of coefficient</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coeff</span></code>:</dt><dd><p>value of coefficient</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffComposite">
+<span class="sig-name descname"><span class="pre">setCoeffComposite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffComposite" title="Link to this definition">¶</a></dt>
+<dd><p>Set mechanics coefficient constant value (for composite materials)</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>index of coefficient</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coeff</span></code>:</dt><dd><p>value of coefficient</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffCompositeName">
+<span class="sig-name descname"><span class="pre">setCoeffCompositeName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffCompositeName" title="Link to this definition">¶</a></dt>
+<dd><p>Set name of composite coefficient (optional)</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code>:</dt><dd><p>name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffCompositeZone">
+<span class="sig-name descname"><span class="pre">setCoeffCompositeZone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffCompositeZone" title="Link to this definition">¶</a></dt>
+<dd><p>Set mechanics coefficient constant zone values (for composite materials)</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>index of coefficient</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coeff</span></code>:</dt><dd><p>value of coefficient</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffCompositeZoneFromBin">
+<span class="sig-name descname"><span class="pre">setCoeffCompositeZoneFromBin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">os.PathLike</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffCompositeZoneFromBin" title="Link to this definition">¶</a></dt>
+<dd><p>Set mechanics coefficient constant zone values (for composite materials)</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>index of coefficient</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">binPath</span></code>:</dt><dd><p>path to BIN file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffComposites">
+<span class="sig-name descname"><span class="pre">setCoeffComposites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffComposites" title="Link to this definition">¶</a></dt>
+<dd><p>Set mechanics coefficient constant value (for composite materials)</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coefficients</span></code>:</dt><dd><p>values of coefficients</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffK">
+<span class="sig-name descname"><span class="pre">setCoeffK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffK" title="Link to this definition">¶</a></dt>
+<dd><p>Set diffusion coefficient constant value</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>index of coefficient</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coeff</span></code>:</dt><dd><p>value of coefficients</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffKName">
+<span class="sig-name descname"><span class="pre">setCoeffKName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffKName" title="Link to this definition">¶</a></dt>
+<dd><p>Set name of diffusion coefficient (optional)</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code>:</dt><dd><p>name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffKZone">
+<span class="sig-name descname"><span class="pre">setCoeffKZone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffKZone" title="Link to this definition">¶</a></dt>
+<dd><p>Set diffusion coefficient constant zone values</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>index of coefficient</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coeff</span></code>:</dt><dd><p>value of coefficient</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffKZoneFromBin">
+<span class="sig-name descname"><span class="pre">setCoeffKZoneFromBin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">os.PathLike</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffKZoneFromBin" title="Link to this definition">¶</a></dt>
+<dd><p>Set diffusion coefficient constant zone values</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>index of coefficient</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">binPath</span></code>:</dt><dd><p>path to BIN file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffKs">
+<span class="sig-name descname"><span class="pre">setCoeffKs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffKs" title="Link to this definition">¶</a></dt>
+<dd><p>Set all diffusion coefficients</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coefficients</span></code>:</dt><dd><p>values of coefficients</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffName">
+<span class="sig-name descname"><span class="pre">setCoeffName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffName" title="Link to this definition">¶</a></dt>
+<dd><p>Set name of coefficient (optional)</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code>:</dt><dd><p>name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffZone">
+<span class="sig-name descname"><span class="pre">setCoeffZone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffZone" title="Link to this definition">¶</a></dt>
+<dd><p>Set mechanics coefficient constant zone values</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>index of coefficient</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coeff</span></code>:</dt><dd><p>value of coefficient</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffZoneFromBin">
+<span class="sig-name descname"><span class="pre">setCoeffZoneFromBin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">os.PathLike</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffZoneFromBin" title="Link to this definition">¶</a></dt>
+<dd><p>Set mechanics coefficient constant zone values</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">id</span></code>:</dt><dd><p>index of coefficient</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">binPath</span></code>:</dt><dd><p>path to BIN file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setCoeffs">
+<span class="sig-name descname"><span class="pre">setCoeffs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setCoeffs" title="Link to this definition">¶</a></dt>
+<dd><p>Set all mechanics coefficients</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">coefficients</span></code>:</dt><dd><p>values of coefficient</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setIntVarName">
+<span class="sig-name descname"><span class="pre">setIntVarName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setIntVarName" title="Link to this definition">¶</a></dt>
+<dd><p>Set name of internal variable</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code>:</dt><dd><p>name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setLaw">
+<span class="sig-name descname"><span class="pre">setLaw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">law</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lib</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setLaw" title="Link to this definition">¶</a></dt>
+<dd><p>Set behavior law for mechanics</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">law</span></code>:</dt><dd><p>name of law</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">lib</span></code>:</dt><dd><p>path to the library implementing the law</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setLawK">
+<span class="sig-name descname"><span class="pre">setLawK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">law</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lib</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setLawK" title="Link to this definition">¶</a></dt>
+<dd><p>Set behavior law for diffusion</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">law</span></code>:</dt><dd><p>name of law</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">lib</span></code>:</dt><dd><p>path to the library implementing the law</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setNumberCoeff">
+<span class="sig-name descname"><span class="pre">setNumberCoeff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setNumberCoeff" title="Link to this definition">¶</a></dt>
+<dd><p>Set the number of mechanics coefficient</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setNumberCoeffComposite">
+<span class="sig-name descname"><span class="pre">setNumberCoeffComposite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setNumberCoeffComposite" title="Link to this definition">¶</a></dt>
+<dd><p>Set the number of mechanics coefficient (composite)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Material.setNumberCoeffK">
+<span class="sig-name descname"><span class="pre">setNumberCoeffK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Material" title="py4amitex.input.Material"><span class="pre">py4amitex.input.Material</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Material.setNumberCoeffK" title="Link to this definition">¶</a></dt>
+<dd><p>Set the number of diffusion coefficient</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.Composite">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">Composite</span></span><a class="headerlink" href="#py4amitex.input.Composite" title="Link to this definition">¶</a></dt>
+<dd><p>Composite material <strong>note</strong>: the coefficients are set in the pure material (for ex Material::setCoeffComposite)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Composite.addVoxel">
+<span class="sig-name descname"><span class="pre">addVoxel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Composite" title="py4amitex.input.Composite"><span class="pre">py4amitex.input.Composite</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">py4amitex.input.InterfaceGeometry</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zones</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Composite.addVoxel" title="Link to this definition">¶</a></dt>
+<dd><p>add a voxel to the material</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">position</span></code>:</dt><dd><p>linearized position</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">phi</span></code>:</dt><dd><p>volume fractions of each phase</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Composite.materialIndices">
+<span class="sig-name descname"><span class="pre">materialIndices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Composite" title="py4amitex.input.Composite"><span class="pre">py4amitex.input.Composite</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py4amitex.input.Composite.materialIndices" title="Link to this definition">¶</a></dt>
+<dd><p>Get the material indices for each phase</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Composite.numberPhases">
+<span class="sig-name descname"><span class="pre">numberPhases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Composite" title="py4amitex.input.Composite"><span class="pre">py4amitex.input.Composite</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#py4amitex.input.Composite.numberPhases" title="Link to this definition">¶</a></dt>
+<dd><p>Get number of phases</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Composite.positions">
+<span class="sig-name descname"><span class="pre">positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Composite" title="py4amitex.input.Composite"><span class="pre">py4amitex.input.Composite</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py4amitex.input.Composite.positions" title="Link to this definition">¶</a></dt>
+<dd><p>Get the linearized positions of voxels constituting the material</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Composite.setLaw">
+<span class="sig-name descname"><span class="pre">setLaw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Composite" title="py4amitex.input.Composite"><span class="pre">py4amitex.input.Composite</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Composite.setLaw" title="Link to this definition">¶</a></dt>
+<dd><p>Set averaging law</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.ReferenceMaterial">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">ReferenceMaterial</span></span><a class="headerlink" href="#py4amitex.input.ReferenceMaterial" title="Link to this definition">¶</a></dt>
+<dd><p>Reference material for mechanics</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.ReferenceMaterialD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">ReferenceMaterialD</span></span><a class="headerlink" href="#py4amitex.input.ReferenceMaterialD" title="Link to this definition">¶</a></dt>
+<dd><p>Reference material for mechanics</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/amitex.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">py4amitex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StepByStepExample.html">Step by step example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="output.html">Output extractor</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="input.html">Input generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html">Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Developping.html">Developping</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../API.html">API Documentation</a><ul>
+  <li><a href="input.html">Input generator</a><ul>
+      <li>Previous: <a href="algorithm.html" title="previous chapter">Algorithm parameters</a></li>
+      <li>Next: <a href="loadings.html" title="next chapter">Loadings &amp; outputs</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Aldo Marano.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../_sources/API/materials.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

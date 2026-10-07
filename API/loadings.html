@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Loadings &amp; outputs &#8212; py4amitex 1.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=fc837d61"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Material Builder" href="materialbuilder.html" />
+    <link rel="prev" title="Materials" href="materials.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="loadings-outputs">
+<h1>Loadings &amp; outputs<a class="headerlink" href="#loadings-outputs" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.LoadingOutput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">LoadingOutput</span></span><a class="headerlink" href="#py4amitex.input.LoadingOutput" title="Link to this definition">¶</a></dt>
+<dd><p>Definitions of all loadings and output settings</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.LoadingOutput.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.LoadingOutput" title="py4amitex.input.LoadingOutput"><span class="pre">py4amitex.input.LoadingOutput</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.LoadingOutput.add" title="Link to this definition">¶</a></dt>
+<dd><p>Append a partial loading</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py4amitex.input.LoadingOutput.initLoadExt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">initLoadExt</span></span><a class="headerlink" href="#py4amitex.input.LoadingOutput.initLoadExt" title="Link to this definition">¶</a></dt>
+<dd><p>Initialization of the temperature and the external parameters</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py4amitex.input.LoadingOutput.output">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output</span></span><a class="headerlink" href="#py4amitex.input.LoadingOutput.output" title="Link to this definition">¶</a></dt>
+<dd><p>Output specification</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.LoadingOutput.toXML">
+<span class="sig-name descname"><span class="pre">toXML</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.LoadingOutput" title="py4amitex.input.LoadingOutput"><span class="pre">py4amitex.input.LoadingOutput</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#py4amitex.input.LoadingOutput.toXML" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<section id="loadings">
+<h2>Loadings<a class="headerlink" href="#loadings" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Loading</span></code></a></p></td>
+<td><p>(partial) loading</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#py4amitex.input.Component" title="py4amitex.input.Component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Component</span></code></a></p></td>
+<td><p>Loading axis pair and axis <strong>note</strong>: only finite strain needs YX,ZX, ZY</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.MechanicDriving" title="py4amitex.input.MechanicDriving"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MechanicDriving</span></code></a></p></td>
+<td><p>Types of driving for mechanical problems</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#py4amitex.input.DiffusionDriving" title="py4amitex.input.DiffusionDriving"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffusionDriving</span></code></a></p></td>
+<td><p>Types of driving for difffusion problems</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.Evolution" title="py4amitex.input.Evolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Evolution</span></code></a></p></td>
+<td><p>Types of loading evolution</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#py4amitex.input.DirStress" title="py4amitex.input.DirStress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DirStress</span></code></a></p></td>
+<td><p>Type of stress tensor</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.InitLoadExt" title="py4amitex.input.InitLoadExt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InitLoadExt</span></code></a></p></td>
+<td><p>Initialization of the temperature and the external parameters <strong>warning</strong>:  If defined, the evolution of the temperature and all the parameters must be specified in the loadings.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.Loading">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">Loading</span></span><a class="headerlink" href="#py4amitex.input.Loading" title="Link to this definition">¶</a></dt>
+<dd><p>(partial) loading</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.addUserInterruptValue">
+<span class="sig-name descname"><span class="pre">addUserInterruptValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.addUserInterruptValue" title="Link to this definition">¶</a></dt>
+<dd><p>Add a value for user-defined interuptions</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setConstantEvolution">
+<span class="sig-name descname"><span class="pre">setConstantEvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.input.Loading.setConstantEvolution" title="Link to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>setConstantEvolution(self: py4amitex.input.Loading, component: tuple[int, int], driving: py4amitex.input.MechanicDriving, dirstress: Optional[float] = None) -&gt; None</p></li>
+</ol>
+<p>set a diffusion constant loading for one component</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">component</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">driving</span></code>:</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>setConstantEvolution(self: py4amitex.input.Loading, arg0: int, arg1: py4amitex.input.DiffusionDriving) -&gt; None</p></li>
+</ol>
+<p>set a diffusion constant loading for one component</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">component</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">driving</span></code>:</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setDirStress">
+<span class="sig-name descname"><span class="pre">setDirStress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.DirStress" title="py4amitex.input.DirStress"><span class="pre">py4amitex.input.DirStress</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setDirStress" title="Link to this definition">¶</a></dt>
+<dd><p>Set the constant stress direction behavior for finite strains</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">dirStress</span></code>:</dt><dd><p>type of stress tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setEvolution">
+<span class="sig-name descname"><span class="pre">setEvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.input.Loading.setEvolution" title="Link to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>setEvolution(self: py4amitex.input.Loading, componant: int, driving: py4amitex.input.DiffusionDriving, evolution: py4amitex.input.Evolution, value: float = 0.0) -&gt; None</p></li>
+</ol>
+<p>set a diffusion loading evolution for one component</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">component</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">driving</span></code>:</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">evolution</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code>:</p>
+</dd>
+</dl>
+<p>value for linear evolution</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">dirstress</span></code>:</dt><dd><p>stress direction</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>setEvolution(self: py4amitex.input.Loading, component: tuple[int, int], driving: py4amitex.input.MechanicDriving, evolution: py4amitex.input.Evolution, value: float = 0.0, dirstress: Optional[float] = None) -&gt; None</p></li>
+</ol>
+<p>set a diffusion loading evolution for one component</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">component</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">driving</span></code>:</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">evolution</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code>:</p>
+</dd>
+</dl>
+<p>value for linear evolution</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">dirstress</span></code>:</dt><dd><p>stress direction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setGradGradU">
+<span class="sig-name descname"><span class="pre">setGradGradU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ij</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Evolution" title="py4amitex.input.Evolution"><span class="pre">py4amitex.input.Evolution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setGradGradU" title="Link to this definition">¶</a></dt>
+<dd><p>Set the evolution and value of a component grad_i grad_j U_k of an applied strain gradient (bending/twisting beam) component</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">ij</span></code>:</dt><dd><p>directions of gradients</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">k</span></code>:</dt><dd><p>axis of displacement</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">evolution</span></code>:</dt><dd><p>Type of evolution</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code>:</dt><dd><p>Value for linear evolution todo precise the meaning of components</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setLinearEvolution">
+<span class="sig-name descname"><span class="pre">setLinearEvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py4amitex.input.Loading.setLinearEvolution" title="Link to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>setLinearEvolution(self: py4amitex.input.Loading, component: tuple[int, int], driving: py4amitex.input.MechanicDriving, value: float = 0.0, dirstress: Optional[float] = None) -&gt; None</p></li>
+</ol>
+<p>set a diffusion constant loading for one component</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">component</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">driving</span></code>:</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code>:</dt><dd><p>final loading value along <cite>component</cite></p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>setLinearEvolution(self: py4amitex.input.Loading, component: int, driving: py4amitex.input.DiffusionDriving, value: float = 0.0) -&gt; None</p></li>
+</ol>
+<p>set a diffusion constant loading for one component</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">component</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">driving</span></code>:</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code>:</dt><dd><p>final loading value along <cite>component</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setOutputCell">
+<span class="sig-name descname"><span class="pre">setOutputCell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setOutputCell" title="Link to this definition">¶</a></dt>
+<dd><p>Set the number of increments where per-unit cell quantities are output</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setOutputVtkList">
+<span class="sig-name descname"><span class="pre">setOutputVtkList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setOutputVtkList" title="Link to this definition">¶</a></dt>
+<dd><p>Set the list of increment numbers where to ouput</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">increments</span></code>:</dt><dd><p>list of increment numbers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setOutputZone">
+<span class="sig-name descname"><span class="pre">setOutputZone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setOutputZone" title="Link to this definition">¶</a></dt>
+<dd><p>Set the number of increments where zone quantities are output</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setParamEvolution">
+<span class="sig-name descname"><span class="pre">setParamEvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Evolution" title="py4amitex.input.Evolution"><span class="pre">py4amitex.input.Evolution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setParamEvolution" title="Link to this definition">¶</a></dt>
+<dd><p>set a the evolution of an external loading parameter</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">index</span></code>:</dt><dd><p>index of parameter (defined in InitLoadExt)</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">evolution</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code>:</p>
+</dd>
+</dl>
+<p>value for linear evolution</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setRestart">
+<span class="sig-name descname"><span class="pre">setRestart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">every</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setRestart" title="Link to this definition">¶</a></dt>
+<dd><p>Save restart files every <cite>every</cite> increments</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">every</span></code>:</dt><dd><p>period of saving</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setTemperatureEvolution">
+<span class="sig-name descname"><span class="pre">setTemperatureEvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">evolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Evolution" title="py4amitex.input.Evolution"><span class="pre">py4amitex.input.Evolution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setTemperatureEvolution" title="Link to this definition">¶</a></dt>
+<dd><p>set a the evolution of the temperature</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">index</span></code>:</dt><dd><p>index of parameter (defined in InitLoadExt)</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">evolution</span></code>:</dt><dd><p>$Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code>:</p>
+</dd>
+</dl>
+<p>value for linear evolution</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setTimeDiscretizationLinear">
+<span class="sig-name descname"><span class="pre">setTimeDiscretizationLinear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setTimeDiscretizationLinear" title="Link to this definition">¶</a></dt>
+<dd><p>Discretize time by a constant interval</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">increments</span></code>:</dt><dd><p>the number of timesteps</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">tFinal</span></code>:</dt><dd><p>final time</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setTimeDiscretizationUser">
+<span class="sig-name descname"><span class="pre">setTimeDiscretizationUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setTimeDiscretizationUser" title="Link to this definition">¶</a></dt>
+<dd><p>Discretize time by a supplying a list of timesteps</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">increments</span></code>:</dt><dd><p>the number of timesteps</p>
+</dd>
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">times</span></code>:</dt><dd><p>pointer to the array of times</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Loading.setUserInterruptValues">
+<span class="sig-name descname"><span class="pre">setUserInterruptValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Loading" title="py4amitex.input.Loading"><span class="pre">py4amitex.input.Loading</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Loading.setUserInterruptValues" title="Link to this definition">¶</a></dt>
+<dd><p>Add a list of values for user-defined interuptions</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.Component">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">Component</span></span><a class="headerlink" href="#py4amitex.input.Component" title="Link to this definition">¶</a></dt>
+<dd><p>Loading axis pair and axis <strong>note</strong>: only finite strain needs YX,ZX, ZY</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.MechanicDriving">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">MechanicDriving</span></span><a class="headerlink" href="#py4amitex.input.MechanicDriving" title="Link to this definition">¶</a></dt>
+<dd><p>Types of driving for mechanical problems</p>
+<p>Members:</p>
+<blockquote>
+<div><p>Stress</p>
+<p>Strain</p>
+</div></blockquote>
+<dl class="py property">
+<dt class="sig sig-object py" id="py4amitex.input.MechanicDriving.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#py4amitex.input.MechanicDriving.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.DiffusionDriving">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">DiffusionDriving</span></span><a class="headerlink" href="#py4amitex.input.DiffusionDriving" title="Link to this definition">¶</a></dt>
+<dd><p>Types of driving for difffusion problems</p>
+<p>Members:</p>
+<blockquote>
+<div><p>Flux</p>
+<p>Gradient</p>
+</div></blockquote>
+<dl class="py property">
+<dt class="sig sig-object py" id="py4amitex.input.DiffusionDriving.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#py4amitex.input.DiffusionDriving.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.Evolution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">Evolution</span></span><a class="headerlink" href="#py4amitex.input.Evolution" title="Link to this definition">¶</a></dt>
+<dd><p>Types of loading evolution</p>
+<p>Members:</p>
+<blockquote>
+<div><p>Constant</p>
+<p>Linear</p>
+</div></blockquote>
+<dl class="py property">
+<dt class="sig sig-object py" id="py4amitex.input.Evolution.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#py4amitex.input.Evolution.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.DirStress">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">DirStress</span></span><a class="headerlink" href="#py4amitex.input.DirStress" title="Link to this definition">¶</a></dt>
+<dd><p>Type of stress tensor</p>
+<p>Members:</p>
+<blockquote>
+<div><p>Cauchy</p>
+<p>PK1</p>
+</div></blockquote>
+<dl class="py property">
+<dt class="sig sig-object py" id="py4amitex.input.DirStress.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#py4amitex.input.DirStress.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.InitLoadExt">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">InitLoadExt</span></span><a class="headerlink" href="#py4amitex.input.InitLoadExt" title="Link to this definition">¶</a></dt>
+<dd><p>Initialization of the temperature and the external parameters <strong>warning</strong>:  If defined, the evolution of the temperature and all the parameters must be specified in the loadings.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.InitLoadExt.setParam">
+<span class="sig-name descname"><span class="pre">setParam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.InitLoadExt" title="py4amitex.input.InitLoadExt"><span class="pre">py4amitex.input.InitLoadExt</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.InitLoadExt.setParam" title="Link to this definition">¶</a></dt>
+<dd><p>Set parameter</p>
+<dl class="simple">
+<dt>Parameter <code class="docutils literal notranslate"><span class="pre">index</span></code>:</dt><dd><p>Index of parameter</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="output">
+<h2>Output<a class="headerlink" href="#output" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.Output" title="py4amitex.input.Output"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Output</span></code></a></p></td>
+<td><p>Output parametrization</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#py4amitex.input.VtkStressStrain" title="py4amitex.input.VtkStressStrain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VtkStressStrain</span></code></a></p></td>
+<td><p>Control output of stress and strain</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#py4amitex.input.VtkFluxDGradD" title="py4amitex.input.VtkFluxDGradD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VtkFluxDGradD</span></code></a></p></td>
+<td><p>Control output of diffusion flux and gradient</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.Output">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">Output</span></span><a class="headerlink" href="#py4amitex.input.Output" title="Link to this definition">¶</a></dt>
+<dd><p>Output parametrization</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Output.addVtkIntVarList">
+<span class="sig-name descname"><span class="pre">addVtkIntVarList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Output" title="py4amitex.input.Output"><span class="pre">py4amitex.input.Output</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Output.addVtkIntVarList" title="Link to this definition">¶</a></dt>
+<dd><p>Set the internal variables for field output for a given material</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Output.addZone">
+<span class="sig-name descname"><span class="pre">addZone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Output" title="py4amitex.input.Output"><span class="pre">py4amitex.input.Output</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">numM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intVarList</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Output.addZone" title="Link to this definition">¶</a></dt>
+<dd><p>Add zones of a material to .zstd output</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Output.setVtkFluxDGradD">
+<span class="sig-name descname"><span class="pre">setVtkFluxDGradD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Output" title="py4amitex.input.Output"><span class="pre">py4amitex.input.Output</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluxD</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradD</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Output.setVtkFluxDGradD" title="Link to this definition">¶</a></dt>
+<dd><p>Control output of stress and strain</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py4amitex.input.Output.setVtkStressStrain">
+<span class="sig-name descname"><span class="pre">setVtkStressStrain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py4amitex.input.Output" title="py4amitex.input.Output"><span class="pre">py4amitex.input.Output</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py4amitex.input.Output.setVtkStressStrain" title="Link to this definition">¶</a></dt>
+<dd><p>Control output of stress and strain</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.VtkStressStrain">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">VtkStressStrain</span></span><a class="headerlink" href="#py4amitex.input.VtkStressStrain" title="Link to this definition">¶</a></dt>
+<dd><p>Control output of stress and strain</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py4amitex.input.VtkFluxDGradD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py4amitex.input.</span></span><span class="sig-name descname"><span class="pre">VtkFluxDGradD</span></span><a class="headerlink" href="#py4amitex.input.VtkFluxDGradD" title="Link to this definition">¶</a></dt>
+<dd><p>Control output of diffusion flux and gradient</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/amitex.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">py4amitex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StepByStepExample.html">Step by step example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="output.html">Output extractor</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="input.html">Input generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html">Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Developping.html">Developping</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../API.html">API Documentation</a><ul>
+  <li><a href="input.html">Input generator</a><ul>
+      <li>Previous: <a href="materials.html" title="previous chapter">Materials</a></li>
+      <li>Next: <a href="materialbuilder.html" title="next chapter">Material Builder</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Aldo Marano.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../_sources/API/loadings.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
