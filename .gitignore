@@ -1,0 +1,4 @@
+# Sphinx build junk
+objects.inv
+.buildinfo
+*.bak
