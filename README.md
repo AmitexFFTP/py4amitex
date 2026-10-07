@@ -1,36 +1,17 @@
-BESOIN UTILISATEUR
+# py4amitex
 
-Cet outil doit permettre de lancer une simulation amitex depuis un script python sans ecrire un seul fichier xml ou vtk et de réimporter dans python l'ensemble des sorties du code.
+py4amitex is a Python package to create the input, run, and analyse the output of [AMITEX-FFTP](https://amitexfftp.github.io/AMITEX/) simulations. 
 
-CONTRAINTES
+Users are invited to the [documentation](https://amitexfftp.github.io/AMITEX/)) of AMITEX-FFTP to understand the concepts behind it.
 
-* Simplicité du code : afin de faciliter la maintenance ou le développement par 'tous'
-* Limiter les prérequis : si possible uniquement les + classiques (numpy, matplotlib etc...) afin de simplifier l'utilisation
+Inputting and running simulations is implemented by a C++ library (`cpp4amitex` subfolder), which can compiled and used separately.
 
-IDEE
+## Installation
 
-* Definir un objet par fichier xml (algo.xml, load.xml, mate.xml) et des moyens de générer les fichiers xml à partir de chacun ces objets 
+See `INSTALL.md`.
 
-AVANT DE COMMENCER
+## License
 
-Dans le répertoire EXISTANT l'ensemble des développement déjà réalisés sur lesquels on pourra ou non s'appuyer pour mettre en place cet outil (travaux de Marc Josien, Aldo Marano, Christian VW et Christophe Bourcier)
+This library is licensed under the GNU Lesser General Public License version 3.0 or later. See `LICENCE` (and `COPYING` for the accompagning GPLv3).
 
-## Lauching tests
-
-*py4amitex* tests are implemented into test modules, stored within each subpackage,
-in a `tests` directory. All tests are implemented as python `unittest` classes.
-To launch the tests you can use the `unittest` test launcher:
-
-- run `python -m unittest test_file` in the appropriate `tests` directory to
-  run all tests implemented within the file `test_file.py`.
-
-- run `python -m unittest test_file.test_class` in the appropriate `tests`
-  directory to run all tests implemented within the class `test_class` of the
-  file `test_file.py`.
-
-- run `python -m unittest test_file.test_class.test_case` in the appropriate
-  `tests` directory to run the test `test_case` implemented within the class
-  `test_class` of the file `test_file.py`.
-
-- run `python -m unittest discovery` in the appropriate `tests` directory to
-  to run all tests implemented in the directory
+Example source files (subfolders of name `examples`), examples in the documentation, and data files (input XML…), can be used and copying freely without attribution.
