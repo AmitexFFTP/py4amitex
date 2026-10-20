@@ -33,7 +33,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Set up Intel OneAPI
       if: matrix.compiler == 'intel-oneapi'
-      uses: neelravi/intel-oneapi-github-actions@v2.0.0
+      uses: neelravi/intel-oneapi-github-actions@latest
       with:
         components: 'cpp'
     - name: Install dependencies
