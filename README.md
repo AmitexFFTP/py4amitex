@@ -1,3 +1,5 @@
+[![CI](https://github.com/AmitexFFTP/py4amitex/actions/workflows/ci.yml/badge.svg)](https://github.com/AmitexFFTP/py4amitex/actions/workflows/ci.yml)
+
 # py4amitex
 
 py4amitex is a Python package to create the input, run, and analyse the output of [AMITEX-FFTP](https://amitexfftp.github.io/AMITEX/) simulations. 
