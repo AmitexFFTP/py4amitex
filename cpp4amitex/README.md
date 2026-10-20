@@ -42,18 +42,6 @@ target_link_libraries(your_program AmitexCpp::AmitexCpp)
 
 To find the package config files, the variable `CMAKE_PREFIX_PATH` should contain the directory `YOUR_INSTALL_DIR/lib/cmake`.
 
-### External driving
-
-It needs an AMITEX installation with the driver library (`libamitex-shared.so`), this option can be activated
-with `-DAMITEX_API=ON`.
-
-```sh
-cmake . -Bbuild -DAMITEX_API=ON
-```
-
-By default, the library is searched in `$AMITEX_PATH/libAmitex/lib`. This assumes that AMITEX environnment variables are defined
-(usually done with `source AMITEX_ROOT_DIR/env_amitex.sh`).
-Otherwise, you can pass the flag `-DAMITEX_ROOT=AMITEX_ROOT_DIR` to CMake.
 
 ## Tests
 

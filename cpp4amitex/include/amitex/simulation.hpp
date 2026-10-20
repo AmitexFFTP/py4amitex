@@ -2,11 +2,6 @@
 #define _AMITEX_SIMULATION_HEADER_
 
 #include "amitex/config.hpp"
-
-#ifdef AMITEX_DRIVER_API
-#include <mpi.h>
-#endif
-
 #include "amitex/input.hpp"
 
 //! \file simulation.hpp
@@ -61,13 +56,6 @@ void runSimulationFromFiles(const std::filesystem::path& algorithmPath,
                             const std::filesystem::path& zoneIdsPath,
                             const std::filesystem::path& outputPrefix, const Grid& grid,
                             int numberProcs = 0);
-
-#ifdef AMITEX_DRIVER_API
-//! Run a simulation with the amitex library
-//! \param input Input
-//! \param comm MPI communicator
-void runSimulation(Input& input, MPI_Comm comm = MPI_COMM_WORLD);
-#endif
 
 }  // namespace amitex
 

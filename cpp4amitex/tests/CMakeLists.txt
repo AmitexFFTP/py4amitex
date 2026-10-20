@@ -18,13 +18,6 @@ set(AMITEX_TESTS_SRC
 	tmaterial_builder.cpp
 )
 
-if(AMITEX_API)
-	set(AMITEX_TESTS_SRC
-		${AMITEX_TESTS_SRC}
-		add_zone_run.cpp
-	)
-endif()
-
 
 add_executable(amitex_tests 
 	${AMITEX_TESTS_SRC}
