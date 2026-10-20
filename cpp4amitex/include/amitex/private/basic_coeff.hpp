@@ -1,11 +1,9 @@
 #ifndef _AMITEX_BASIC_COEFF_HEADER_
 #define _AMITEX_BASIC_COEFF_HEADER_
 
+#include <string>
 #include <string_view>
 #include <vector>
-
-#include "amitex/private/input_element.hpp"
-#include "amitex/private/xml_utils.hpp"
 
 //! \file basic_coeff.h
 //! Template for defining 'Coeff'-like elements in the input XML
@@ -25,10 +23,22 @@ class BasicCoeff {
   BasicCoeff(std::vector<double>&& values)
       : values{std::move(values)}, id{-1}, file{}, name_{}, constantValue_{0.} {}
 
-  const char* xmlTag() const { return "BasicCoeff"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+  template <typename TDoc>
+  typename TDoc::Node toXMLElementGen(TDoc& doc, const char* tag) const {
+    auto ret = doc.createElement(tag);
+    ret.setAttribute("Index", id + 1);
+    if (values.size() <= 1) {
+      double value = values.size() == 0 ? constantValue() : values[0];
+      ret.setAttribute("Type", "Constant");
+      ret.setAttribute("Value", value);
+    } else {
+      ret.setAttribute("Type", "Constant_Zone");
+      ret.setAttribute("File", file);
+      ret.setAttribute("Format", "Binary");
+    }
+    if (!name_.empty()) ret.setAttribute("Name", name_);
+    return ret;
+  }
 
   //! \return the value of the coefficient
   double constantValue() const { return constantValue_; }

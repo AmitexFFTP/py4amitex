@@ -2,18 +2,20 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <fstream>
 
 #include <iostream>
 
 #include "amitex/errors.hpp"
 #include "amitex/io.hpp"
+#include "amitex/private/xml_document.hpp"
 
 namespace amitex {
 
 template <typename T>
 static void handleZoneCoeffs(T& coeff, const std::string& resultsDir, size_t m, size_t c) {
   coeff.setIndex(c);
-  auto path = resultsDir + "/" + coeff.xmlTag() + std::to_string(m + 1) + "_" +
+  auto path = resultsDir + "/" + coeff.xmlTag + std::to_string(m + 1) + "_" +
               std::to_string(c + 1) + ".bin";
   coeff.setFile(path);
   if (coeff.zoneValues().size() > 0) {
@@ -198,7 +200,7 @@ static void generateComposite(Materials& materials, const std::string& path) {
 }
 
 void Input::generateAlgorithm(const std::filesystem::path& path) {
-  writeXMLFile(path, *algorithmParameters);
+  algorithmParameters->toXMLDocument<xml::Document>().writeFile(path);
 }
 
 void Input::generateMaterials(const std::filesystem::path& path,
@@ -218,7 +220,7 @@ void Input::generateMaterials(const std::filesystem::path& path,
     }
     handleIntVars(mat, m, coeffDirectory, grid);
   }
-  writeXMLFile(path, *materials);
+  materials->toXMLDocument<xml::Document>().writeFile(path);
 }
 
 void Input::generateLoadingOutput(const std::filesystem::path& path) {
@@ -226,7 +228,7 @@ void Input::generateLoadingOutput(const std::filesystem::path& path) {
     loadingOutput->output->vtkStressStrain = VtkStressStrain::create(0, 0);
   if (algorithmParameters->diffusion && !loadingOutput->output->vtkFluxDGradD)
     loadingOutput->output->vtkFluxDGradD = VtkFluxDGradD::create(0, 0);
-  writeXMLFile(path, *loadingOutput);
+  loadingOutput->toXMLDocument<xml::Document>().writeFile(path);
 }
 
 void Input::generateMaterialVTK(const std::filesystem::path& path) {

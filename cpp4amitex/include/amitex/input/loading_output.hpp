@@ -6,18 +6,24 @@
 #include "amitex/input/loading.hpp"
 #include "amitex/input/output.hpp"
 
-#include "amitex/private/input_element.hpp"
-
 namespace amitex {
 
 //! Definitions of all loadings and output settings
 class LoadingOutput {
  public:
   static Ptr<LoadingOutput> create() { return makePtr<LoadingOutput>(LoadingOutput{}); }
-  const char* xmlTag() const { return "Loading_Output"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+
+  template <typename TDoc>
+  TDoc toXMLDocument() const {
+    TDoc doc{"Loading_Output"};
+    auto root = doc.getRoot();
+    root.appendChild(output->toXMLElement(doc));
+    if (initLoadExt) root.appendChild(initLoadExt->toXMLElement(doc));
+    for (const auto& loading : loadings) {
+      root.appendChild(loading->toXMLElement(doc));
+    }
+    return doc;
+  }
 
   //! Append a partial loading
   void add(Ptr<Loading> loading) {

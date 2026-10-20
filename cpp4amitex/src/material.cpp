@@ -74,33 +74,6 @@ void Material::addIntVar(double value) {
   intvars_.back().setIndex(intvars_.size() - 1);
 }
 
-void Material::xmlWriteAttributes(std::ostream& stream) const {
-  writeXMLAttributes(stream, "numM", id + 1);
-  if (!law.empty()) {
-    writeXMLAttributes(stream, "Law", law);
-    writeXMLAttributes(stream, "Lib", lib);
-  }
-  if (!lawK.empty()) {
-    writeXMLAttributes(stream, "LawK", lawK);
-    writeXMLAttributes(stream, "LibK", libK);
-  }
-}
-
-void Material::xmlWriteInner(std::ostream& stream) const {
-  for (const auto& coeff : coeffs) {
-    writeXML(stream, coeff);
-  }
-  for (const auto& coeffK : coeffKs) {
-    writeXML(stream, coeffK);
-  }
-  for (const auto& coeffC : coeffComposites) {
-    writeXML(stream, coeffC);
-  }
-  for (const auto& ivar : intvars_) {
-    writeXML(stream, ivar);
-  }
-}
-
 void Material::setCoeffZoneFromBin(size_t id, const std::filesystem::path& binPath) {
   std::vector<double> data;
   readBin(binPath, data);

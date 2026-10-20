@@ -3,18 +3,12 @@
 
 #include <filesystem>
 #include <optional>
-#include <sstream>
 #include <string>
-#include <vector>
 
 #include "amitex/input/algorithm_parameters.hpp"
 #include "amitex/input/grid.hpp"
-#include "amitex/input/loading.hpp"
 #include "amitex/input/loading_output.hpp"
 #include "amitex/input/materials.hpp"
-#include "amitex/input/output.hpp"
-
-#include "amitex/private/input_element.hpp"
 
 namespace amitex {
 

@@ -1,8 +1,6 @@
 #ifndef _AMITEX_ALGORITHM_PARAMETERS_HEADER_
 #define _AMITEX_ALGORITHM_PARAMETERS_HEADER_
 
-#include <optional>
-
 #include "amitex/input/algorithm.hpp"
 #include "amitex/input/algorithm_composite.hpp"
 #include "amitex/input/common.hpp"
@@ -23,18 +21,22 @@ class AlgorithmParameters {
   Ptr<Diffusion> diffusion;
   Ptr<Mechanics> mechanics;
   Ptr<AlgorithmLaminate> algorithmLaminate;
-  const char* xmlTag() const { return "Algorithm_Parameters"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+
+  template <typename TDoc>
+  TDoc toXMLDocument() const {
+    TDoc doc{"Algorithm_Parameters"};
+    auto root = doc.getRoot();
+    root.appendChild(algorithm->toXMLElement(doc));
+    if (diffusion) root.appendChild(diffusion->toXMLElement(doc));
+    if (mechanics) root.appendChild(mechanics->toXMLElement(doc));
+    if (algorithmLaminate) root.appendChild(algorithmLaminate->toXMLElement(doc));
+    return doc;
+  }
 
  private:
   AlgorithmParameters(Ptr<Algorithm> algorithm, Ptr<Mechanics> mechanics = nullptr,
                       Ptr<Diffusion> diffusion = nullptr)
-      : algorithm{algorithm},
-        mechanics{mechanics},
-        diffusion{diffusion},
-        algorithmLaminate{nullptr} {}
+      : algorithm{algorithm}, mechanics{mechanics}, diffusion{diffusion} {}
 };
 
 }  // namespace amitex

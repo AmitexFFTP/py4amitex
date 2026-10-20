@@ -4,7 +4,6 @@
 #include <ostream>
 
 #include "amitex/input/common.hpp"
-#include "amitex/private/input_element.hpp"
 
 //! \file user_interruption
 //! Used to parametrize a user-provided "user_functions"
@@ -18,10 +17,13 @@ class UserInterruption {
   UserInterruption(double value) : value_{value}, index_{0} {};
   //! Set index
   void setIndex(size_t index) { index_ = index; }
-  const char* xmlTag() const { return "User_interruption"; }
-  bool xmlHasBody() const { return false; }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const {}
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("User_interruption");
+    ret.setAttribute("Index", index_);
+    ret.setAttribute("Value", value_);
+    return ret;
+  }
 
  private:
   double value_;

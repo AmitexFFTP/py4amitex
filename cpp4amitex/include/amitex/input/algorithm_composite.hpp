@@ -3,7 +3,6 @@
 
 #include "amitex/input/algorithm.hpp"
 #include "amitex/input/common.hpp"
-#include "amitex/private/input_element.hpp"
 #include "amitex/private/value_element.hpp"
 
 //! \file algorithm_composite.hpp
@@ -14,10 +13,17 @@ namespace amitex {
 class AlgorithmLaminate {
  public:
   static Ptr<AlgorithmLaminate> create() { return makePtr<AlgorithmLaminate>(AlgorithmLaminate{}); }
-  const char* xmlTag() const { return "Algorithm_laminate"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Algorithm_laminate");
+    ret.appendChild(convergenceCriterion.toXMLElement(doc));
+    ret.appendChild(convergenceAcceleration.toXMLElement(doc));
+    if (initializationType.value) ret.appendChild(initializationType.toXMLElement(doc));
+    if (nIncrements.value) ret.appendChild(nIncrements.toXMLElement(doc));
+    if (nMaxSubdivision.value) ret.appendChild(nMaxSubdivision.toXMLElement(doc));
+    return ret;
+  }
 
   //! Convergence criterion (>1e-4 and  >1e-1)
   Value<double> convergenceCriterion{"Convergence_Criterion"};
@@ -25,7 +31,7 @@ class AlgorithmLaminate {
   ConvergenceAcceleration convergenceAcceleration{};
   //! Initialization type (Proportionnal, Linear, Default (=Linear)
   Value<std::string> initializationType{"Initialisation_type"};
-  //! Number of substeps for laminate law 
+  //! Number of substeps for laminate law
   Value<int> nMaxSubdivision{"Nmax_subdivision"};
   //! Number of substeps for laminate law (deprecated, do nothing. see nMaxSubdivision)
   Value<int> nIncrements{"N_increments"};

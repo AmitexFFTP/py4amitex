@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support of Algorithm_laminate.Nmax_subdivision (!20)
 - Implement MaterialBuilder.buildMaterials to use a custom volume fraction filtering (!21)
 
+### Changed
+
+- More flexible XML generation via a generic DOM handler
 
 ## 1.1.0 - 2025-07-25
 

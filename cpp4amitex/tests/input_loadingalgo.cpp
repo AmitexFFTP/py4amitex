@@ -137,6 +137,6 @@ TEST(Loading, InitLoadExt) {
   auto loadout = LoadingOutput::create();
   loadout->initLoadExt = init;
   EXPECT_STREQ(
-      toXMLString(*loadout).c_str(),
-      (std::string{"<Loading_Output><Output></Output>"} + initRef + "</Loading_Output>").c_str());
+      toXMLStringDoc(*loadout).c_str(),
+      (std::string{"<Loading_Output><Output/>"} + initRef + "</Loading_Output>").c_str());
 }

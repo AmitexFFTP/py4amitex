@@ -3,7 +3,6 @@
 #include <cmath>
 
 #include "amitex/errors.hpp"
-#include "amitex/private/xml_utils.hpp"
 
 namespace amitex {
 
@@ -50,14 +49,6 @@ void Composite::addVoxel(GridLinPoint position, const std::vector<double>& phi,
       idx++;
     }
   }
-}
-
-void MaterialComposite::xmlWriteInner(std::ostream& stream) const {
-  writeXML(stream, coeffComposite);
-}
-
-void MaterialComposite::CoeffComposite::xmlWriteAttributes(std::ostream& stream) const {
-  writeXMLAttributes(stream, "directory", directory);
 }
 
 }  // namespace amitex

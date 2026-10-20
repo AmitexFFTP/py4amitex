@@ -1,7 +1,6 @@
 #ifndef _AMITEX_INTERPHASE_HEADER
 #define _AMITEX_INTERPHASE_HEADER
 
-#include "amitex/private/input_element.hpp"
 #include "amitex/private/list_element.hpp"
 
 namespace amitex {
@@ -11,10 +10,18 @@ namespace amitex {
 //! generally of not to be use directly.
 class Interphase {
  public:
-  const char* xmlTag() const { return "Interphase"; }
-  bool xmlHasBody() const { return true; };
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Interphase");
+    for (const auto& interMat : materials) {
+      ret.appendChild(interMat.toXMLElement(doc));
+    }
+    for (const auto& zoneList : zoneLists) {
+      ret.appendChild(zoneList.toXMLElement(doc));
+    }
+    return ret;
+  }
+
   //! add a material to the list of interphases
   //! \param index index of the material
   //! \param nZones number of zones
@@ -30,18 +37,26 @@ class Interphase {
  private:
   class InterphaseMaterial {
    public:
-    const char* xmlTag() const { return "Interphase_material"; }
-    bool xmlHasBody() const { return false; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("Interphase_material");
+      ret.setAttribute("numM", numM + 1);
+      ret.setAttribute("Nzones", nZones);
+      return ret;
+    }
+
     size_t numM, nZones;
   };
   class InterphaseZoneList {
    public:
-    const char* xmlTag() const { return "Interphase_zone_list"; }
-    bool xmlHasBody() const { return true; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const;
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("Interphase_zone_list");
+      ret.setAttribute("numM", numM + 1);
+      ret.setAttribute("Nzones", nZones);
+      ret.appendChild(zoneList.toXMLElement(doc));
+      return ret;
+    }
     size_t numM = 0, nZones = 0;
     List<size_t> zoneList{"ZoneList"};
   };

@@ -2,7 +2,7 @@
 #define _AMITEX_COMMON_HEADER_
 
 #include <array>
-#include <cstdint>
+#include <cstddef>
 #include <memory>
 
 namespace amitex {

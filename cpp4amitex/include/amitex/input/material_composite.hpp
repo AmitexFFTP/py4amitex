@@ -1,13 +1,10 @@
 #ifndef _AMITEX_MATERIAL_COMPOSITE_HEADER_
 #define _AMITEX_MATERIAL_COMPOSITE_HEADER_
 
-#include <ostream>
 #include <vector>
+#include <string>
 
 #include "amitex/input/common.hpp"
-#include "amitex/input/zone.hpp"
-
-#include "amitex/private/input_element.hpp"
 
 //! \file material_composite.hpp
 //! Definition of composite materials
@@ -93,11 +90,14 @@ class Composite {
 //! Define all composite materials
 class MaterialComposite {
  public:
-  MaterialComposite() : coeffComposite{}, materials_{} {};
-  const char* xmlTag() const { return "Material_composite"; }
-  bool xmlHasBody() const { return true; }
-  void xmlWriteAttributes(std::ostream& stream) const {}
-  void xmlWriteInner(std::ostream& stream) const;
+  MaterialComposite() = default;
+
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Material_composite");
+    ret.appendChild(coeffComposite.toXMLElement(doc));
+    return ret;
+  }
 
   //! Set directory where generated files wil be located
   void setDirectory(std::string_view path) { coeffComposite.directory = path; };
@@ -119,10 +119,13 @@ class MaterialComposite {
   class CoeffComposite {
    public:
     CoeffComposite() : directory{} {}
-    const char* xmlTag() const { return "Coeff_composite"; }
-    bool xmlHasBody() const { return false; }
-    void xmlWriteAttributes(std::ostream& stream) const;
-    void xmlWriteInner(std::ostream& stream) const {}
+
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("Coeff_composite");
+      ret.setAttribute("directory", directory);
+      return ret;
+    }
     std::string directory;
   };
   CoeffComposite coeffComposite;

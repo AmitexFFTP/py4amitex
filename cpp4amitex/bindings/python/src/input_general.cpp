@@ -9,6 +9,7 @@
 
 #include "amitex/config.hpp"
 #include "amitex/input.hpp"
+#include "amitex/private/xml_document.hpp"
 
 #include "amitex/input/common.hpp"
 #include "docstrings.hpp"
@@ -42,7 +43,7 @@ using namespace pybind11::literals;
 template <typename T>
 static std::string toXML(const T& obj) {
   std::ostringstream ret;
-  writeXML(ret, obj);
+  obj.template toXMLDocument<amitex::xml::Document>().write(ret);
   return ret.str();
 }
 

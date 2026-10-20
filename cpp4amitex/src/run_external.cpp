@@ -2,13 +2,10 @@
 #include "amitex/simulation.hpp"
 
 #include <algorithm>
-#include <chrono>
 #include <cstdlib>
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 #include <string>
-#include <thread>
 
 #include "amitex/errors.hpp"
 

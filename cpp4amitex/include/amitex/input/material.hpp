@@ -9,7 +9,6 @@
 #include "amitex/input/zone.hpp"
 
 #include "amitex/private/basic_coeff.hpp"
-#include "amitex/private/input_element.hpp"
 
 //! \file materials.hpp
 //! Definition of a "pure" material
@@ -18,15 +17,27 @@ namespace amitex {
 
 class Coeff : public BasicCoeff {
  public:
-  const char* xmlTag() const { return "Coeff"; }
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    return toXMLElementGen(doc, xmlTag);
+  }
+  static constexpr const char* xmlTag = "Coeff";
 };
 class CoeffK : public BasicCoeff {
  public:
-  const char* xmlTag() const { return "CoeffK"; }
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    return toXMLElementGen(doc, xmlTag);
+  }
+  static constexpr const char* xmlTag = "CoeffK";
 };
 class CoeffComposite : public BasicCoeff {
  public:
-  const char* xmlTag() const { return "Coeff_composite"; }
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    return toXMLElementGen(doc, xmlTag);
+  }
+  static constexpr const char* xmlTag = "Coeff_composite";
 };
 
 //! Definition of a "pure" material
@@ -34,12 +45,32 @@ class Material {
  public:
   static Ptr<Material> create() { return makePtr<Material>(Material{}); }
 
-  const char* xmlTag() const { return "Material"; }
-  bool xmlHasBody() const {
-    return (coeffs.size() + coeffKs.size() + coeffComposites.size() + intvars_.size()) > 0;
+  template <typename TDoc>
+  typename TDoc::Node toXMLElement(TDoc& doc) const {
+    auto ret = doc.createElement("Material");
+    ret.setAttribute("numM", id + 1);
+    if (!law.empty()) {
+      ret.setAttribute("Law", law);
+      ret.setAttribute("Lib", lib);
+    }
+    if (!lawK.empty()) {
+      ret.setAttribute("LawK", lawK);
+      ret.setAttribute("LibK", libK);
+    }
+    for (const auto& coeff : coeffs) {
+      ret.appendChild(coeff.toXMLElement(doc));
+    }
+    for (const auto& coeffK : coeffKs) {
+      ret.appendChild(coeffK.toXMLElement(doc));
+    }
+    for (const auto& coeffC : coeffComposites) {
+      ret.appendChild(coeffC.toXMLElement(doc));
+    }
+    for (const auto& ivar : intvars_) {
+      ret.appendChild(ivar.toXMLElement(doc));
+    }
+    return ret;
   }
-  void xmlWriteAttributes(std::ostream& stream) const;
-  void xmlWriteInner(std::ostream& stream) const;
 
   //! Set behavior law for mechanics
   //! \param law name of law

@@ -4,9 +4,7 @@
 #include <array>
 #include <filesystem>
 #include <string_view>
-#include <vector>
 
-#include "amitex/errors.hpp"
 #include "amitex/input/common.hpp"
 
 namespace amitex {
