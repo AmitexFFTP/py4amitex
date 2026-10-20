@@ -42,31 +42,10 @@ if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0.0)
   endif()
 endif()
 
-option(AMITEX_API "Use AMITEX API" OFF)
-
-if(AMITEX_API)
-  find_package(MPI REQUIRED CXX)
-endif()
-
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
 elseif(CMAKE_CXX_STANDARD LESS 17)
   message(FATAL_ERROR "C++ standard must be >= 17")
-endif()
-
-if(AMITEX_API)
-    if(NOT DEFINED AMITEX_ROOT)
-        set(AMITEX_ROOT $ENV{AMITEX_PATH})
-    endif()
-    message("AMITEX_ROOT = ${AMITEX_ROOT}")
-
-    find_library(AMITEX_LIBRARY amitex-shared REQUIRED HINTS "${AMITEX_ROOT}/libAmitex/lib")
-    find_library(AMITEX_USER_LIBRARY user_functions REQUIRED HINTS "${AMITEX_ROOT}/libAmitex/lib")
-    set(AMITEX_LIBRARIES ${AMITEX_LIBRARY} ${AMITEX_USER_LIBRARY})
-    find_file(AMITEX_HEADER "amitex.h" REQUIRED HINTS "${AMITEX_ROOT}/libAmitex/include")
-    cmake_path(GET AMITEX_HEADER PARENT_PATH AMITEX_INCLUDE)
-    include_directories(${AMITEX_INCLUDE})
-    set(AMITEX_DRIVER_API ON) 
 endif()
 
 include_directories(include ${CMAKE_BINARY_DIR}/include)

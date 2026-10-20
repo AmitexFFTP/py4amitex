@@ -30,20 +30,9 @@ set(SOURCES_INPUT
 	xml_document.cpp
 )
 
-if(AMITEX_API)
-set(SOURCES_DRIVING
-	component.cpp
-	simulation.cpp
-)
-else()
-set(SOURCES_DRIVING)
-endif()
-
-add_library(AmitexCpp ${SOURCES_INPUT} ${SOURCES_DRIVING})
+add_library(AmitexCpp ${SOURCES_INPUT})
 target_compile_definitions(AmitexCpp PUBLIC "AMITEX_${CMAKE_CXX_BYTE_ORDER}")
-if(AMITEX_API)
-	target_link_libraries(AmitexCpp ${AMITEX_LIBRARIES} MPI::MPI_CXX)
-endif()
+
 # For python
 set_property(TARGET AmitexCpp PROPERTY POSITION_INDEPENDENT_CODE ON)
 
