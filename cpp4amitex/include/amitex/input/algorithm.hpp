@@ -119,7 +119,7 @@ class Algorithm {
   }
   static Ptr<Algorithm> createDefault() { return makePtr<Algorithm>(Algorithm{}); }
 
-  //! Type ("Dafault" or "Basic_Scheme")
+  //! Type ("Default" or "Basic_Scheme")
   std::string type;
 
   //! convergence criterion (<1.e-3)

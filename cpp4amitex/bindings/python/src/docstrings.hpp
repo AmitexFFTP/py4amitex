@@ -111,7 +111,7 @@ static const char* __doc_amitex_Algorithm_niterminACV =
 
 static const char* __doc_amitex_Algorithm_substepping = R"doc(substepping)doc";
 
-static const char* __doc_amitex_Algorithm_type = R"doc(Type ("Dafault" or "Basic_Scheme"))doc";
+static const char* __doc_amitex_Algorithm_type = R"doc(Type ("Default" or "Basic_Scheme"))doc";
 
 static const char* __doc_amitex_Algorithm_xmlHasBody = R"doc()doc";
 
