@@ -2,7 +2,8 @@
 #define _AMITEX_COMMON_HEADER_
 
 #include <array>
-#include <cstdint>
+#include <cstddef>
+#include <memory>
 
 namespace amitex {
 
@@ -26,6 +27,14 @@ using Tensor3D = std::array<std::array<double, 3>, 3>;
 //! \return linear position (leading dimension is Z, then Y, X)
 inline GridLinPoint linearize(GridPoint p, GridSize dims) {
   return p[0] + dims[0] * (p[1] + dims[1] * p[2]);
+}
+
+template <typename T>
+using Ptr = std::shared_ptr<T>;
+
+template <typename T, class... Args>
+Ptr<T> makePtr(Args&&... args) {
+  return std::make_shared<T, Args...>(std::move(args)...);
 }
 
 }  // namespace amitex

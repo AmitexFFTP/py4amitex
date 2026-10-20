@@ -20,7 +20,11 @@ def test_addZoneAndLaunchThermal(nbMat: int) -> None:
     assert compareXMLFiles(f"{dir}/algorithm.xml", f"{refDir}/algorithm.xml")
     assert compareXMLFiles(f"{dir}/loading.xml", f"{refDir}/loading.xml")
 
-    assert compareVtkWithRef(f"{dir}/materialIds.vtk", f"{refDir}/materialIds.vtk", 0)
-    assert compareVtkWithRef(f"{dir}/zoneIds.vtk", f"{refDir}/zoneIds.vtk", 0)
+    if nbMat == 2:
+        assert compareVtkWithRef(
+            f"{dir}/materialIds.vtk", f"{refDir}/materialIds.vtk", 0
+        )
+    if nbMat == 1:
+        assert compareVtkWithRef(f"{dir}/zoneIds.vtk", f"{refDir}/zoneIds.vtk", 0)
 
     assert compareBinWithRef(f"{dir}/CoeffK1_1.bin", f"{refDir}/CoeffK1_1.bin", 1.0e-8)

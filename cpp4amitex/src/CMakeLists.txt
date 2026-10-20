@@ -1,5 +1,6 @@
 include_directories(.)
 
+set(AMITEX_VERSION "${PROJECT_VERSION}")
 configure_file(config.hpp.in ${CMAKE_BINARY_DIR}/include/amitex/config.hpp)
 install(FILES ${CMAKE_BINARY_DIR}/include/amitex/config.hpp DESTINATION include/amitex)
 

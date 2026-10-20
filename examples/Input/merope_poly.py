@@ -71,23 +71,32 @@ def makeStruture(composite):
     multiInclusions.changePhase(
         multiInclusions.getAllIdentifiers(), multiInclusions.getAllIdentifiers()
     )
+    structure = merope.Structure_3D(multiInclusions)
 
-    grid = merope.Voxellation_3D(multiInclusions)
-
+    gridParams = merope.vox.create_grid_parameters_N_L_3D(GRID_DIMS, L) 
     if composite:
-        grid.setVoxelRule(merope.VoxelRule.Average)
+        voxelRule = merope.vox.VoxelRule.Average
     else:
-        grid.setVoxelRule(merope.VoxelRule.Center)
-    return grid.computePhaseGrid(GRID_DIMS)
+        voxelRule = merope.vox.VoxelRule.Center
+
+    grid = merope.vox.GridRepresentation_3D(structure, gridParams, voxelRule)
+    return grid.get_as_list()
 
 
 def coeffs(iphase):
     return (1.0 + 0.1 * m.cos(iphase * 2.0), 1.5 + 0.1 * m.sin(iphase * 2.0))
 
+def getNphases(phaseGrid):
+    if isinstance(phaseGrid[0], int):
+        nPhases = 1 + max(p for p in phaseGrid)
+    else:
+        nPhases = 1 + max(p[0][0] for p in phaseGrid)
+    return nPhases
+
 
 def makeMaterials(phaseGrid):
     materials = Materials()
-    nPhases = 1 + max(p[0][0] for p in phaseGrid)
+    nPhases = getNphases(phaseGrid)
 
     for iph in range(nPhases):
         mat = Material()
@@ -102,9 +111,8 @@ def makeMaterials(phaseGrid):
 
 
 def makeMaterialWithZone(phaseGrid):
-
+    nPhases = getNphases(phaseGrid)
     materials = Materials()
-    nPhases = 1 + max(p[0][0] for p in phaseGrid)
     mat = Material()
     mat.setLaw("elasiso")
     mat.setNumberCoeff(2)
@@ -115,8 +123,13 @@ def makeMaterialWithZone(phaseGrid):
     materials.add(mat)
     # A bit more involved with a type VoxelSpec with zone specifications:
     # every one is material 0, but phase index is taken as a zone index
-    # Schematically:  [(phaseId,Φ)] -> [(0,Φ,zoneId=phaseId)]
-    voxels = [VoxelSpec([(0, p[1], p[0]) for p in vox]) for vox in phaseGrid]
+    # Schematically: 
+    #  - pure:      [phaseId] -> [(0,Φ=1,zoneId=phaseId)]
+    #  - composite: [(phaseId,Φ)] -> [(0,Φ,zoneId=phaseId)]
+    if isinstance(phaseGrid[0], int):
+        voxels = [VoxelSpec([(0, 1.0, p)]) for p in phaseGrid]
+    else:
+        voxels = [VoxelSpec([(0, p[1], p[0]) for p in vox]) for vox in phaseGrid]
     buildMaterials(materials, GRID_DIMS, voxels, ordering=IndexOrdering.C)
     return materials
 
@@ -159,9 +172,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     phaseGrid = makeStruture(composite=args.composite)
-    nPhases = 1 + max(p[0][0] for p in phaseGrid)
-    nCompoMax = max(len(p) for p in phaseGrid)
-    nCompoVox = sum(1 for p in phaseGrid if len(p) > 1)
+    if args.composite:
+        nPhases = 1 + max(p[0][0] for p in phaseGrid)
+        nCompoMax = max(len(p) for p in phaseGrid)
+        nCompoVox = sum(1 for p in phaseGrid if len(p) > 1)
+    else:
+        nPhases = 1
+        nCompoMax = 1
+        nCompoVox = 0
     print(f"#phases = {nPhases}  max-#phases/voxel = {nCompoMax}")
     print(f"#composite-voxels = {nCompoVox}")
 

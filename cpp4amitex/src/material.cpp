@@ -11,11 +11,11 @@ static void resizeAndSet(std::vector<double>& vec, size_t index, double value) {
   vec[index] = value;
 }
 
-void Material::addZone(Zone&& zone, const std::vector<double>& coeffs,
+void Material::addZone(Ptr<Zone> zone, const std::vector<double>& coeffs,
                        const std::vector<double>& coeffKs,
                        const std::vector<double>& coeffComposites) {
   size_t nbZones = numberZones() + 1;
-  zones_.push_back(std::move(zone));
+  zones_.push_back(zone);
   interphase = false;
   if (!coeffs.empty()) {
     if (numberCoeff() != coeffs.size())
@@ -59,12 +59,6 @@ void Material::addZone(Zone&& zone, const std::vector<double>& coeffs,
           "addZone: Once the coeff of the 1st zone is set, those of other zones must be set"};
     }
   }
-}
-
-void Material::addZone(const Zone& zone, const std::vector<double>& coeffs,
-                       const std::vector<double>& coeffKs,
-                       const std::vector<double>& coeffComposites) {
-  addZone(Zone{zone}, coeffs, coeffKs, coeffComposites);
 }
 
 void Material::addIntVar(Field<double>&& intvar) {

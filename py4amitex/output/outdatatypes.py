@@ -70,7 +70,7 @@ class StdIndexing:
         variable : string
             Name of the output variable, for instance 'sigma', or 'grad_u_rms'
         finite_strain : bool, optional
-            Get appropriate indexes for finite strain simulatino std outputs.
+            Get appropriate indexes for finite strain simulation std outputs.
             The default is False.
         components : list(str), optional
             List of field components indexes that are requested. For instance
@@ -153,7 +153,9 @@ class StdIndexing:
 
     @staticmethod
     def _return_indices(ncomp, offset, components):
-        if ncomp == 6:
+        if ncomp == 3:
+            Idic = StdIndexing._vector_indexes
+        elif ncomp == 6:
             Idic = StdIndexing._sym_tensor_indexes
         elif ncomp==9:
             Idic = StdIndexing._tensor_indexes

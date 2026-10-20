@@ -1,6 +1,9 @@
 #include "amitex/extract.hpp"
 
 #include <fstream>
+
+#include "amitex/errors.hpp"
+
 namespace amitex {
 
 void Extract::setSymComponents(TensorLin& values) {

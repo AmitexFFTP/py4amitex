@@ -1,4 +1,5 @@
-add_subdirectory(pybind11)
+set(PYBIND11_FINDPYTHON ON)
+find_package(pybind11 CONFIG REQUIRED)
 
 pybind11_add_module(input MODULE bindings.cpp input_general.cpp simulation.cpp field.cpp material_builder.cpp)
 

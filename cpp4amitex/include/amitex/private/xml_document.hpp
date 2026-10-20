@@ -2,7 +2,6 @@
 #define _AMITEX_XML_HEADER_
 
 #include <filesystem>
-#include <map>
 #include <ostream>
 #include <string>
 #include <string_view>

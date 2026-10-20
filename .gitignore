@@ -19,6 +19,7 @@ data_2_modified*
 .eggs
 .tox
 .venv
+venv
 *.egg
 *.py[cod]
 *.swp
@@ -30,7 +31,8 @@ py4amitex_*.egg-info
 
 /build*/
 /_install*
-
 testresults
+/cpp4amitex/examples/merope/build*/
 
 .pytest_cache
+.cache

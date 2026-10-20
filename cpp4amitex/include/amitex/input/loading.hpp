@@ -2,10 +2,9 @@
 #define _AMITEX_LOADING_HEADER_
 
 #include <optional>
+#include <string_view>
 #include <utility>
 
-#include "amitex/errors.hpp"
-#include "amitex/input/init_load_ext.hpp"
 #include "amitex/input/user_interruption.hpp"
 
 #include "amitex/private/list_element.hpp"
@@ -49,6 +48,8 @@ enum DirStress { Cauchy, PK1 };
 //! (partial) loading
 class Loading {
  public:
+  static Ptr<Loading> create() { return makePtr<Loading>(Loading{}); }
+
   template <typename TDoc>
   typename TDoc::Node toXMLElement(TDoc& doc) const {
     auto ret = doc.createElement("Loading");
@@ -74,6 +75,8 @@ class Loading {
       ret.appendChild(driver.toXMLElement(doc));
     }
     for (const auto& userItpt : userItpts) ret.appendChild(userItpt.toXMLElement(doc));
+    if (restart) ret.appendChild(restart.value().toXMLElement(doc));
+    // for (const auto& restart)
     return ret;
   }
   //! Discretize time by a constant interval
@@ -233,7 +236,13 @@ class Loading {
     for (auto value : values) addUserInterruptValue(value);
   }
 
+  //!  Save restart files every `every` increments
+  //!  \param every period of saving
+  void setRestart(int every);
+
  private:
+  Loading() = default;
+
   class MechanicsDriver {
    public:
     MechanicsDriver(AxisIndexPair component) : component{component} {
@@ -268,8 +277,8 @@ class Loading {
     MechanicDriving driving = MechanicDriving::Strain;
     Evolution evolution = Evolution::Constant;
     double value = 0.0;
-    std::optional<double> dirstress;
-    std::string tag;
+    std::optional<double> dirstress = std::nullopt;
+    std::string tag = "";
   };
 
   class DiffusionDriver {
@@ -302,7 +311,7 @@ class Loading {
     DiffusionDriving driving = DiffusionDriving::Gradient;
     Evolution evolution = Evolution::Constant;
     double value = 0.0;
-    std::string tag;
+    std::string tag = "";
   };
 
   class DirStress_ {
@@ -388,7 +397,7 @@ class Loading {
       return ret;
     }
 
-    Evolution evolution;
+    Evolution evolution{};
     double value = 0;
   };
   class Param {
@@ -403,14 +412,14 @@ class Loading {
       return ret;
     }
 
-    size_t index;
-    Evolution evolution;
+    size_t index = 0;
+    Evolution evolution{};
     double value = 0;
   };
   class OutputNumber {
    public:
-    OutputNumber(const char* tag) : tag_{tag} {}
-    OutputNumber(int number) : number{number} {};
+    OutputNumber(std::string_view tag) : tag_{tag} {}
+    OutputNumber(std::string_view tag, int number) : tag_{tag}, number{number} {};
 
     template <typename TDoc>
     typename TDoc::Node toXMLElement(TDoc& doc) const {
@@ -421,26 +430,37 @@ class Loading {
     int number = -1;
 
    private:
-    const char* tag_;
+    std::string tag_;
+  };
+  class Restart {
+   public:
+    Restart() {}
+    Restart(int every) : every{every} {}
+
+    template <typename TDoc>
+    typename TDoc::Node toXMLElement(TDoc& doc) const {
+      auto ret = doc.createElement("Restart");
+      ret.setAttribute("Every", every);
+      return ret;
+    }
+    int every = 0;
   };
 
   using TimeList = List<double>;
   using OutputVtkList = List<int>;
 
   int id = -1;
-  DirStress_ dirstress_;
-  TimeDiscretisation tdisc;
+  DirStress_ dirstress_{};
+  TimeDiscretisation tdisc{};
   bool userTimeList = false;
   TimeList tlist{"Time_List"};
-  std::vector<DiffusionDriver> diffu_drivers;
-  std::vector<MechanicsDriver> meca_drivers;
+  std::vector<DiffusionDriver> diffu_drivers = {};
+  std::vector<MechanicsDriver> meca_drivers = {};
   OutputVtkList outputVtkList{"Output_vtkList"};
-  std::optional<Temperature> temperature;
-  std::vector<Param> params;
+  std::optional<Temperature> temperature = std::nullopt;
+  std::vector<Param> params = {};
   OutputNumber outputCell{"Output_cell"};
   OutputNumber outputZone{"Output_zone"};
-  std::vector<UserInterruption> userItpts;
-  std::vector<GradGradU> gradGradUDrivers;
 
   template <typename TDoc>
   static void setEvolutionAttr(typename TDoc::Node elem, Evolution evolution, double value) {
@@ -453,6 +473,10 @@ class Loading {
         elem.setAttribute("Value", value);
     }
   }
+
+  std::vector<UserInterruption> userItpts = {};
+  std::vector<GradGradU> gradGradUDrivers = {};
+  std::optional<Restart> restart;
 };
 };  // namespace amitex
 

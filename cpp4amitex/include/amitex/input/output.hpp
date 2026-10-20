@@ -1,6 +1,7 @@
 #ifndef _AMITEX_OUTPUT_HEADER_
 #define _AMITEX_OUTPUT_HEADER_
 
+#include "amitex/input/common.hpp"
 #include "amitex/private/list_element.hpp"
 
 namespace amitex {
@@ -8,8 +9,9 @@ namespace amitex {
 //! Control output of stress and strain
 class VtkStressStrain {
  public:
-  VtkStressStrain() = default;
-  VtkStressStrain(int stress, int strain) : stress{stress}, strain{strain} {}
+  static Ptr<VtkStressStrain> create(int stress, int strain) {
+    return makePtr<VtkStressStrain>(VtkStressStrain{stress, strain});
+  }
   template <typename TDoc>
   typename TDoc::Node toXMLElement(TDoc& doc) const {
     auto ret = doc.createElement("vtk_StressStrain");
@@ -22,13 +24,17 @@ class VtkStressStrain {
   int stress = 0;
   //! Output strain to VTK file(s) (0 or 1)
   int strain = 0;
+
+ private:
+  VtkStressStrain(int stress, int strain) : stress{stress}, strain{strain} {}
 };
 
 //! Control output of diffusion flux and gradient
 class VtkFluxDGradD {
  public:
-  VtkFluxDGradD() = default;
-  VtkFluxDGradD(int fluxd, int gradd) : fluxd{fluxd}, gradd{gradd} {}
+  static Ptr<VtkFluxDGradD> create(int flux, int gradd) {
+    return makePtr<VtkFluxDGradD>(VtkFluxDGradD{flux, gradd});
+  }
   template <typename TDoc>
   typename TDoc::Node toXMLElement(TDoc& doc) const {
     auto ret = doc.createElement("vtk_FluxDGradD");
@@ -41,14 +47,18 @@ class VtkFluxDGradD {
   int fluxd = 0;
   //! Output gradient to VTK file(s) (0 or 1)
   int gradd = 0;
+
+ private:
+  VtkFluxDGradD(int fluxd, int gradd) : fluxd{fluxd}, gradd{gradd} {}
 };
 
 //! Output parametrization
 class Output {
  public:
+  static Ptr<Output> create() { return makePtr<Output>(Output{}); }
   class Zone {
    public:
-    Zone() = default;
+    Zone() : Zone{0} {};
     //! \param numM material index
     Zone(size_t numM) : numM{numM} {};
     template <typename TDoc>
@@ -72,8 +82,8 @@ class Output {
   template <typename TDoc>
   typename TDoc::Node toXMLElement(TDoc& doc) const {
     auto ret = doc.createElement("Output");
-    if (vtkStressStrain) ret.appendChild(vtkStressStrain.value().toXMLElement(doc));
-    if (vtkFluxDGradD) ret.appendChild(vtkFluxDGradD.value().toXMLElement(doc));
+    if (vtkStressStrain) ret.appendChild(vtkStressStrain->toXMLElement(doc));
+    if (vtkFluxDGradD) ret.appendChild(vtkFluxDGradD->toXMLElement(doc));
     for (const auto& zone : zones) ret.appendChild(zone.toXMLElement(doc));
     for (const auto& ivarList : intVarList) ret.appendChild(ivarList.toXMLElement(doc));
     return ret;
@@ -93,11 +103,13 @@ class Output {
 
   //! Control output of stress and strain
   void setVtkStressStrain(int stress, int strain) {
-    vtkStressStrain = VtkStressStrain{stress, strain};
+    vtkStressStrain = VtkStressStrain::create(stress, strain);
   }
 
   //! Control output of diffusion flux and gradient
-  void setVtkFluxDGradD(int fluxD, int gradD) { vtkFluxDGradD = VtkFluxDGradD{fluxD, gradD}; }
+  void setVtkFluxDGradD(int fluxD, int gradD) {
+    vtkFluxDGradD = VtkFluxDGradD::create(fluxD, gradD);
+  }
 
   //! Set the internal variables for field output for a given material
   void addVtkIntVarList(size_t numM, const std::vector<size_t>& list) {
@@ -106,10 +118,11 @@ class Output {
     intVarList.push_back(ivl);
   }
 
-  std::optional<VtkFluxDGradD> vtkFluxDGradD;
-  std::optional<VtkStressStrain> vtkStressStrain;
+  Ptr<VtkFluxDGradD> vtkFluxDGradD;
+  Ptr<VtkStressStrain> vtkStressStrain;
 
  private:
+  Output() : vtkFluxDGradD{nullptr}, vtkStressStrain{nullptr}, zones{}, intVarList{} {}
   class VtkIntVarList : public List<size_t> {
    public:
     VtkIntVarList(size_t numM) : numM{numM}, List{"vtk_IntVarList"} {};

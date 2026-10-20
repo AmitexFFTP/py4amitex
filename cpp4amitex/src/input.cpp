@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <fstream>
 
+#include <iostream>
+
 #include "amitex/errors.hpp"
 #include "amitex/io.hpp"
 #include "amitex/private/xml_document.hpp"
@@ -50,97 +52,33 @@ static void generateComposite(Materials& materials, const std::string& path);
 
 void Input::generateFiles() {
   std::filesystem::create_directories(resultsDir + "/output");
-  algorithmParameters.toXMLDocument<xml::Document>().writeFile(algorithmPath());
-
-  if (algorithmParameters.mechanics && !loadingOutput.output.vtkStressStrain)
-    loadingOutput.output.vtkStressStrain = VtkStressStrain{0, 0};
-  if (algorithmParameters.diffusion && !loadingOutput.output.vtkFluxDGradD)
-    loadingOutput.output.vtkFluxDGradD = VtkFluxDGradD{0, 0};
-  loadingOutput.toXMLDocument<xml::Document>().writeFile(loadingPath());
-
-  if (grid.totalSize() == 0) throw InputError{"Input::generateFiles(): grid not initialized"};
-  std::vector<int32_t> numM(grid.totalSize());
-  std::vector<int64_t> numZ(grid.totalSize());
-  fill(numM.begin(), numM.end(), -1);
-  fill(numZ.begin(), numZ.end(), -1);
-  generateComposite(materials, resultsDir + "/composites");
-  for (size_t m = 0; m < materials.numberMaterials(); m++) {
-    Material& mat = materials.material(m);
-    mat.setIndex(m);
-    for (size_t c = 0; c < mat.numberCoeff(); c++) {
-      handleZoneCoeffs(mat.coeff(c), resultsDir, m, c);
-    }
-    for (size_t c = 0; c < mat.numberCoeffK(); c++) {
-      handleZoneCoeffs(mat.coeffK(c), resultsDir, m, c);
-    }
-    for (size_t c = 0; c < mat.numberCoeffComposite(); c++) {
-      handleZoneCoeffs(mat.coeffComposite(c), resultsDir, m, c);
-    }
-    size_t iz = 1;
-    for (const auto& zone : mat.zones()) {
-      for (auto pos : zone.linearPositions()) {
-        if (pos >= numM.size())
-          throw InputError{"Input::generateFiles(): zone has voxels outside of grid"};
-        numM[pos] = m + 1;
-        numZ[pos] = iz;
-      }
-      iz++;
-    }
-    handleIntVars(mat, m, resultsDir, grid);
+  switch (getVtkGeneration()) {
+    case VtkGeneration::Generic:
+      generateMaterialVTK(materialIdsPath());
+      generateZoneVTK(zoneIdsPath());
+      break;
+    case VtkGeneration::OneMaterial:
+      generateZoneVTK(zoneIdsPath());
+      break;
+    case VtkGeneration::OneZone:
+      generateMaterialVTK(materialIdsPath());
+      break;
+    case VtkGeneration::OneZonePerVoxel:
+      break;
   }
-  if (!checkZoneCovered(numM.data(), grid.totalSize()))
-    throw InputError{"Not all voxels are covered by a material"};
-  if (!checkZoneCovered(numZ.data(), grid.totalSize()))
-    throw InputError{"Not all voxels are covered by a zone"};
-  materials.toXMLDocument<xml::Document>().writeFile(materialsPath());
-
-  writeVTK(materialIdsPath(), grid.dims(), grid.voxelLengths(), numM.data(), grid.totalSize());
-  writeVTK(zoneIdsPath(), grid.dims(), grid.voxelLengths(), numZ.data(), grid.totalSize());
-
-  std::ofstream cmds{resultsDir + "/commands.in"};
-
-  cmds << "&CMD\n";
-  cmds << "fic_numM=\"" << materialIdsPath() << "\"\n";
-  cmds << "fic_numZ=\"" << zoneIdsPath() << "\"\n";
-  cmds << "fic_mat=\"" << materialsPath() << "\"\n";
-  cmds << "fic_char=\"" << loadingPath() << "\"\n";
-  cmds << "fic_algo=\"" << algorithmPath() << "\"\n";
-  cmds << "fic_vtk=\"" << outputPrefix() << "\"\n";
-  cmds << "/\n";
+  generateAlgorithm(algorithmPath());
+  generateLoadingOutput(loadingPath());
+  generateMaterials(materialsPath(), resultsDir);
+  generateCommandFile(resultsDir + "/commands.in", algorithmPath(), materialsPath(), loadingPath(),
+                      materialIdsPath(), zoneIdsPath(), outputPrefix());
 }
 
 static void genCompositeZone(Composite& mat, const Materials& materials, const std::string& dir,
                              std::optional<Interphase>& interphase) {
   size_t nphases = mat.numberPhases();
   for (size_t i = 0; i < nphases; i++) {
-    const auto& matPos = mat.positions();
-    const Material& pureMat = materials.material(mat.materialIndices()[i]);
-    std::vector<std::size_t> coveredZones;  // zones fully covered by a composite
-    std::vector<size_t> zones(matPos.size());
-    // Good default ?
-    std::fill(zones.begin(), zones.end(), 1);
-
-    // Construct dictionary  position -> index of 'zones'
-    auto [pmin, pmax] = std::minmax_element(matPos.begin(), matPos.end());
-    std::vector<long long> indexPos(*pmax - *pmin + 1);
-    // -1 for non-existent index
-    std::fill(indexPos.begin(), indexPos.end(), -1);
-    for (size_t p = 0; p < matPos.size(); p++) {
-      indexPos[matPos[p] - *pmin] = p;
-    }
-    size_t izone = 1;
-    for (const auto& zone : pureMat.zones()) {
-      size_t coveredPos = 0;
-      for (auto lpos : zone.linearPositions()) {
-        if (lpos >= *pmin && lpos <= *pmax) {
-          auto index = indexPos.at(lpos - *pmin);
-          if (index >= 0) {
-            zones.at(index) = izone;
-          }
-        }
-      }
-      izone++;
-    }
+    std::vector<size_t> zones(mat.zone(i).size());
+    for (size_t p = 0; p < zones.size(); p++) zones[p] = mat.zone(i)[p] + 1;
     writeBIN(dir + "/zone" + std::to_string(i + 1) + ".bin", zones);
   }
 }
@@ -151,7 +89,7 @@ static void genInterphase(Materials& materials) {
   size_t nphases = 0;
   size_t pmin = 0, pmax = 0;
   for (size_t c = 0; c < materials.numberComposites(); c++) {
-    auto& mat = materials.composite(c);
+    Composite& mat = *materials.composite(c);
     nphases = std::max(nphases, mat.numberPhases());
     const auto& matPos = mat.positions();
     auto [matpmin, matpmax] = std::minmax_element(matPos.begin(), matPos.end());
@@ -162,26 +100,26 @@ static void genInterphase(Materials& materials) {
   std::vector<bool> isComposite(pmax - pmin + 1);
   std::fill(isComposite.begin(), isComposite.end(), false);
   for (size_t c = 0; c < materials.numberComposites(); c++) {
-    auto& mat = materials.composite(c);
+    Composite& mat = *materials.composite(c);
     for (size_t p : mat.positions()) {
       isComposite[p - pmin] = true;
     }
   }
 
   for (size_t m = 0; m < materials.numberMaterials(); m++) {
-    const Material& pureMat = materials.material(m);
+    const Material& pureMat = *materials.material(m);
     std::vector<std::size_t> coveredZones;  // zones fully covered by a composite
     size_t izone = 1;
-    for (const auto& zone : pureMat.zones()) {
+    for (auto zone : pureMat.zones()) {
       size_t coveredPos = 0;
-      for (auto lpos : zone.linearPositions()) {
+      for (auto lpos : zone->linearPositions()) {
         if (lpos >= pmin && lpos <= pmax) {
           if (isComposite.at(lpos - pmin)) {
             coveredPos++;
           }
         }
       }
-      if (coveredPos == zone.numberVoxels()) {
+      if (coveredPos == zone->numberVoxels()) {
         coveredZones.push_back(izone);
       }
       izone++;
@@ -231,7 +169,7 @@ static void generateComposite(Materials& materials, const std::string& path) {
   std::ofstream fdef{path + "/list_composite_materials.txt"};
   if (!fdef) throw InputError{"could not open " + path + "/list_composite_materials.txt"};
   for (size_t m = 0; m < materials.numberComposites(); m++) {
-    Composite& mat = materials.composite(m);
+    Composite& mat = *materials.composite(m);
     for (auto matId : mat.materialIndices()) fdef << matId + 1 << " ";
     fdef << mat.law() << "\n";
     std::ostringstream dir_;
@@ -259,6 +197,167 @@ static void generateComposite(Materials& materials, const std::string& path) {
     }
   }
   genInterphase(materials);
+}
+
+void Input::generateAlgorithm(const std::filesystem::path& path) {
+  algorithmParameters->toXMLDocument<xml::Document>().writeFile(path);
+}
+
+void Input::generateMaterials(const std::filesystem::path& path,
+                              const std::filesystem::path& coeffDirectory) {
+  generateComposite(*materials, coeffDirectory / "composites");
+  for (size_t m = 0; m < materials->numberMaterials(); m++) {
+    Material& mat = *materials->material(m);
+    mat.setIndex(m);
+    for (size_t c = 0; c < mat.numberCoeff(); c++) {
+      handleZoneCoeffs(mat.coeff(c), coeffDirectory, m, c);
+    }
+    for (size_t c = 0; c < mat.numberCoeffK(); c++) {
+      handleZoneCoeffs(mat.coeffK(c), coeffDirectory, m, c);
+    }
+    for (size_t c = 0; c < mat.numberCoeffComposite(); c++) {
+      handleZoneCoeffs(mat.coeffComposite(c), coeffDirectory, m, c);
+    }
+    handleIntVars(mat, m, coeffDirectory, grid);
+  }
+  materials->toXMLDocument<xml::Document>().writeFile(path);
+}
+
+void Input::generateLoadingOutput(const std::filesystem::path& path) {
+  if (algorithmParameters->mechanics && !loadingOutput->output->vtkStressStrain)
+    loadingOutput->output->vtkStressStrain = VtkStressStrain::create(0, 0);
+  if (algorithmParameters->diffusion && !loadingOutput->output->vtkFluxDGradD)
+    loadingOutput->output->vtkFluxDGradD = VtkFluxDGradD::create(0, 0);
+  loadingOutput->toXMLDocument<xml::Document>().writeFile(path);
+}
+
+void Input::generateMaterialVTK(const std::filesystem::path& path) {
+  if (grid.totalSize() == 0) throw InputError{"Input::generateFiles(): grid not initialized"};
+  std::vector<int32_t> numM(grid.totalSize());
+  fill(numM.begin(), numM.end(), -1);
+  for (size_t m = 0; m < materials->numberMaterials(); m++) {
+    const Material& mat = *materials->material(m);
+    size_t iz = 1;
+    for (auto zone : mat.zones()) {
+      for (auto pos : zone->linearPositions()) {
+        if (pos >= numM.size())
+          throw InputError{"Input::generateFiles(): zone has voxels outside of grid"};
+        numM[pos] = m + 1;
+      }
+      iz++;
+    }
+  }
+  if (!checkZoneCovered(numM.data(), grid.totalSize()))
+    throw InputError{"Not all voxels are covered by a material"};
+  writeVTK(path, grid.dims(), grid.voxelLengths(), numM.data(), grid.totalSize());
+}
+
+void Input::generateZoneVTK(const std::filesystem::path& path) {
+  if (grid.totalSize() == 0) throw InputError{"Input::generateFiles(): grid not initialized"};
+  std::vector<int64_t> numZ(grid.totalSize());
+  fill(numZ.begin(), numZ.end(), -1);
+  for (size_t m = 0; m < materials->numberMaterials(); m++) {
+    const Material& mat = *materials->material(m);
+    size_t iz = 1;
+    for (auto zone : mat.zones()) {
+      for (auto pos : zone->linearPositions()) {
+        numZ[pos] = iz;
+      }
+      iz++;
+    }
+  }
+  if (!checkZoneCovered(numZ.data(), grid.totalSize()))
+    throw InputError{"Not all voxels are covered by a zone"};
+  writeVTK(path, grid.dims(), grid.voxelLengths(), numZ.data(), grid.totalSize());
+}
+
+void Input::generateCommandFile(const std::filesystem::path& path,
+                                const std::filesystem::path& algorithmPath,
+                                const std::filesystem::path& materialsPath,
+                                const std::filesystem::path& loadingPath,
+                                const std::filesystem::path& materialIdsPath,
+                                const std::filesystem::path& zoneIdsPath,
+                                const std::filesystem::path& outputPrefix) {
+  std::ofstream cmds{path};
+
+  cmds << "&CMD\n";
+  cmds << "fic_numM=\"" << materialIdsPath.c_str() << "\"\n";
+  cmds << "fic_numZ=\"" << zoneIdsPath.c_str() << "\"\n";
+  cmds << "fic_mat=\"" << materialsPath.c_str() << "\"\n";
+  cmds << "fic_char=\"" << loadingPath.c_str() << "\"\n";
+  cmds << "fic_algo=\"" << algorithmPath.c_str() << "\"\n";
+  cmds << "fic_vtk=\"" << outputPrefix.c_str() << "\"\n";
+  if (materialIdsPath.empty() && zoneIdsPath.empty()) {
+    cmds << "nx=" << grid.dims()[0] << "\n";
+    cmds << "ny=" << grid.dims()[1] << "\n";
+    cmds << "nz=" << grid.dims()[2] << "\n";
+    cmds << "dx=" << grid.voxelLengths()[0] << "\n";
+    cmds << "dy=" << grid.voxelLengths()[1] << "\n";
+    cmds << "dz=" << grid.voxelLengths()[2] << "\n";
+  }
+  cmds << "/\n";
+}
+
+std::string Input::materialIdsPath() const {
+  if (getVtkGeneration() == VtkGeneration::OneMaterial ||
+      getVtkGeneration() == VtkGeneration::OneZonePerVoxel) {
+    return "";
+  } else {
+    return resultsDir + "/materialIds.vtk";
+  }
+}
+
+std::string Input::zoneIdsPath() const {
+  if ((getVtkGeneration() == VtkGeneration::OneZone ||
+       getVtkGeneration() == VtkGeneration::OneZonePerVoxel)) {
+    return "";
+  } else {
+    return resultsDir + "/zoneIds.vtk";
+  }
+}
+
+VtkGeneration Input::getVtkGeneration() const {
+  if (vtkGeneration.has_value()) {
+    return vtkGeneration.value();
+  }
+  // VtkGeneration vtkGeneration;
+  bool oneMat = materials->numberMaterials() == 1;
+
+  bool oneZone = true;
+  for (size_t m = 0; m < materials->numberMaterials(); m++) {
+    if (materials->at(m)->numberZones() != 1) {
+      oneZone = false;
+      break;
+    }
+  }
+  bool oneZonePerVoxel = false;
+  if (oneMat) {
+    if (materials->at(0)->numberZones() == grid.totalSize()) {
+      // One needs to check if the zones are correctly ordered (ie sequentially in the VTK)
+      const auto& mat = materials->at(0);
+      size_t idx = 0;
+      oneZonePerVoxel = true;
+      for (auto p : grid.allLinPoints()) {
+        if (mat->zones().at(idx)->numberVoxels() != 1 ||
+            mat->zones().at(idx)->linearPositions()[0] != p) {
+          oneZonePerVoxel = false;
+          break;
+        }
+        idx += 1;
+      }
+    }
+  }
+
+  if (oneZonePerVoxel) {
+    vtkGeneration = VtkGeneration::OneZonePerVoxel;
+  } else if (oneMat) {
+    vtkGeneration = VtkGeneration::OneMaterial;
+  } else if (oneZone) {
+    vtkGeneration = VtkGeneration::OneZone;
+  } else {
+    vtkGeneration = VtkGeneration::Generic;
+  }
+  return vtkGeneration.value();
 }
 
 }  // namespace amitex

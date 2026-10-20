@@ -1,0 +1,8 @@
+&CMD
+fic_numM=""
+fic_numZ="testresults/noVTK1mat/zoneIds.vtk"
+fic_mat="testresults/noVTK1mat/materials.xml"
+fic_char="testresults/noVTK1mat/loading.xml"
+fic_algo="testresults/noVTK1mat/algorithm.xml"
+fic_vtk="testresults/noVTK1mat/output/output"
+/

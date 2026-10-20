@@ -4,6 +4,8 @@
 #include <optional>
 #include <variant>
 
+#include "amitex/input/common.hpp"
+
 #include "amitex/private/type_element.hpp"
 #include "amitex/private/value_element.hpp"
 
@@ -36,14 +38,14 @@ class ConvergenceAcceleration {
   }
 
   //! number of iterations between two convergence accelerations
-  std::optional<int> modACV;
-  std::optional<bool> value;
+  std::optional<int> modACV = std::nullopt;
+  std::optional<bool> value = std::nullopt;
 };
 
 //! Force convergence
 class ConvergenceForced {
  public:
-  ConvergenceForced() = default;
+  ConvergenceForced() : ConvergenceForced(0.0) {}
   ConvergenceForced(bool value, int nitCVFor = 0, int nCVFor = 0)
       : value{value}, nitCVFor{nitCVFor}, nCVFor{nCVFor} {};
   ConvergenceForced& operator=(bool value) {
@@ -70,7 +72,8 @@ class ConvergenceForced {
 //! Substepping
 class Substepping {
  public:
-  Substepping() = default;
+  static Ptr<Substepping> create() { return makePtr<Substepping>(Substepping{}); }
+
   template <typename TDoc>
   typename TDoc::Node toXMLElement(TDoc& doc) const {
     auto ret = doc.createElement("Substepping");
@@ -89,26 +92,35 @@ class Substepping {
   int nsub = 1;
   //! maximum number of impricated substeppings
   int depth = 1;
+
+ private:
+  Substepping() = default;
 };
 
 //! Main algorithm parameters
 class Algorithm {
  public:
-  Algorithm() = default;
-  Algorithm(const std::string& type,
-            const std::variant<bool, ConvergenceAcceleration>& convergenceAcceleration,
-            std::optional<double> convergenceCriterion = std::nullopt,
-            std::optional<int> nitermax = std::nullopt,
-            std::optional<double> convergenceCriterionSmacro = std::nullopt,
-            std::optional<double> convergenceCriterionCompatibility = std::nullopt,
-            std::optional<int> nitermin = std::nullopt,
-            std::optional<int> niterminACV = std::nullopt,
-            const std::optional<std::string>& initialize = std::nullopt,
-            const std::optional<Substepping>& substepping = std::nullopt,
-            const std::optional<ConvergenceForced>& ConvergenceForced = std::nullopt);
+  static Ptr<Algorithm> create(
+      const std::string& type,
+      const std::variant<bool, ConvergenceAcceleration>& convergenceAcceleration,
+      std::optional<double> convergenceCriterion = std::nullopt,
+      std::optional<int> nitermax = std::nullopt,
+      std::optional<double> convergenceCriterionSmacro = std::nullopt,
+      std::optional<double> convergenceCriterionCompatibility = std::nullopt,
+      std::optional<int> nitermin = std::nullopt, std::optional<int> niterminACV = std::nullopt,
+      const std::optional<std::string>& initialize = std::nullopt,
+      Ptr<Substepping> substepping = nullptr,
+      const std::optional<ConvergenceForced>& ConvergenceForced = std::nullopt) {
+    return makePtr<Algorithm>(Algorithm{type, convergenceAcceleration,
+
+                                        convergenceCriterion, nitermax, convergenceCriterionSmacro,
+                                        convergenceCriterionCompatibility, nitermin, niterminACV,
+                                        initialize, substepping, ConvergenceForced});
+  }
+  static Ptr<Algorithm> createDefault() { return makePtr<Algorithm>(Algorithm{}); }
 
   //! Type ("Dafault" or "Basic_Scheme")
-  std::string type = "Default";
+  std::string type;
 
   //! convergence criterion (<1.e-3)
   Value<double> convergenceCriterion{"Convergence_Criterion"};
@@ -129,7 +141,7 @@ class Algorithm {
   Value<std::string> initialize{"Initialize"};
 
   //! substepping
-  std::optional<Substepping> substepping;
+  Ptr<Substepping> substepping = nullptr;
 
   //! Force convergence
   std::optional<ConvergenceForced> convergenceForced;
@@ -148,17 +160,32 @@ class Algorithm {
     if (nitermin.value) ret.appendChild(nitermin.toXMLElement(doc));
     if (niterminACV.value) ret.appendChild(niterminACV.toXMLElement(doc));
     if (initialize.value) ret.appendChild(initialize.toXMLElement(doc));
-    if (substepping) ret.appendChild(substepping.value().toXMLElement(doc));
+    if (substepping) ret.appendChild(substepping->toXMLElement(doc));
     if (convergenceForced) ret.appendChild(convergenceForced.value().toXMLElement(doc));
     return ret;
   }
+
+ private:
+  Algorithm() : Algorithm{"Default", true} {};
+  Algorithm(const std::string& type,
+            const std::variant<bool, ConvergenceAcceleration>& convergenceAcceleration,
+            std::optional<double> convergenceCriterion = std::nullopt,
+            std::optional<int> nitermax = std::nullopt,
+            std::optional<double> convergenceCriterionSmacro = std::nullopt,
+            std::optional<double> convergenceCriterionCompatibility = std::nullopt,
+            std::optional<int> nitermin = std::nullopt,
+            std::optional<int> niterminACV = std::nullopt,
+            const std::optional<std::string>& initialize = std::nullopt,
+            Ptr<Substepping> substepping = nullptr,
+            const std::optional<ConvergenceForced>& ConvergenceForced = std::nullopt);
 };
 
 class Diffusion {
  public:
-  Diffusion() = default;
-  Diffusion(const std::string& filter, bool stationary)
-      : filter{"Filter", filter}, stationary{"Stationary", stationary} {}
+  static Ptr<Diffusion> create(const std::string& filter, bool stationary) {
+    return makePtr<Diffusion>(Diffusion{filter, stationary});
+  }
+  static Ptr<Diffusion> createDefault() { return makePtr<Diffusion>(Diffusion{}); }
   Type filter{"Filter"};
   Value<bool> stationary{"Stationary", true};
 
@@ -169,11 +196,16 @@ class Diffusion {
     ret.appendChild(stationary.toXMLElement(doc));
     return ret;
   }
+
+ private:
+  Diffusion() = default;
+  Diffusion(const std::string& filter, bool stationary)
+      : filter{"Filter", filter}, stationary{"Stationary", stationary} {}
 };
 
 class SmallPerturbations {
  public:
-  SmallPerturbations() = default;
+  SmallPerturbations() : SmallPerturbations{true} {};
   SmallPerturbations(bool value) : value{value} {};
   SmallPerturbations(bool value, const std::string& displacementGradient)
       : value{value}, displacementGradient{displacementGradient} {};
@@ -192,15 +224,19 @@ class SmallPerturbations {
   }
 
   //! Toggle non symmetrized displacement gradients (="nsysm" or ommited)
-  std::string displacementGradient;
+  std::string displacementGradient = "";
 
   bool value;
 };
 
 class Mechanics {
  public:
-  Mechanics() = default;
-  Mechanics(const std::string& filter, std::variant<SmallPerturbations, bool> smallPerturbations);
+  static Ptr<Mechanics> create(const std::string& filter,
+                               std::variant<SmallPerturbations, bool> smallPerturbations) {
+    return makePtr<Mechanics>(Mechanics{filter, smallPerturbations});
+  }
+  static Ptr<Mechanics> createDefault() { return makePtr<Mechanics>(Mechanics{}); }
+
   Type filter{"Filter"};
 
   SmallPerturbations smallPerturbations = true;
@@ -215,6 +251,10 @@ class Mechanics {
     if (C0Sym.value) ret.appendChild(C0Sym.toXMLElement(doc));
     return ret;
   }
+  
+  private:
+   Mechanics() = default;
+   Mechanics(const std::string& filter, std::variant<SmallPerturbations, bool> smallPerturbations);
 };
 
 }  // namespace amitex

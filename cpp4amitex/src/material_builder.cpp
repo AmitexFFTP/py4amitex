@@ -54,23 +54,21 @@ void MaterialBuilder::addVoxelAux(Materials& materials, GridLinPoint lpos,
   for (size_t i = 0; i < phaseIds.size(); i++) {
     auto pid = phaseIds[i];
     auto zoneId = zoneIds[i];
-    std::vector<Zone>& zones = materials.material(pid).zones();
+    std::vector<Ptr<Zone>>& zones = materials.material(pid)->zones();
     if (zoneId >= zones.size()) {
       for (size_t iz = zones.size(); iz <= zoneId; iz++) {
-        zones.push_back(Zone{{0, 0, 0}});
+        zones.push_back(Zone::create({0, 0, 0}));
       }
     }
-    zones.at(zoneId).add(lpos);
+    zones.at(zoneId)->add(lpos);
   }
   MaterialComposite& composites = materials.composites;
-  if (phaseIds.size() == 1) {
-    size_t mid = phaseIds[0];
-  } else {
+  if (phaseIds.size() > 1) {
     auto it = compos.find(phaseIds);
     if (it == compos.end()) {
       auto [it2, ok] = compos.insert({phaseIds, composites.numberMaterials()});
       if (!ok) throw InputError{std::string{__func__} + " map could not insert"};
-      composites.add(Composite{phaseIds});
+      composites.add(Composite::create(phaseIds));
       it = it2;
     }
     size_t ic = it->second;
@@ -81,13 +79,14 @@ void MaterialBuilder::addVoxelAux(Materials& materials, GridLinPoint lpos,
             InterfaceGeometry{.normal = normal, .tangent = getTangent(normal), .surface = 1.0});
       }
     }
-    composites.at(ic).addVoxel(lpos, volfracs, geoms);
+    composites.at(ic)->addVoxel(lpos, volfracs, geoms, zoneIds);
   }
 }
 
-void buildMaterials(Materials& materials, GridSize dims, const std::vector<VoxelSpec>& phases,
-                    IndexOrdering ordering) {
-  MaterialBuilder bd;
+template <typename TVoxel, typename FnAddVoxel>
+void buildMaterialsImpl(MaterialBuilder& bd, Materials& materials, GridSize dims,
+                        const std::vector<TVoxel>& phases, IndexOrdering ordering,
+                        FnAddVoxel fnAddVoxel) {
   GridSize dimo;
   if (ordering == IndexOrdering::C) {
     dimo = {dims[0], dims[1], dims[2]};
@@ -105,102 +104,99 @@ void buildMaterials(Materials& materials, GridSize dims, const std::vector<Voxel
         } else {
           lpos = grid.linearize({k, j, i});
         }
-        bd.addVoxel(materials, lpos, phases[index]);
+        fnAddVoxel(bd, materials, lpos, phases[index]);
         index++;
       }
     }
   }
+}
+
+void MaterialBuilder::buildMaterials(Materials& materials, GridSize dims,
+                                     const std::vector<VoxelSpec>& phases, IndexOrdering ordering) {
+  buildMaterialsImpl(*this, materials, dims, phases, ordering,
+                     [](MaterialBuilder& bd, Materials& materials, GridLinPoint lpos,
+                        const VoxelSpec& phase) { bd.addVoxel(materials, lpos, phase); });
+}
+
+void buildMaterials(Materials& materials, GridSize dims, const std::vector<VoxelSpec>& phases,
+                    IndexOrdering ordering) {
+  MaterialBuilder bd;
+  bd.buildMaterials(materials, dims, phases, ordering);
+}
+
+void MaterialBuilder::buildMaterials(Materials& materials, GridSize dims,
+                                     const std::vector<std::tuple<VoxelSpec, Vector3D>>& phases,
+                                     IndexOrdering ordering) {
+  buildMaterialsImpl(*this, materials, dims, phases, ordering,
+                     [](MaterialBuilder& bd, Materials& materials, GridLinPoint lpos,
+                        const std::tuple<VoxelSpec, Vector3D>& phase) {
+                       bd.addVoxel(materials, lpos, std::get<0>(phase), std::get<1>(phase));
+                     });
 }
 
 void buildMaterials(Materials& materials, GridSize dims,
                     const std::vector<std::tuple<VoxelSpec, Vector3D>>& phases,
                     IndexOrdering ordering) {
   MaterialBuilder bd;
-  GridSize dimo;
-  if (ordering == IndexOrdering::C) {
-    dimo = {dims[0], dims[1], dims[2]};
-  } else {
-    dimo = {dims[2], dims[1], dims[0]};
-  }
-  Grid grid{dims, {1, 1, 1}};
-  size_t index = 0;
-  for (size_t i = 0; i < dimo[0]; i++) {
-    for (size_t j = 0; j < dimo[1]; j++) {
-      for (size_t k = 0; k < dimo[2]; k++) {
-        GridLinPoint lpos;
-        if (ordering == IndexOrdering::C) {
-          lpos = grid.linearize({i, j, k});
-        } else {
-          lpos = grid.linearize({k, j, i});
+  bd.buildMaterials(materials, dims, phases, ordering);
+}
+
+void MaterialBuilder::buildMaterials(Materials& materials, GridSize dims, const std::vector<ShortSpec>& phases,
+                    IndexOrdering ordering) {
+  buildMaterialsImpl(*this,
+      materials, dims, phases, ordering,
+      [](MaterialBuilder& bd, Materials& materials, GridLinPoint lpos, const ShortSpec& phase) {
+        VoxelSpec spec;
+        for (auto phis : phase) {
+          spec.phases.push_back({static_cast<size_t>(std::get<0>(phis)), std::get<1>(phis), 0});
         }
-        bd.addVoxel(materials, lpos, std::get<0>(phases[index]), std::get<1>(phases[index]));
-        index++;
-      }
-    }
-  }
+        bd.addVoxel(materials, lpos, spec);
+      });
 }
 
 void buildMaterials(Materials& materials, GridSize dims, const std::vector<ShortSpec>& phases,
                     IndexOrdering ordering) {
   MaterialBuilder bd;
-  GridSize dimo;
-  if (ordering == IndexOrdering::C) {
-    dimo = {dims[0], dims[1], dims[2]};
-  } else {
-    dimo = {dims[2], dims[1], dims[0]};
-  }
-  Grid grid{dims, {1, 1, 1}};
-  size_t index = 0;
-  for (size_t i = 0; i < dimo[0]; i++) {
-    for (size_t j = 0; j < dimo[1]; j++) {
-      for (size_t k = 0; k < dimo[2]; k++) {
-        GridLinPoint lpos;
-        if (ordering == IndexOrdering::C) {
-          lpos = grid.linearize({i, j, k});
-        } else {
-          lpos = grid.linearize({k, j, i});
-        }
+  bd.buildMaterials(materials, dims, phases, ordering);
+}
+
+void MaterialBuilder::buildMaterials(Materials& materials, GridSize dims,
+                    const std::vector<std::tuple<ShortSpec, Vector3D>>& phases,
+                    IndexOrdering ordering) {
+  buildMaterialsImpl(*this,
+      materials, dims, phases, ordering,
+      [](MaterialBuilder& bd, Materials& materials, GridLinPoint lpos,
+         const std::tuple<ShortSpec, Vector3D>& phase) {
         VoxelSpec spec;
-        for (auto phis : phases[index]) {
+        for (auto phis : std::get<0>(phase)) {
           spec.phases.push_back({static_cast<size_t>(std::get<0>(phis)), std::get<1>(phis), 0});
         }
-        bd.addVoxel(materials, lpos, spec);
-        index++;
-      }
-    }
-  }
+        bd.addVoxel(materials, lpos, spec, std::get<1>(phase));
+      });
 }
 
 void buildMaterials(Materials& materials, GridSize dims,
                     const std::vector<std::tuple<ShortSpec, Vector3D>>& phases,
                     IndexOrdering ordering) {
   MaterialBuilder bd;
-  GridSize dimo;
-  if (ordering == IndexOrdering::C) {
-    dimo = {dims[0], dims[1], dims[2]};
-  } else {
-    dimo = {dims[2], dims[1], dims[0]};
-  }
-  Grid grid{dims, {1, 1, 1}};
-  size_t index = 0;
-  for (size_t i = 0; i < dimo[0]; i++) {
-    for (size_t j = 0; j < dimo[1]; j++) {
-      for (size_t k = 0; k < dimo[2]; k++) {
-        GridLinPoint lpos;
-        if (ordering == IndexOrdering::C) {
-          lpos = grid.linearize({i, j, k});
-        } else {
-          lpos = grid.linearize({k, j, i});
-        }
+  bd.buildMaterials(materials, dims, phases, ordering);
+}
+
+void MaterialBuilder::buildMaterials(Materials& materials, GridSize dims, const std::vector<PhaseType>& phases,
+                    IndexOrdering ordering) {
+  buildMaterialsImpl(*this,
+      materials, dims, phases, ordering,
+      [](MaterialBuilder& bd, Materials& materials, GridLinPoint lpos, const PhaseType& phase) {
         VoxelSpec spec;
-        for (auto phis : std::get<0>(phases[index])) {
-          spec.phases.push_back({static_cast<size_t>(std::get<0>(phis)), std::get<1>(phis), 0});
-        }
-        bd.addVoxel(materials, lpos, spec, std::get<1>(phases[index]));
-        index++;
-      }
-    }
-  }
+        spec.phases.push_back({phase, 1.0, 0});
+        bd.addVoxel(materials, lpos, spec);
+      });
+}
+
+void buildMaterials(Materials& materials, GridSize dims, const std::vector<PhaseType>& phases,
+                    IndexOrdering ordering) {
+  MaterialBuilder bd;
+  bd.buildMaterials(materials, dims, phases, ordering);
 }
 
 Grid buildMaterialsFromVtk(Materials& materials, const std::string& materialIdPath,
@@ -274,7 +270,7 @@ static Vector3D getTangent(Vector3D normal) {
 #ifdef AMITEX_DEBUG
   double prod2 = 0.0;
   for (size_t i = 0; i < ret.size(); i++) prod2 += ret[i] * normal[i];
-  assert(prod2 == prod2 && abs(prod2) < 1.e-7);
+  assert(prod2 == prod2 && std::abs(prod2) < 1.e-7);
 #endif
 
   return ret;

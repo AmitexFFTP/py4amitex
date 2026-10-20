@@ -27,12 +27,12 @@ TEST(Materials, IntVars) {
   EXPECT_STREQ(toXMLString(ivar3).c_str(),
                R"(<IntVar Index="0" Type="Variable" File="ivar3.vtk" Format="vtk"/>)");
 
-  Material mat;
-  mat.addIntVar(ivar3.field);
-  mat.addIntVar(300.0);
-  mat.intVar(0).setFile("ivar1.vtk");
+  auto mat = Material::create();
+  mat->addIntVar(ivar3.field);
+  mat->addIntVar(300.0);
+  mat->intVar(0).setFile("ivar1.vtk");
   EXPECT_STREQ(
-      toXMLString(mat).c_str(),
+      toXMLString(*mat).c_str(),
       R"(<Material numM="0"><IntVar Index="1" Type="Variable" File="ivar1.vtk" Format="vtk"/><IntVar Index="2" Type="Constant" Value="300"/></Material>)");
 }
 
@@ -44,34 +44,34 @@ TEST(Materials, Composite) {
       R"(<Material_composite><Coeff_composite directory="my_composite_dir"/></Material_composite>)");
 }
 
-std::tuple<Material, Zone> prepareMustFillZoneCoeff() {
+std::tuple<Ptr<Material>, Ptr<Zone>> prepareMustFillZoneCoeff() {
   Grid grid{{2, 2, 1}, {1., 1., 1.}};
 
-  Material mat;
-  mat.setLaw("elasiso");
-  Zone zone0(grid.dims(), {{0, 0, 0}, {0, 1, 0}});
-  Zone zone1(grid.dims(), {{1, 0, 0}, {1, 1, 0}});
-  mat.setNumberCoeff(2);
-  mat.setNumberCoeffK(1);
-  mat.setNumberCoeffComposite(2);
-  mat.addZone(zone0, {1., 2.}, {1.}, {1., 2.});
+  auto mat = Material::create();
+  mat->setLaw("elasiso");
+  auto zone0 = Zone::create(grid.dims(), {{0, 0, 0}, {0, 1, 0}});
+  auto zone1 = Zone::create(grid.dims(), {{1, 0, 0}, {1, 1, 0}});
+  mat->setNumberCoeff(2);
+  mat->setNumberCoeffK(1);
+  mat->setNumberCoeffComposite(2);
+  mat->addZone(zone0, {1., 2.}, {1.}, {1., 2.});
   return {mat, zone1};
 }
 
 TEST(Materials, MustFillZoneCoeff) {
   auto [mat, zone1] = prepareMustFillZoneCoeff();
   // InputError: addZone: Once the coeff of the 1st zone is set, those of other zones must be set
-  ASSERT_THROW(mat.addZone(zone1, {}, {}, {});, InputError);
+  ASSERT_THROW(mat->addZone(zone1, {}, {}, {});, InputError);
 }
 
 TEST(Materials, MustFillZoneCoeffK) {
   auto [mat, zone1] = prepareMustFillZoneCoeff();
   // InputError: addZone: Once the coeff of the 1st zone is set, those of other zones must be set
-  ASSERT_THROW(mat.addZone(zone1, {1., 2.}, {}, {});, InputError);
+  ASSERT_THROW(mat->addZone(zone1, {1., 2.}, {}, {});, InputError);
 }
 
 TEST(Materials, MustFillZoneCoeffComposite) {
   auto [mat, zone1] = prepareMustFillZoneCoeff();
   // InputError: addZone: Once the coeff of the 1st zone is set, those of other zones must be set
-  ASSERT_THROW(mat.addZone(zone1, {1., 2.}, {1.}, {});, InputError);
+  ASSERT_THROW(mat->addZone(zone1, {1., 2.}, {1.}, {});, InputError);
 }

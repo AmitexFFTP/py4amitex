@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "amitex/input/common.hpp"
+
 #include "amitex/private/value_element.hpp"
 
 //! \file init_load_ext.hpp
@@ -16,7 +18,7 @@ namespace amitex {
 //! in the loadings.
 class InitLoadExt {
  public:
-  InitLoadExt() = default;
+  static Ptr<InitLoadExt> create() { return makePtr<InitLoadExt>(InitLoadExt{}); }
 
   template <typename TDoc>
   typename TDoc::Node toXMLElement(TDoc& doc) const {
@@ -34,6 +36,7 @@ class InitLoadExt {
   Value<double> temperature{"T"};
 
  private:
+  InitLoadExt() = default;
   class Param {
    public:
     Param() = default;
@@ -46,10 +49,10 @@ class InitLoadExt {
       return ret;
     }
 
-    size_t index;
+    size_t index = 0;
     double value = 0;
   };
-  std::vector<Param> params;
+  std::vector<Param> params = {};
 };
 
 }  // namespace amitex

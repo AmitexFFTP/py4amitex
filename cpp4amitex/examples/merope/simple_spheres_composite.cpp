@@ -3,16 +3,16 @@
 
 #include "MultiInclusions/MultiInclusions.hxx"
 #include "MultiInclusions/SphereInclusions.hxx"
-#include "Voxellation/Voxellation.hxx"
+#include "Voxellation/DynamicVoxellizer.hxx"
 
 #include "amitex/extract.hpp"
 #include "amitex/input.hpp"
 #include "amitex/input/material_builder.hpp"
 #include "amitex/simulation.hpp"
 
-using VtkFormatAnIso = merope::vox::composite::vtk_format_anIso<3>;
+using VtkFormatAnIso = merope::vox::composite::stl_format_AnIso<3, long>;
 
-std::vector<VtkFormatAnIso> calcMicro(std::array<size_t, 3> N, std::array<double, 3> L) {
+auto calcMicro(std::array<size_t, 3> N, std::array<double, 3> L) {
   using namespace merope;
   using namespace sac_de_billes;
   auto sphIncl = SphereInclusions<3>();
@@ -21,10 +21,12 @@ std::vector<VtkFormatAnIso> calcMicro(std::array<size_t, 3> N, std::array<double
 
   auto multiInclusions = MultiInclusions<3>();
   multiInclusions.setInclusions(sphIncl);
-  auto grid = vox::Voxellation<3>(multiInclusions);
+  auto structure = Structure<3>{multiInclusions};
+  auto grid = vox::voxellizer::GridRepresentation<3>{
+      structure, vox::create_grid_parameters_N_L<3>(N, L), vox::VoxelRule::Laminate};
 
-   grid.setVoxelRule(vox::VoxelRule::Laminate);
-   return grid.computeCompositeGrid(N);
+  grid.convert_to_stl_format();
+  return grid;
 }
 
 int sim() {
@@ -32,59 +34,56 @@ int sim() {
   std::array<size_t, 3> N = {32, 32, 32};
   std::array<double, 3> L = {10.0, 10, 10};
 
-  auto compGrid = calcMicro(N, L);
+  // auto compGrid = calcMicro(N, L);
+  auto mgrid = calcMicro(N, L).get<VtkFormatAnIso>();
+  // exit(0);
+  const std::vector<VtkFormatAnIso>& compGrid = mgrid;
   double DL = L[0] / N[0];
-  Input input;
   Grid grid{N, {DL, DL, DL}};
-  input.grid = grid;
 
-  Materials materials;
-  buildMaterials(materials, grid.dims(), compGrid, IndexOrdering::C);
-
+  auto materials = Materials::create();
+  buildMaterials(*materials, grid.dims(), compGrid, IndexOrdering::C);
   std::vector<std::vector<double>> coeffs = {{1.0, 2.0}, {1.0, 2.0}};
 
-  for (size_t i = 0; i < materials.numberMaterials(); i++) {
-    std::cout << materials.material(i).numberZones() << "\n";
-    for (const auto& zone : materials.material(i).zones()) {
-      std::cout << "Mat " << i << " #zones = " << zone.numberVoxels() << "\n";
+  for (size_t i = 0; i < materials->numberMaterials(); i++) {
+    std::cout << materials->material(i)->numberZones() << "\n";
+    for (const auto& zone : materials->material(i)->zones()) {
+      std::cout << "Mat " << i << " #voxels = " << zone->numberVoxels() << "\n";
     }
-    materials.material(i).setLaw("elasiso");
-    materials.material(i).setCoeffs(coeffs[i]);
-    materials.material(i).setCoeffComposites(coeffs[i]);
+    materials->material(i)->setLaw("elasiso");
+    materials->material(i)->setCoeffs(coeffs[i]);
+    materials->material(i)->setCoeffComposites(coeffs[i]);
   }
 
-  for (size_t i = 0; i < materials.numberComposites(); i++) {
-    materials.composite(i).setLaw("laminate");
-    std::cout << "Composite " << i << " #vox=" << materials.composite(i).positions().size();
+  for (size_t i = 0; i < materials->numberComposites(); i++) {
+    materials->composite(i)->setLaw("laminate");
+    std::cout << "Composite " << i << " #voxels = " << materials->composite(i)->positions().size()
+              << '\n';
   }
 
-  materials.referenceMaterial =
-      ReferenceMaterial{0.5 * (coeffs[0][0] + coeffs[1][0]), 0.5 * (coeffs[0][1] + coeffs[1][1])};
-  input.materials = std::move(materials);
+  materials->referenceMaterial = ReferenceMaterial::create(0.5 * (coeffs[0][0] + coeffs[1][0]),
+                                                           0.5 * (coeffs[0][1] + coeffs[1][1]));
 
-  Algorithm algo;
-  algo.type = "Basic_Scheme";
-  algo.convergenceAcceleration = true;
-  Mechanics meca;
-  meca.filter = "Default";
-  meca.smallPerturbations = true;
-  input.algorithmParameters.mechanics = meca;
-  input.algorithmParameters.algorithm = algo;
+  auto algo = Algorithm::create("Basic_Scheme", true);
+  auto meca = Mechanics::create("Default", true);
 
-  Loading load;
-  load.setTimeDiscretizationUser({1e-3, 2e-3, 1.e-2});
+  auto load = Loading::create();
+  load->setTimeDiscretizationUser({1e-3, 2e-3, 1.e-2});
   for (int i = 0; i < 3; i++) {
     for (int j = i; j < 3; j++)
-      load.setEvolution({i, j}, MechanicDriving::Stress, Evolution::Linear, 0.0);
+      load->setEvolution({i, j}, MechanicDriving::Stress, Evolution::Linear, 0.0);
   }
-  load.setEvolution(Component::XX, MechanicDriving::Strain, Evolution::Linear, 0.01);
-  input.loadingOutput.add(std::move(load));
+  load->setEvolution(Component::XX, MechanicDriving::Strain, Evolution::Linear, 0.01);
+  auto loadingOutput = LoadingOutput::create();
+  loadingOutput->add(load);
 
-  input.resultsDir = "amitex_dir_simple_spheres";
-  input.generateFiles();
-  runSimulationExternal(input);
+  auto input =
+      Input::create(grid, AlgorithmParameters::create(algo, meca), materials, loadingOutput);
 
-  Extract ext{input.outputPrefix()};
+  input->resultsDir = "amitex_dir_simple_spheres";
+  runSimulationExternal(*input);
+
+  Extract ext{input->outputPrefix()};
   auto sig = ext.averageStress();
   for (auto row : sig) {
     std::cout << row[0] << "\t" << row[1] << "\t" << row[2] << "\n";

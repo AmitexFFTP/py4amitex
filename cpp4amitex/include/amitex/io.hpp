@@ -29,11 +29,11 @@ void writeBIN(const std::filesystem::path& path, const std::vector<unsigned long
 
 //! Information contained in the header of a VTK file
 struct VtkHeader {
-  std::array<size_t, 3> dimensions;  //! grid dimensions
-  std::array<double, 3> spacing;     //! grid dimensions
-  std::array<double, 3> origin;      //! grid origin
-  std::string scalarType;            //! scalar type
-  size_t cellDataSize;               //! cell data size
+  std::array<size_t, 3> dimensions = {0, 0, 0};  //! grid dimensions
+  std::array<double, 3> spacing = {0, 0, 0};     //! grid dimensions
+  std::array<double, 3> origin = {0, 0, 0};      //! grid origin
+  std::string scalarType = "";                   //! scalar type
+  size_t cellDataSize = 0;                       //! cell data size
 };
 
 //! Read VTK file
@@ -51,7 +51,8 @@ VtkHeader readVTK(const std::filesystem::path& path, std::vector<T>& data);
 //! \param[out] data data vector (in VTK voxel order)
 //! \return type of data in filed
 //! \throws std::runtime_error on input error or file not
-std::string readBin(const std::filesystem::path& path, std::vector<double>& data);
+template <typename T>
+std::string readBin(const std::filesystem::path& path, std::vector<T>& data);
 
 }  // namespace amitex
 

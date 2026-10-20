@@ -15,7 +15,8 @@
         <Convergence_Criterion Value="Default"/>        <!-- "Default" (1e-2) ou valeur réelle positive entre 1e-1 et 1e-4  -->
         <Convergence_Acceleration Value="true"/>        <!-- "True" ou "False" -->
         <Initialisation_type Value="Linear"/>		<!-- Proportionnal, Linear, Default (=Linear) -->
-        <N_increments Value="1" />                      <!-- Nombre de sous pas de temps utilisés pour intégrer la loi umatLaminate à chaque pas de temps -->
+        <N_increments Value="1" />
+        <Nmax_subdivision Value="5" />                      <!-- Nombre de sous pas de temps utilisés pour intégrer la loi umatLaminate à chaque pas de temps -->
     </Algorithm_laminate>
 
 

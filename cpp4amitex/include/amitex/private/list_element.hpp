@@ -2,8 +2,8 @@
 #define _AMITEX_LIST_ELEMENT_HEADER_
 
 #include <iomanip>
-#include <optional>
 #include <sstream>
+#include <string_view>
 #include <vector>
 
 namespace amitex {
@@ -13,7 +13,7 @@ namespace amitex {
 template <typename T>
 class List {
  public:
-  List(const char* tag) : tag_{tag} {}
+  List(std::string_view tag) : tag_{tag} {}
   template <typename TDoc>
   typename TDoc::Node toXMLElement(TDoc& doc) const {
     auto ret = doc.createElement(tag_);
@@ -34,7 +34,7 @@ class List {
   std::vector<T> values;
 
  private:
-  const char* tag_;
+  std::string tag_;
 };
 
 }  // namespace amitex

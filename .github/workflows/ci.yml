@@ -1,0 +1,66 @@
+# This workflow will install Python dependencies, build the C++ library and it python wrapper, run tests
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        compiler: [default]
+        include:
+          - os: ubuntu-22.04
+            python-version: "3.10"
+            compiler: default
+          - os: ubuntu-latest
+            python-version: "3.12"
+            compiler: intel-oneapi
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Set up Intel OneAPI
+      if: matrix.compiler == 'intel-oneapi'
+      uses: neelravi/intel-oneapi-github-actions@latest
+      with:
+        components: 'cpp'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install vtk numpy pytest pybind11
+    - name: Build
+      run: |
+        echo $(python -m pybind11 --cmakedir)
+        if [[  ${{ matrix.compiler }} == 'intel-oneapi' ]]
+        then
+            CMAKE_OPTS="-DCMAKE_CXX_COMPILER=icpx"
+        else
+            CMAKE_OPTS=""
+        fi
+        cmake -S. -Bbuild ${CMAKE_OPTS} -DCMAKE_INSTALL_PREFIX=_install -DAMITEX_PYTHON=ON -Dpybind11_DIR=$(python -m pybind11 --cmakedir)
+        cmake --build build -j 2
+        cmake --install build
+    - name: Test
+      run: |
+        ctest --test-dir build --output-junit test-results-cpp.xml --output-on-failure
+        PYTHONPATH=_install/lib pytest
+    - name: Test Summary
+      uses: test-summary/action@v2
+      with:
+        paths: |
+          build/test-results-cpp.xml
+          build/test-results-python.xml
+      if: always()

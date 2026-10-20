@@ -1,6 +1,15 @@
-from pathlib import Path
-from xml.etree.ElementTree import canonicalize, fromstring, tostring
 from difflib import unified_diff
+from pathlib import Path
+from sys import version_info
+from xml.etree.ElementTree import canonicalize, fromstring, tostring
+
+if version_info >= (3, 9):
+    from xml.etree.ElementTree import indent
+else:
+
+    def indent(tree):
+        return tree
+
 
 testsdir = Path(__file__).parent.parent.parent.parent / "tests"
 
@@ -74,7 +83,7 @@ def compareXML(genedXML, refXML):
                 regularizeAttrs(child)
 
         sortChilds(tree)
-        # indent(tree)
+        indent(tree)
         regularizeAttrs(tree)
         return tostring(tree, encoding="unicode")
 
@@ -99,3 +108,11 @@ def compareXMLFiles(path, refpath):
     with open(refpath, "r", encoding="utf-8") as file:
         refStr = file.read()
     return compareXML(xmlStr, refStr)
+
+
+def compareTextFiles(path, refpath):
+    with open(path, "r", encoding="utf-8") as file:
+        str = file.read()
+    with open(refpath, "r", encoding="utf-8") as file:
+        refStr = file.read()
+    return str == refStr

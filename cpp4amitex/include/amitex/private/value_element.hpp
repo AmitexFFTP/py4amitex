@@ -1,9 +1,9 @@
 #ifndef _AMITEX_VALUE_ELEMENT_HEADER_
 #define _AMITEX_VALUE_ELEMENT_HEADER_
 
-#include <iomanip>
 #include <optional>
-#include <vector>
+#include <string>
+#include <string_view>
 
 namespace amitex {
 
@@ -11,9 +11,9 @@ namespace amitex {
 template <typename T>
 class Value {
  public:
-  explicit Value(const char* tag) : tag_{tag} {}
-  Value(const char* tag, const T& value) : value{value}, tag_{tag} {}
-  Value(const char* tag, const std::optional<T>& value) : value{value}, tag_{tag} {}
+  explicit Value(std::string_view tag) : Value{tag, std::nullopt} {}
+  Value(std::string_view tag, const T& value) : value{value}, tag_{tag} {}
+  Value(std::string_view tag, const std::optional<T>& value) : value{value}, tag_{tag} {}
   operator T() const { return value.value(); }
   Value& operator=(const T& value) {
     this->value = value;
@@ -34,7 +34,7 @@ class Value {
   std::optional<T> value;
 
  private:
-  const char* tag_;
+  std::string tag_;
 };
 
 }  // namespace amitex

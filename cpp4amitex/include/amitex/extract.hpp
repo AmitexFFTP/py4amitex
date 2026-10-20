@@ -4,9 +4,7 @@
 #include <array>
 #include <filesystem>
 #include <string_view>
-#include <vector>
 
-#include "amitex/errors.hpp"
 #include "amitex/input/common.hpp"
 
 namespace amitex {
@@ -40,9 +38,9 @@ class Extract {
   };
 
   std::string prefix = "output";
-  DiffusionQuantities currentDiffusion;
-  MechanicalQuantities currentMechanics;
-  std::filesystem::file_time_type lastWrite;
+  DiffusionQuantities currentDiffusion{};
+  MechanicalQuantities currentMechanics{};
+  std::filesystem::file_time_type lastWrite{};
 
   void setSymComponents(TensorLin& values);
   void readStd(DiffusionQuantities& q);

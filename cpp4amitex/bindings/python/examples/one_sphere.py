@@ -23,9 +23,7 @@ def prepareInput():
     center = [NV // 2, NV // 2, NV // 2]
     kappas = [0.6, 429.0]
 
-    input = Input()
     grid = Grid([NV, NV, NV], [DL, DL, DL])
-    input.grid = grid
 
     materials = Materials()
 

@@ -1,7 +1,5 @@
 #include "amitex/input/loading.hpp"
 
-#include <algorithm>
-
 namespace amitex {
 
 const char* AxisStrings[3] = {"x", "y", "z"};
@@ -44,5 +42,7 @@ void Loading::setGradGradU(AxisIndexPair ij, int k, Evolution evolution, double 
   driver.evolution = evolution;
   driver.value = value;
 }
+
+void Loading::setRestart(int every) { restart = Restart{every}; }
 
 }  // namespace amitex

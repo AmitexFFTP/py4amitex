@@ -8,11 +8,11 @@
 void printAverages(amitex::Input& p);
 
 int main(int argc, char* argv[]) {
-  amitex::Input input = make_thermo_pmvox_input_gen("amitex_results_2zones", 1);
+  auto input = make_thermo_pmvox_input_gen("amitex_results_2zones", 1);
 
-  runSimulationExternal(input);
+  runSimulationExternal(*input);
 
-  printAverages(input);
+  printAverages(*input);
 }
 
 void printAverages(amitex::Input& p) {

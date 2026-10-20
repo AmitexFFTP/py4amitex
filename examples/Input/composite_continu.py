@@ -46,11 +46,8 @@ VOXL = [1.0, 1.0, 1.0]
 
 def makeInputCommon():
     grid = Grid(DIMS, VOXL)
-    algo = Algorithm()
-    algo.type = "Basic_Scheme"
-    algo.convergenceAcceleration = True
-    meca = Mechanics()
-    meca.smallPerturbations = True
+    algo = Algorithm(type="Basic_Scheme", convergenceAcceleration=True)
+    meca = Mechanics(filter="Default", smallPerturbations=True)
     algoParams = AlgorithmParameters(algo, mechanics=meca)
 
     loading = Loading()

@@ -2,9 +2,10 @@
 
 namespace amitex {
 
-Zone::Zone(GridSize gridDims) : dims{gridDims} {}
+Zone::Zone(GridSize gridDims) : Zone{gridDims, {}} {}
 
-Zone::Zone(GridSize gridDims, const std::vector<GridPoint>& positions) : dims{gridDims} {
+Zone::Zone(GridSize gridDims, const std::vector<GridPoint>& positions)
+    : dims{gridDims}, linearPositions_{} {
   for (auto pos : positions) {
     add(pos);
   }
