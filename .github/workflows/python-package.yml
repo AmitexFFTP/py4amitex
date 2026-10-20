@@ -60,5 +60,7 @@ jobs:
     - name: Test Summary
       uses: test-summary/action@v2
       with:
-        paths: "build/test-results-*.xml"
+        paths: |
+          build/test-results-cpp.xml
+          build/test-results-python.xml
       if: always()
