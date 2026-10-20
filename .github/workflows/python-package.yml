@@ -30,7 +30,10 @@ jobs:
         python -m pip install vtk numpy pytest
     - name: Build
       run: |
-        pip install .
+        cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=_install -DAMITEX_PYTHON=ON
+        cmake --build build -j 2
+        cmake --install build
     - name: Test with pytest
       run: |
-        pytest
+        ctest --test-dir build --output-junit test-results-cpp.xml --output-on-failure
+        PYTHONPATH=_install/lib pytest
