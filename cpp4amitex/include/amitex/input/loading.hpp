@@ -1,6 +1,7 @@
 #ifndef _AMITEX_LOADING_HEADER_
 #define _AMITEX_LOADING_HEADER_
 
+#include <algorithm>
 #include <optional>
 #include <string_view>
 #include <utility>

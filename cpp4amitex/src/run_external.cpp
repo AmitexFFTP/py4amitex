@@ -1,6 +1,7 @@
 #include "amitex/input.hpp"
 #include "amitex/simulation.hpp"
 
+#include <algorithm>
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
