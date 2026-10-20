@@ -43,7 +43,7 @@ jobs:
     - name: Build
       run: |
         echo $(python -m pybind11 --cmakedir)
-        if [[  ${{ matrix.python-version }} == intel-oneapi ]]
+        if [[  ${{ matrix.compiler }} == 'intel-oneapi' ]]
         then
             CMAKE_OPTS="-DCMAKE_CXX_COMPILER=icpx"
         else
