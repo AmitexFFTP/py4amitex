@@ -64,3 +64,33 @@ jobs:
           build/test-results-cpp.xml
           build/test-results-python.xml
       if: always()
+  coverage:
+    permissions:
+      contents: read
+      code-quality: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install numpy vtk pybind11 pytest pytest-cov
+          pip install numpy gcovr
+
+      - name: Run tests with coverage
+        run: |
+          bash ci/test-coverage.sh "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            coverage-cpp.xml
+            coverage-cpp/
+            coverage-python.xml
+            coverage-python/
