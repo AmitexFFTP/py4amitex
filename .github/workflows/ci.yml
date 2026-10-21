@@ -80,6 +80,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install numpy vtk pybind11 pytest pytest-cov
+          apt install gcovr
 
       - name: Run tests with coverage
         run: |
