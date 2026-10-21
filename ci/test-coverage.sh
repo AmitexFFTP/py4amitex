@@ -16,6 +16,5 @@ cmake --install ${BUILD_DIR}
 PYTHONPATH=${INSTALL_DIR}/lib pytest --cov=${INSTALL_DIR}/lib --cov-report=xml --cov-report=html --cov-report=term-missing --cov-fail-under=0
 cd "${BUILD_DIR}"
 gcovr -r ..  -f "${ROOT_DIR}/cpp4amitex/src/" -f "${ROOT_DIR}/cpp4amitex/include/" -f "${ROOT_DIR}/cpp4amitex/bindings/python/src/" \
-    --print-summary -x ../coverage-cpp.xml
-# --html-details --html "${BUILD_DIR}"/coverage-cpp.html 
+    --print-summary --xml ../coverage-cpp.xml --html-details -o coverage-cpp
 cd "${ROOT_DIR}"
