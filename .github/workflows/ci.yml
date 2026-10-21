@@ -84,7 +84,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          bash ci/test-coverage.sh
+          bash ci/test-coverage.sh "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -92,5 +92,5 @@ jobs:
           path: |
             coverage-cpp.xml
             coverage-cpp/
-            coverage.xml
-            htmlconv/
+            coverage-python.xml
+            coverage-python/
