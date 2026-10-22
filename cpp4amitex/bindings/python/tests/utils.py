@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LGPL-3.0-only
 from difflib import unified_diff
 from pathlib import Path
 from sys import version_info

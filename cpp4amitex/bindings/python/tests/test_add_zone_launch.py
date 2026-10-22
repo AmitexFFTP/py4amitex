@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LGPL-3.0-only
 from pytest import approx, mark
 from py4amitex.input import Input
 

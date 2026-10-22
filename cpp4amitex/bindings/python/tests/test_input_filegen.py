@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LGPL-3.0-only
 import os
 from pathlib import Path
 from shutil import copyfile

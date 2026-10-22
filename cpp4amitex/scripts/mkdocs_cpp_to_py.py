@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LGPL-3.0-only
 # /usr/bin/env python3
 
 # config.hpp needs to be generated before by cmake

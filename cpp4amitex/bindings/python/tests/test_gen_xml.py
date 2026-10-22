@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LGPL-3.0-only
 import pytest
 from py4amitex.input import (
     Algorithm,

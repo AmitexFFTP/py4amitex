@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LGPL-3.0-only
 import subprocess
 
 from pytest import approx

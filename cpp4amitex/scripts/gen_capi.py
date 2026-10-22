@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LGPL-3.0-only
 import argparse
 import re
 from textwrap import indent
