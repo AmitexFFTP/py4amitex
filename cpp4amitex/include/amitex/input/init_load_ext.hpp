@@ -1,3 +1,10 @@
+/*
+SPDX-License-Identifier: LGPL-3.0-only
+
+(C) copyright 2026 of CEA
+
+author: Guillaume Bareigts <guillaume.bareigts@cea.fr>, CEA
+*/
 #ifndef _AMITEX_INIT_LOAD_EXT_HEADER_
 #define _AMITEX_INIT_LOAD_EXT_HEADER_
 

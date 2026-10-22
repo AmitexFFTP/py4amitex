@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LGPL-3.0-only
 """
 P4A Module to handle Amitex zoneId and matId fields, and the vtk format.
 
@@ -9,7 +10,8 @@ TODO:
     -- test or enforce int when writing matId and zoneId files
 
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 from pathlib import Path

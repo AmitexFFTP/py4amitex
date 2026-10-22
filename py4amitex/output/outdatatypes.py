@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LGPL-3.0-only
 """
 P4A Module to define usefull data types to handle AMITEX_FFTP results.
 
@@ -8,7 +9,9 @@ indexing.
 No explicit indexing or variable type declaration for all output data should
 be done in other modules, for the sake of code readability and maintenance.
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
+
 """
 
 ## Imports

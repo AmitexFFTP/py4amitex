@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LGPL-3.0-only
 """
 Temp Module to creates Amitex fft inputs for polycrystalline simulations
 from Neper.
 
 Not yet well documented...
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 # TODO: correct tess for Amitex output

@@ -1,3 +1,10 @@
+# SPDX-License-Identifier: LGPL-3.0-only
+"""
+Compare two XML files, canicalized, with regularization of floating-points values
+
+:author: Guillaume Bareigts <guillaume.bareigts@cea.fr>
+:copyright: 2026 CEA
+"""
 from sys import argv, stdout, version_info
 from re import match
 from difflib import unified_diff
