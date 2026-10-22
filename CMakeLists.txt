@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: LGPL-3.0-only
+# (C) copyright 2026 of CEA
+# author: Guillaume Bareigts <guillaume.bareigts@cea.fr>, CEA
+
 cmake_minimum_required(VERSION 3.22)
 
 project(py4amitex LANGUAGES CXX VERSION 1.1.0)
