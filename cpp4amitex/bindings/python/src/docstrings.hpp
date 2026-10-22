@@ -1,4 +1,10 @@
 /*
+SPDX-License-Identifier: LGPL-3.0-only
+
+(C) copyright 2026 of CEA
+
+author: Guillaume Bareigts <guillaume.bareigts@cea.fr>, CEA
+
   This file contains docstrings for use in the Python bindings.
   Do not edit! They were automatically extracted by pybind11_mkdoc.
  */
