@@ -7,7 +7,9 @@ P4A Module to load and interact with AMITEX simulation results.
 AmitexOutput class is the public API of the P4A package to interact with
 Amitex output data.
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
+
 """
 from py4amitex.output.outreader import OutReader
 

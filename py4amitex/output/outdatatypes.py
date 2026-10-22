@@ -9,7 +9,9 @@ indexing.
 No explicit indexing or variable type declaration for all output data should
 be done in other modules, for the sake of code readability and maintenance.
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
+
 """
 
 ## Imports

@@ -5,7 +5,8 @@
 P4A Module to read, write and manipulate input/output files for/from 
 AMITEX_FFTP. 
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 import struct

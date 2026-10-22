@@ -7,7 +7,9 @@ P4A Module to read AMITEX simulation results.
 TODO :
     * change 'stress' key for vtk fields to 'sigma'
 
-    @author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
+
 """
 
 ## External Imports

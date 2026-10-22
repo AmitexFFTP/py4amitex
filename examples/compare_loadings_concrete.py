@@ -17,7 +17,7 @@ The following plots will be soon replaced by high level routines to :
     - plot a mean value time serie in function of another mean value serie
     - plot a 22D slice of a specific field
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
 """
 from config import AMITEX_TEST_RES_DIR
 

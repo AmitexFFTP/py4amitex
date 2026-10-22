@@ -7,7 +7,8 @@ from Neper.
 
 Not yet well documented...
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 # TODO: correct tess for Amitex output

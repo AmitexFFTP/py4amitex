@@ -4,7 +4,8 @@
 """"
 P4A SubPackage containing utility modules.
 
-.. moduleauthor:: Aldo Marano <aldo.marano@onera.fr>
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 __all__ = []

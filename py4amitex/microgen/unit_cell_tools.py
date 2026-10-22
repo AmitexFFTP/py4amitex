@@ -7,7 +7,8 @@ P4A Module to implement operations on unit cell geometries.
 TODO:
     -- complete docstrings
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 import numpy as np

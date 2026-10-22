@@ -4,7 +4,8 @@
 """"
 P4A SubPackage to manipulate input data to define AMITEX_FFTP simulations 
 
-.. moduleauthor:: Aldo Marano <aldo.marano@onera.fr>
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 __all__ = []

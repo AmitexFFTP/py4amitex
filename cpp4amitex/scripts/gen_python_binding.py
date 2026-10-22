@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 
 """
-Generate a python binding for a class
+Generate a python binding from an header file
 
-:author: G. Bareigts
-:copyright: CEA 2026
+:author: Guillaume Bareigts <guillaume.bareigts@cea.fr>
+:copyright: 2026 CEA
 """
 
 import re

@@ -1,4 +1,9 @@
 # SPDX-License-Identifier: LGPL-3.0-only
+"""
+:author: Guillaume Bareigts <guillaume.bareigts@cea.fr>
+:copyright: 2026 CEA
+"""
+
 from difflib import unified_diff
 from pathlib import Path
 from sys import version_info

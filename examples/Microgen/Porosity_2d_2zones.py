@@ -10,7 +10,7 @@ Two materials :
     - Id 1 : solid material
     - Id 2 : cavity (no material)
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
 """
 #%% Imports
 

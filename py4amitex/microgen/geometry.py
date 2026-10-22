@@ -16,7 +16,8 @@ CONVENTIONS:
     * The default grid squared/cubic and has 100 elements along one dimension.
       To change grid dimensions, specific options must be provided
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 import numpy as np

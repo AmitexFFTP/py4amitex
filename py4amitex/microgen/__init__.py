@@ -5,7 +5,8 @@
 P4A SubPackage to generate synthetic microstructures that can be used as 
 unit cell geometries for AMITEX_FFTP simulations
 
-.. moduleauthor:: Aldo Marano <aldo.marano@onera.fr>
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 __all__ = []

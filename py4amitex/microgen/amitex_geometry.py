@@ -10,7 +10,8 @@ TODO:
     -- test or enforce int when writing matId and zoneId files
 
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 
 from pathlib import Path

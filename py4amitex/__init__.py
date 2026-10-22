@@ -4,7 +4,8 @@
 """
 Python utilities for amitex_fftp micromechanics simulation code
 
-.. moduleauthor:: Aldo Marano <aldo.marano@onera.fr>
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA Aldo Marano <aldo.marano@onera.fr>
 """
 
 __version_info__ = (0, 0, 1)

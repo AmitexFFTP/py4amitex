@@ -4,7 +4,9 @@
 """
 Unit test module for OutReader class.
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
+
 """
 
 import unittest

@@ -4,6 +4,7 @@
 """
 P4A Module to plots results.
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
 

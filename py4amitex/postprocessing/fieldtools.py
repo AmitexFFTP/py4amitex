@@ -4,5 +4,6 @@
 """
 P4A Module for processing of field data.
 
-@author: amarano
+:author: Aldo Marano <aldo.marano@onera.fr>
+:copyright: 2026 ONERA
 """
